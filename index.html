@@ -174,8 +174,8 @@
                 <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Otomatis dikalkulasi berdasarkan jenis alat</span>
               </div>
 
-              <!-- Warmup Sets Preview Box (Dengan Beban Per Sisi) -->
-              <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
+              <!-- Warmup Sets Preview Box (Hanya Tampil Jika Latihan Pertama) -->
+              <div id="warmupContainer" class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
                 <span class="font-bold text-indigo-900 block mb-1">Warm-up Sets (Auto FLOOR 2.5):</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium text-slate-700" id="warmupPreview">
                   <div class="bg-white p-1 rounded border">Set 1: -</div>
@@ -196,19 +196,19 @@
             <div>
               <label class="block text-xs font-bold text-slate-500 mb-2">Hasil Reps Kerja (Actual Reps Per Set):</label>
               <div class="grid grid-cols-4 gap-3">
-                <div>
+                <div id="containerSet1">
                   <span class="text-xs text-slate-400 block mb-1">Set 1</span>
                   <input type="number" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
-                <div>
+                <div id="containerSet2">
                   <span class="text-xs text-slate-400 block mb-1">Set 2</span>
                   <input type="number" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
-                <div>
+                <div id="containerSet3">
                   <span class="text-xs text-slate-400 block mb-1">Set 3</span>
                   <input type="number" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
-                <div>
+                <div id="containerSet4">
                   <span class="text-xs text-slate-400 block mb-1">Set 4</span>
                   <input type="number" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
@@ -329,28 +329,28 @@
     let originalBaseLoad = 0; // Menyimpan beban acuan awal sebelum deload
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec" },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min" },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min" },
-      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false },
+      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min" },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false }
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
@@ -411,6 +411,29 @@
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputCatatan").value = preset.rest;
+
+        // Dynamic Set Count Config
+        const totalSets = preset.sets || 4;
+        for (let i = 1; i <= 4; i++) {
+          const container = document.getElementById(`containerSet${i}`);
+          const input = document.getElementById(`inputSet${i}`);
+          if (i <= totalSets) {
+            container.classList.remove("hidden");
+            input.disabled = false;
+          } else {
+            container.classList.add("hidden");
+            input.value = 0;
+            input.disabled = true;
+          }
+        }
+
+        // Dynamic Warm-up Set Visibility (Only First Exercise of Day)
+        const warmupContainer = document.getElementById("warmupContainer");
+        if (preset.isFirst) {
+          warmupContainer.classList.remove("hidden");
+        } else {
+          warmupContainer.classList.add("hidden");
+        }
 
         let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
         originalBaseLoad = autoLoad;
@@ -777,6 +800,8 @@
       onSessionChange(r.day_session);
       
       document.getElementById("inputExercise").value = r.exercise;
+      onExerciseSelect(r.exercise);
+
       document.getElementById("inputTargetReps").value = r.target_reps;
       
       originalBaseLoad = r.working_load;
@@ -807,6 +832,15 @@
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/20");
+
+      for (let i = 1; i <= 4; i++) {
+        const container = document.getElementById(`containerSet${i}`);
+        const input = document.getElementById(`inputSet${i}`);
+        container.classList.remove("hidden");
+        input.disabled = false;
+      }
+      document.getElementById("warmupContainer").classList.remove("hidden");
+
       calculateLoadDetails();
     }
 
