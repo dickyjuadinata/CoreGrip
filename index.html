@@ -160,7 +160,7 @@
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">
                   Working Load Utama (kg)
-                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis dari Riwayat 4 Minggu</span>
+                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis Benchmark Excel / 4 Minggu</span>
                 </label>
                 <input type="number" step="0.5" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
@@ -174,7 +174,7 @@
                 <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Otomatis dikalkulasi berdasarkan jenis alat</span>
               </div>
 
-              <!-- Warmup Sets Preview Box (Dengan Beban Per Sisi) -->
+              <!-- Warmup Sets Preview Box -->
               <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
                 <span class="font-bold text-indigo-900 block mb-1">Warm-up Sets (Auto FLOOR 2.5):</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium text-slate-700" id="warmupPreview">
@@ -326,8 +326,9 @@
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
-    let originalBaseLoad = 0; // Menyimpan beban acuan awal sebelum deload
+    let originalBaseLoad = 0;
 
+    // PRESET EXERCISE
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
       "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
@@ -353,9 +354,32 @@
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
     };
 
+    // BENCHMARK AWAL DARI WEEK 28 EXCEL SHEET LOG
+    const initialBenchmarks = {
+      "Barbell Bench Press": 60,
+      "Chest Supported Dumbbell Row": 22.5,
+      "Bodyweight Pull-Ups": 66.05,
+      "Barbell Overhead Press": 42.5,
+      "Dumbbell Lateral Raises - A": 7.5,
+      "Triceps Pressdowns (Cable)": 12.5,
+      "Dumbbell Hammer Curl": 10,
+      "Barbell Squats": 70,
+      "Romanian Deadlifts": 52.5,
+      "Standing Barbell Calf Raises": 17.5,
+      "Incline Dumbbell Press": 17.5,
+      "Bent-over Barbell Row": 45,
+      "Seated Dumbbell Press": 15,
+      "Face Pulls (Cable)": 7.5,
+      "Dumbbell Lateral Raises - B": 7.5,
+      "Barbell Curl": 22.5,
+      "Cable Overhead Triceps Extension": 15,
+      "Conventional Deadlift": 82.5,
+      "Dumbbell Bulgarian Split Squat": 7.5
+    };
+
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    // FUNGSI HELPER MATEMATIKA SAMA DENGAN EXCEL
+    // FUNGSI MATEMATIKA SESUAI EXCEL MROUND DAN FLOOR
     function mround2_5(val) {
       return Math.round(val / 2.5) * 2.5;
     }
@@ -364,18 +388,47 @@
       return Math.floor(val / 2.5) * 2.5;
     }
 
+    // HITUNG BEBAN PER SISI (TIDAK BOLEH MINUS)
     function calculateSideWeight(exercise, totalLoad) {
       if (totalLoad <= 0) return 0;
       const exLower = exercise.toLowerCase();
       if (exLower.includes("barbell")) {
-        return Math.max(0, (totalLoad - 10) / 2);
+        const side = (totalLoad - 10) / 2;
+        return side > 0 ? side : 0;
       } else if (exLower.includes("dumbbell")) {
-        return Math.max(0, (totalLoad - 2.5) / 2);
+        const side = (totalLoad - 2.5) / 2;
+        return side > 0 ? side : 0;
       }
       return totalLoad;
     }
 
-    // SESSION CHANGE & HIGHLIGHT
+    // RIWAYAT 4 MINGGU TERAKHIR -> BENCHMARK
+    function get4WeeksHistoryLoad(exerciseName, currentProj) {
+      const match = currentProj.match(/Week\s*(\d+)/i);
+      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+
+      for (let i = 1; i <= 4; i++) {
+        let prevWeekNum = currentWeekNum - i;
+        if (prevWeekNum < 1) break;
+
+        let prevProjName = `Week ${prevWeekNum}`;
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let matchRow = rows.find(r => r.exercise === exerciseName);
+          if (matchRow && parseFloat(matchRow.next_load) > 0) {
+            return parseFloat(matchRow.next_load);
+          }
+        }
+      }
+
+      if (initialBenchmarks[exerciseName] !== undefined) {
+        return initialBenchmarks[exerciseName];
+      }
+
+      return 20;
+    }
+
     function onSessionChange(sessionVal) {
       const exerciseSelect = document.getElementById("inputExercise");
       exerciseSelect.innerHTML = '<option value="">-- Pilih Latihan --</option>';
@@ -404,7 +457,6 @@
       }
     }
 
-    // OTOMATIS AMBIL WORKING LOAD DARI 4 MINGGU TERAKHIR
     function onExerciseSelect(exVal) {
       if (!exVal) return;
       const preset = exercisePresets[exVal];
@@ -420,34 +472,6 @@
       }
     }
 
-    function get4WeeksHistoryLoad(exerciseName, currentProj) {
-      const match = currentProj.match(/Week\s*(\d+)/i);
-      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
-
-      // Cari riwayat 4 minggu ke belakang: Week -1, Week -2, Week -3, Week -4
-      for (let i = 1; i <= 4; i++) {
-        let prevWeekNum = currentWeekNum - i;
-        if (prevWeekNum < 1) break;
-
-        let prevProjName = `Week ${prevWeekNum}`;
-        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
-        if (prevData) {
-          let rows = JSON.parse(prevData);
-          let matchRow = rows.find(r => r.exercise === exerciseName);
-          if (matchRow && matchRow.next_load > 0) {
-            return matchRow.next_load;
-          }
-        }
-      }
-
-      // Jika tidak ada di localStorage 4 minggu terakhir, cari di data lokal saat ini
-      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
-      if (currentMatch) return currentMatch.working_load;
-
-      return 20; // Default load awal jika tidak ada riwayat
-    }
-
-    // KALKULASI SIDE LOAD & WARM-UP (DENGAN BEBAN PER SISI)
     function calculateLoadDetails() {
       const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
       const exercise = document.getElementById("inputExercise").value;
@@ -487,7 +511,6 @@
         return;
       }
 
-      // Sesuai Rumus QB9-QB12: FLOOR(Load * %; 2.5)
       const w1 = floor2_5(totalLoad * 0.40);
       const w2 = floor2_5(totalLoad * 0.60);
       const w3 = floor2_5(totalLoad * 0.80);
@@ -506,7 +529,6 @@
       `;
     }
 
-    // AUTO-REGULASI & OVERRIDE WORKING LOAD SAAT DELOAD
     function checkAutoRegulation() {
       const targetStr = document.getElementById("inputTargetReps").value;
       const parts = targetStr.split("-").map(n => parseInt(n.trim(), 10));
@@ -527,24 +549,20 @@
       else if (set4 > 0 && set4 < minTarget) failedSet = 4;
 
       if (failedSet > 0 && minTarget > 0) {
-        // Mengacu rumus Excel QB13: MROUND(PU13 * 0.85; 2.5) atau MROUND(PU13 * 0.925; 2.5)
         let deloadLoad = mround2_5(originalBaseLoad * 0.925); 
 
-        // Update Working Load langsung secara real-time
         document.getElementById("inputWorkingLoad").value = deloadLoad;
         calculateLoadDetails();
 
         autoNotice.classList.remove("hidden");
         autoText.innerText = `Kegagalan target (${minTarget} reps) pada Set ${failedSet}! Working load disesuaikan dari ${originalBaseLoad} kg ke ${deloadLoad} kg.`;
       } else {
-        // Kembalikan ke beban dasar jika reps diperbaiki
         document.getElementById("inputWorkingLoad").value = originalBaseLoad;
         calculateLoadDetails();
         autoNotice.classList.add("hidden");
       }
     }
 
-    // REPLIKASI RUMUS EXCEL QB13 SECARA PRESISI UNTUK NEXT LOAD
     function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13, pw13_pz13) {
       if (!targetRepsStr || !targetRepsStr.includes("-")) return pu13;
       const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
@@ -555,7 +573,6 @@
       const countReps = validReps.length;
       const minReps = countReps > 0 ? Math.min(...validReps) : 0;
 
-      // 1. IF(AND(COUNT(QD13:QG13)>0; MIN(QD13:QG13)<VALUE(LEFT($C13; FIND("-"; $C13)-1))))
       if (countReps > 0 && minReps < minTarget) {
         if (pu13 < pn13) {
           return mround2_5(pu13 * 0.80);
@@ -564,12 +581,10 @@
         }
       }
 
-      // 2. IF(AND(PN13<PG13; PU13<PG13; PU13>0; COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
       if (pn13 < pg13 && pu13 < pg13 && pu13 > 0 && countReps === 4 && minReps >= maxTarget) {
         return pg13;
       }
 
-      // 3. IF(AND(PG13=PN13; PN13=PU13; PU13>0; MIN(PW13:PZ13)<minTarget))
       if (pg13 === pn13 && pn13 === pu13 && pu13 > 0 && countReps > 0 && minReps < minTarget) {
         if (pu13 < pn13) {
           return mround2_5(pu13 * 0.80);
@@ -578,12 +593,10 @@
         }
       }
 
-      // 4. IF(AND(PU13<PN13; PN13=PG13))
       if (pu13 < pn13 && pn13 === pg13) {
         return mround2_5(pn13 * 0.925);
       }
 
-      // 5. IF(AND(COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
       if (countReps === 4 && minReps >= maxTarget) {
         return pu13 + 2.5;
       }
@@ -591,7 +604,6 @@
       return pu13;
     }
 
-    // INIT APP
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       checkSession();
@@ -746,7 +758,6 @@
 
       const repsArr = [set1_reps, set2_reps, set3_reps, set4_reps];
       
-      // Ambil nilai riwayat minggu sebelumnya untuk formula QB13
       const pn13 = get4WeeksHistoryLoad(exercise, currentProject); 
       const pg13 = pn13; 
 
