@@ -378,7 +378,7 @@
       
       "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true },
       "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false },
-      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false },
       
       "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true },
       "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
@@ -389,7 +389,39 @@
       "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false },
       
       "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false }
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false }
+    };
+
+    // Pemetaan Benchmark Beban Awal Berdasarkan Spreadsheet (Week 32/33)
+    const initialBenchmarkLoads = {
+      // Upper A
+      "Barbell Bench Press": 62.5,
+      "Chest Supported Dumbbell Row": 22.5,
+      "Bodyweight Pull-Ups": 0.0,
+      "Barbell Overhead Press": 40.0,
+      "Dumbbell Lateral Raises - A": 7.5,
+      "Triceps Pressdowns (Cable)": 10.0,
+      "Dumbbell Hammer Curl": 7.5,
+
+      // Lower A
+      "Barbell Squats": 62.5,
+      "Romanian Deadlifts": 50.0,
+      "Standing Barbell Calf Raises - A": 15.0,
+
+      // Upper B
+      "Incline Dumbbell Press": 20.0,
+      "Bent-over Barbell Row": 45.0,
+      "Seated Dumbbell Press": 17.5,
+      "Face Pulls (Cable)": 12.5,
+      "Dumbbell Lateral Raises - B": 7.5,
+      "Barbell Curl": 20.0,
+      "Cable Overhead Triceps Extension": 17.5,
+
+      // Lower B
+      "Conventional Deadlift": 92.5,
+      "Dumbbell Bulgarian Split Squat": 10.0,
+      "Standing Barbell Calf Raises - B": 15.0
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
@@ -506,7 +538,8 @@
       let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
       if (currentMatch) return currentMatch.working_load;
 
-      return 20; // Default load awal jika tidak ada riwayat
+      // Mengambil beban awal dari benchmark spreadsheet jika data riwayat belum tersedia
+      return initialBenchmarkLoads[exerciseName] ?? 20;
     }
 
     // KALKULASI SIDE LOAD & WARM-UP (DENGAN BEBAN PER SISI)
