@@ -134,13 +134,6 @@
 
     <!-- MAIN APP DASHBOARD -->
     <div id="appSection" class="hidden space-y-4 md:space-y-6">
-      
-      <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <label class="font-bold text-slate-700 text-sm whitespace-nowrap">Program / Week:</label>
-          <input type="text" id="inputProject" value="Week 1" onchange="changeProjectFreetext()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none w-full sm:w-64" placeholder="Contoh: Week 1">
-        </div>
-      </div>
 
       <!-- MAIN CONTENT TABS -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -167,7 +160,15 @@
               </span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+              <!-- PERMINTAAN 3 & 4: Kolom Program/Week Pindah ke Sini & Hanya Input Angka -->
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Week / Minggu</label>
+                <div class="flex items-center">
+                  <span class="bg-slate-200 text-slate-600 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-300">Week</span>
+                  <input type="number" id="inputProject" min="1" value="1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+              </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Session / Day</label>
                 <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
@@ -185,6 +186,7 @@
                 </select>
               </div>
               <div>
+                <!-- PERMINTAAN 1: Kolom Berat Badan -->
                 <label class="block text-xs font-bold text-slate-500 mb-1">Berat Badan Hari Ini (kg)</label>
                 <input type="number" step="0.1" id="inputBodyWeight" placeholder="misal: 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
               </div>
@@ -372,7 +374,7 @@
     let myChart = null;
     let originalBaseLoad = 0;
 
-    // Poin 1: Variabel penyimpanan persisten untuk Sesi & Berat Badan saat ini
+    // Variabel penyimpanan persistent untuk Sesi & Berat Badan saat ini
     let lastSelectedSession = "";
     let lastBodyWeight = "";
 
@@ -439,6 +441,7 @@
       return Math.round(val * 4) / 4;
     }
 
+    // PERMINTAAN 2: Beban Pull-Up adalah Beban Berat Badan (ditambah working load jika ada)
     function calculateSideWeight(exercise, totalLoad) {
       const exLower = exercise.toLowerCase();
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
@@ -457,7 +460,7 @@
       return roundToQuarter(side);
     }
 
-    // SESSION CHANGE & HIGHLIGHT (Poin 1: Simpan Sesi Terakhir)
+    // SESSION CHANGE & HIGHLIGHT
     function onSessionChange(sessionVal) {
       lastSelectedSession = sessionVal;
       const exerciseSelect = document.getElementById("inputExercise");
@@ -554,7 +557,6 @@
       const sideDisplay = document.getElementById("sideLoadDisplay");
       const notice = document.getElementById("sideLoadFormulaNotice");
 
-      // Poin 1: Simpan BB terakhir jika terisi
       const bwVal = document.getElementById("inputBodyWeight").value;
       if (bwVal) lastBodyWeight = bwVal;
 
@@ -567,9 +569,10 @@
       let sideWeight = calculateSideWeight(exercise, load);
       const exLower = exercise.toLowerCase();
 
+      // PERMINTAAN 2: Penyesuaian keterangan beban Pull-Up
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
         const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
-        notice.innerText = `*Pull-Up: Bodyweight (${bw}kg) + Working Load (${load}kg)`;
+        notice.innerText = `*Pull-Up: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
         sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Beban`;
       } else if (exLower.includes("barbell")) {
         notice.innerText = "*Rumus Barbell: (Total Load - 10kg) / 2";
@@ -834,6 +837,21 @@
       const tbody = document.getElementById("workoutTableBody");
       tbody.innerHTML = "";
 
+      // PERMINTAAN 1: Apabila data latihan sudah ada pada sesi, kunci otomatis kolom berat badan
+      const bwInput = document.getElementById("inputBodyWeight");
+      if (workoutRows.length > 0) {
+        const firstBw = workoutRows.find(r => r.body_weight > 0);
+        if (firstBw) {
+          bwInput.value = firstBw.body_weight;
+          lastBodyWeight = firstBw.body_weight;
+          bwInput.readOnly = true;
+          bwInput.classList.add("bg-slate-100", "cursor-not-allowed");
+        }
+      } else {
+        bwInput.readOnly = false;
+        bwInput.classList.remove("bg-slate-100", "cursor-not-allowed");
+      }
+
       if (workoutRows.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">Belum ada data latihan untuk program ini.</td></tr>`;
         return;
@@ -909,6 +927,14 @@
         workoutRows.push(rowObj);
       }
 
+      // PERMINTAAN 1: Kunci input berat badan secara otomatis setelah input exercise awal disimpan
+      if (body_weight > 0) {
+        lastBodyWeight = body_weight;
+        const bwInput = document.getElementById("inputBodyWeight");
+        bwInput.readOnly = true;
+        bwInput.classList.add("bg-slate-100", "cursor-not-allowed");
+      }
+
       renderWorkoutTable();
       saveToLocalStorage();
       resetForm();
@@ -951,24 +977,26 @@
       }
     }
 
-    // Poin 1: Modifikasi resetForm agar Sesi & BB tetap tersimpan
     function resetForm() {
-      // Dapatkan data spesifik yang ingin dipertahankan
       const keepSession = lastSelectedSession || document.getElementById("inputDaySession").value;
       const keepBW = lastBodyWeight || document.getElementById("inputBodyWeight").value;
+      const bwReadOnly = document.getElementById("inputBodyWeight").readOnly;
 
       document.getElementById("formWorkout").reset();
       editIndex = -1;
       originalBaseLoad = 0;
       document.getElementById("autoRegNotice").classList.add("hidden");
 
-      // Kembalikan Sesi dan BB
       if (keepSession) {
         document.getElementById("inputDaySession").value = keepSession;
         onSessionChange(keepSession);
       }
       if (keepBW) {
         document.getElementById("inputBodyWeight").value = keepBW;
+        if (bwReadOnly) {
+          document.getElementById("inputBodyWeight").readOnly = true;
+          document.getElementById("inputBodyWeight").classList.add("bg-slate-100", "cursor-not-allowed");
+        }
       }
 
       for (let i = 1; i <= 4; i++) {
@@ -1005,10 +1033,11 @@
       }
     }
 
+    // PERMINTAAN 3: Format nama project berdasarkan input angka saja
     function changeProjectFreetext() {
       const val = document.getElementById("inputProject").value.trim();
       if (val !== "") {
-        currentProject = val;
+        currentProject = "Week " + val;
         loadUserData();
       }
     }
