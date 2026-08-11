@@ -133,11 +133,38 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Session / Day</label>
-                <input type="text" id="inputDaySession" placeholder="Contoh: Upper A - Senin" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <input type="text" id="inputDaySession" list="sessionList" placeholder="Contoh: Mon - Upper A" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <datalist id="sessionList">
+                  <option value="Mon - Upper A">
+                  <option value="Tue - Lower A">
+                  <option value="Thu - Upper B">
+                  <option value="Fri - Lower B">
+                </datalist>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Nama Latihan (Exercise)</label>
-                <input type="text" id="inputExercise" placeholder="Contoh: Barbell Bench Press" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <input type="text" id="inputExercise" list="exerciseList" onchange="autoFillExerciseData(this.value)" placeholder="Ketik untuk mencari latihan..." required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <datalist id="exerciseList">
+                  <option value="Barbell Bench Press">
+                  <option value="Chest Supported Dumbbell Row">
+                  <option value="Bodyweight Pull-Ups">
+                  <option value="Barbell Overhead Press">
+                  <option value="Dumbbell Lateral Raises - A">
+                  <option value="Triceps Pressdowns (Cable)">
+                  <option value="Dumbbell Hammer Curl">
+                  <option value="Barbell Squats">
+                  <option value="Romanian Deadlifts">
+                  <option value="Standing Barbell Calf Raises">
+                  <option value="Incline Dumbbell Press">
+                  <option value="Bent-over Barbell Row">
+                  <option value="Seated Dumbbell Press">
+                  <option value="Face Pulls (Cable)">
+                  <option value="Dumbbell Lateral Raises - B">
+                  <option value="Barbell Curl">
+                  <option value="Cable Overhead Triceps Extension">
+                  <option value="Conventional Deadlift">
+                  <option value="Dumbbell Bulgarian Split Squat">
+                </datalist>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Target Reps Range</label>
@@ -305,6 +332,43 @@
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
+
+    // MASTER EXERCISE PRESETS FROM TABLE
+    const exercisePresets = {
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min" },
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
+    };
+
+    // AUTO-FILL FUNCTION ON EXERCISE SELECT
+    function autoFillExerciseData(val) {
+      const match = exercisePresets[val];
+      if (match) {
+        document.getElementById("inputTargetReps").value = match.reps;
+        if (!document.getElementById("inputDaySession").value) {
+          document.getElementById("inputDaySession").value = match.session;
+        }
+        if (!document.getElementById("inputCatatan").value) {
+          document.getElementById("inputCatatan").value = match.rest;
+        }
+      }
+    }
 
     // INIT APP ON LOAD
     document.addEventListener("DOMContentLoaded", () => {
