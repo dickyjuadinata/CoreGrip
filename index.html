@@ -8,7 +8,7 @@
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Chart.js untuk Analytics -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -47,21 +47,20 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- AUTH SECTION (LOGIN / REGISTER) -->
+    <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-md mx-auto my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
       <div class="flex border-b border-slate-100 bg-slate-50">
         <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Login</button>
         <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register</button>
       </div>
 
-      <!-- Form Login -->
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username</label>
           <input type="text" id="loginUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN (4-6 Angka)</label>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN</label>
           <input type="password" id="loginPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-indigo-200">
@@ -69,7 +68,6 @@
         </button>
       </form>
 
-      <!-- Form Register -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username Baru</label>
@@ -85,15 +83,14 @@
       </form>
     </div>
 
-    <!-- MAIN APP DASHBOARD (USER) -->
+    <!-- MAIN APP DASHBOARD -->
     <div id="appSection" class="hidden space-y-6">
       
-      <!-- TOP CONTROL BAR -->
+      <!-- CONTROL BAR -->
       <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
         <div class="flex items-center gap-3 w-full sm:w-auto">
           <label class="font-bold text-slate-700 text-sm whitespace-nowrap">Program / Week:</label>
           <select id="selectProject" onchange="changeProject()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none w-full sm:w-64">
-            <!-- Dynamic Options -->
           </select>
           <button onclick="createNewProjectPrompt()" class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 p-2.5 rounded-xl transition">
             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -121,50 +118,36 @@
           </button>
         </div>
 
-        <!-- TAB 1: WORKOUT LOG FORM & TABLE -->
+        <!-- TAB WORKOUT -->
         <div id="tabWorkout" class="p-4 md:p-6 space-y-6">
           
           <!-- INPUT FORM -->
           <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4">
-            <h3 class="font-bold text-slate-800 text-md flex items-center gap-2">
-              <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Tambah / Edit Exercise Log
-            </h3>
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-slate-800 text-md flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Tambah / Edit Exercise Log
+              </h3>
+              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Sesi Hari Ini
+              </span>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Session / Day</label>
-                <input type="text" id="inputDaySession" list="sessionList" placeholder="Contoh: Mon - Upper A" required onchange="handleExerciseSelectChange()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <datalist id="sessionList">
-                  <option value="Mon - Upper A">
-                  <option value="Tue - Lower A">
-                  <option value="Thu - Upper B">
-                  <option value="Fri - Lower B">
-                </datalist>
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <option value="">-- Pilih Sesi --</option>
+                  <option value="Mon - Upper A">Mon - Upper A</option>
+                  <option value="Tue - Lower A">Tue - Lower A</option>
+                  <option value="Thu - Upper B">Thu - Upper B</option>
+                  <option value="Fri - Lower B">Fri - Lower B</option>
+                </select>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Nama Latihan (Exercise)</label>
-                <input type="text" id="inputExercise" list="exerciseList" onchange="autoFillExerciseData(this.value)" placeholder="Ketik untuk mencari latihan..." required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <datalist id="exerciseList">
-                  <option value="Barbell Bench Press">
-                  <option value="Chest Supported Dumbbell Row">
-                  <option value="Bodyweight Pull-Ups">
-                  <option value="Barbell Overhead Press">
-                  <option value="Dumbbell Lateral Raises - A">
-                  <option value="Triceps Pressdowns (Cable)">
-                  <option value="Dumbbell Hammer Curl">
-                  <option value="Barbell Squats">
-                  <option value="Romanian Deadlifts">
-                  <option value="Standing Barbell Calf Raises">
-                  <option value="Incline Dumbbell Press">
-                  <option value="Bent-over Barbell Row">
-                  <option value="Seated Dumbbell Press">
-                  <option value="Face Pulls (Cable)">
-                  <option value="Dumbbell Lateral Raises - B">
-                  <option value="Barbell Curl">
-                  <option value="Cable Overhead Triceps Extension">
-                  <option value="Conventional Deadlift">
-                  <option value="Dumbbell Bulgarian Split Squat">
-                </datalist>
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <option value="">-- Pilih Sesi Terlebih Dahulu --</option>
+                </select>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Target Reps Range</label>
@@ -172,17 +155,29 @@
               </div>
             </div>
 
-            <!-- Working Load & Warmup Calculator Preview -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <!-- Working Load & Warm-up -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Working Load Utama (kg)</label>
-                <input type="number" step="0.5" id="inputWorkingLoad" oninput="calculateWarmupPreview()" placeholder="0" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm font-semibold text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <label class="block text-xs font-bold text-slate-500 mb-1">
+                  Working Load Utama (kg)
+                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis dari Riwayat 4 Minggu</span>
+                </label>
+                <input type="number" step="0.5" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
 
-              <!-- Warmup Sets Preview Box -->
-              <div id="warmupContainer" class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
-                <span class="font-bold text-indigo-900 block mb-1">Rekomendasi Warm-up Sets (Auto):</span>
-                <div class="grid grid-cols-4 gap-1 text-center font-medium text-slate-600" id="warmupPreview">
+              <!-- Side Load Display -->
+              <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
+                <span class="font-bold text-slate-700 block mb-1">Beban Per Sisi (Side Load):</span>
+                <div class="text-slate-800 font-semibold text-sm" id="sideLoadDisplay">
+                  - kg / sisi
+                </div>
+                <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Otomatis dikalkulasi berdasarkan jenis alat</span>
+              </div>
+
+              <!-- Warmup Sets Preview Box (Dengan Beban Per Sisi) -->
+              <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
+                <span class="font-bold text-indigo-900 block mb-1">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium text-slate-700" id="warmupPreview">
                   <div class="bg-white p-1 rounded border">Set 1: -</div>
                   <div class="bg-white p-1 rounded border">Set 2: -</div>
                   <div class="bg-white p-1 rounded border">Set 3: -</div>
@@ -191,11 +186,32 @@
               </div>
             </div>
 
-            <!-- Actual Reps Achieved (Dynamic Sets) -->
+            <!-- Auto-Regulation Notice Banner -->
+            <div id="autoRegNotice" class="hidden bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+              <span id="autoRegText">Terdeteksi kegagalan target reps. Working Load otomatis di-Deload.</span>
+            </div>
+
+            <!-- Actual Reps Achieved -->
             <div>
               <label class="block text-xs font-bold text-slate-500 mb-2">Hasil Reps Kerja (Actual Reps Per Set):</label>
-              <div id="setsContainer" class="grid grid-cols-4 gap-3">
-                <!-- Dynamic Set Inputs Rendered via JS -->
+              <div class="grid grid-cols-4 gap-3">
+                <div>
+                  <span class="text-xs text-slate-400 block mb-1">Set 1</span>
+                  <input type="number" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                  <span class="text-xs text-slate-400 block mb-1">Set 2</span>
+                  <input type="number" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                  <span class="text-xs text-slate-400 block mb-1">Set 3</span>
+                  <input type="number" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                  <span class="text-xs text-slate-400 block mb-1">Set 4</span>
+                  <input type="number" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
               </div>
             </div>
 
@@ -220,21 +236,20 @@
                   <th class="px-4 py-3">Day / Session</th>
                   <th class="px-4 py-3">Exercise</th>
                   <th class="px-4 py-3 text-center">Target</th>
-                  <th class="px-4 py-3 text-right">Load (kg)</th>
-                  <th class="px-4 py-3 text-center">Reps (Set Kerja)</th>
+                  <th class="px-4 py-3 text-right">Load (Side / Total)</th>
+                  <th class="px-4 py-3 text-center">Reps (Set 1-4)</th>
                   <th class="px-4 py-3 text-right text-emerald-400">Next Load (kg)</th>
                   <th class="px-4 py-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="workoutTableBody" class="divide-y divide-slate-100 bg-white">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
 
         </div>
 
-        <!-- TAB 2: PROGRESS ANALYTICS -->
+        <!-- TAB ANALYTICS -->
         <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
             <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -250,7 +265,7 @@
 
     </div>
 
-    <!-- ADMIN DASHBOARD SECTION -->
+    <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6">
       <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg flex justify-between items-center">
         <div>
@@ -263,7 +278,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- USER APPROVAL TABLE -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-800">Manajemen Pengguna</h3>
           <div class="overflow-x-auto">
@@ -276,13 +290,11 @@
                 </tr>
               </thead>
               <tbody id="adminUsersTable" class="divide-y divide-slate-100">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- ACTIVITY LOGS TABLE -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-800">Activity Logs</h3>
           <div class="overflow-y-auto max-h-80 custom-scrollbar">
@@ -295,7 +307,6 @@
                 </tr>
               </thead>
               <tbody id="adminLogsTable" class="divide-y divide-slate-100">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
@@ -306,10 +317,8 @@
   </main>
 
   <script>
-    // WEB APP GOOGLE APPS SCRIPT URL
     const API_URL = "https://script.google.com/macros/s/AKfycbyHYgqWZCLn6hoIsp9gikqwNVn0OIZfLYXeomMuxAY_8PisMP2k63rF4UYgjYXieAk7/exec";
 
-    // GLOBAL STATE
     let currentUser = null;
     let isAdmin = false;
     let currentProject = "Week 1";
@@ -317,96 +326,277 @@
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
+    let originalBaseLoad = 0; // Menyimpan beban acuan awal sebelum deload
 
-    // MASTER EXERCISE PRESETS FROM TABLE WITH SET COUNT AND FIRST-EXERCISE INDICATION
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
-      "Barbell Overhead Press": { session: "Mon - Upper A", sets: 3, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: false },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 1-1.5 min", isFirstInSession: false },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 45-60 sec", isFirstInSession: false },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 0 min", isFirstInSession: false },
-      "Barbell Squats": { session: "Tue - Lower A", sets: 4, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
-      "Romanian Deadlifts": { session: "Tue - Lower A", sets: 3, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
-      "Standing Barbell Calf Raises": { session: "Tue - Lower A", sets: 4, reps: "10-12", rest: "Rest: 45-60 sec", isFirstInSession: false },
-      "Incline Dumbbell Press": { session: "Thu - Upper B", sets: 4, reps: "10-12", rest: "Rest: 2-3 min", isFirstInSession: true },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", sets: 4, reps: "10-12", rest: "Rest: 2-3 min", isFirstInSession: false },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 3-5 min", isFirstInSession: false },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", sets: 4, reps: "12-15", rest: "Rest: 60-90 sec", isFirstInSession: false },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 1-1.5 min", isFirstInSession: false },
-      "Barbell Curl": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 45-60 sec", isFirstInSession: false },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 0 min", isFirstInSession: false },
-      "Conventional Deadlift": { session: "Fri - Lower B", sets: 3, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", sets: 3, reps: "8-10", rest: "Rest: 1-1.5 min", isFirstInSession: false }
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min" },
+      
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec" },
+      
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min" },
+      
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
     };
 
-    // RENDER DYNAMIC SET INPUTS ACCORDING TO EXERCISE SET COUNT
-    function renderSetInputs(setCount = 4) {
-      const container = document.getElementById("setsContainer");
-      container.innerHTML = "";
-      
-      // Dynamic grid columns based on set count
-      container.className = `grid grid-cols-${setCount} gap-3`;
+    const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-      for (let i = 1; i <= setCount; i++) {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <span class="text-xs text-slate-400 block mb-1">Set ${i}</span>
-          <input type="number" id="inputSet${i}" min="0" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+    // FUNGSI HELPER MATEMATIKA SAMA DENGAN EXCEL
+    function mround2_5(val) {
+      return Math.round(val / 2.5) * 2.5;
+    }
+
+    function floor2_5(val) {
+      return Math.floor(val / 2.5) * 2.5;
+    }
+
+    function calculateSideWeight(exercise, totalLoad) {
+      if (totalLoad <= 0) return 0;
+      const exLower = exercise.toLowerCase();
+      if (exLower.includes("barbell")) {
+        return Math.max(0, (totalLoad - 10) / 2);
+      } else if (exLower.includes("dumbbell")) {
+        return Math.max(0, (totalLoad - 2.5) / 2);
+      }
+      return totalLoad;
+    }
+
+    // SESSION CHANGE & HIGHLIGHT
+    function onSessionChange(sessionVal) {
+      const exerciseSelect = document.getElementById("inputExercise");
+      exerciseSelect.innerHTML = '<option value="">-- Pilih Latihan --</option>';
+
+      if (!sessionVal) return;
+
+      Object.keys(exercisePresets).forEach(ex => {
+        if (exercisePresets[ex].session === sessionVal) {
+          const opt = document.createElement("option");
+          opt.value = ex;
+          opt.innerText = ex;
+          exerciseSelect.appendChild(opt);
+        }
+      });
+
+      const currentDay = new Date().getDay();
+      const todaySession = dayToSessionMap[currentDay];
+      const badge = document.getElementById("todayBadge");
+
+      if (todaySession && todaySession === sessionVal) {
+        badge.classList.remove("hidden");
+        document.getElementById("formWorkout").classList.add("ring-2", "ring-emerald-500", "bg-emerald-50/20");
+      } else {
+        badge.classList.add("hidden");
+        document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/20");
+      }
+    }
+
+    // OTOMATIS AMBIL WORKING LOAD DARI 4 MINGGU TERAKHIR
+    function onExerciseSelect(exVal) {
+      if (!exVal) return;
+      const preset = exercisePresets[exVal];
+      if (preset) {
+        document.getElementById("inputTargetReps").value = preset.reps;
+        document.getElementById("inputCatatan").value = preset.rest;
+
+        let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
+        originalBaseLoad = autoLoad;
+        document.getElementById("inputWorkingLoad").value = autoLoad;
+
+        calculateLoadDetails();
+      }
+    }
+
+    function get4WeeksHistoryLoad(exerciseName, currentProj) {
+      const match = currentProj.match(/Week\s*(\d+)/i);
+      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+
+      // Cari riwayat 4 minggu ke belakang: Week -1, Week -2, Week -3, Week -4
+      for (let i = 1; i <= 4; i++) {
+        let prevWeekNum = currentWeekNum - i;
+        if (prevWeekNum < 1) break;
+
+        let prevProjName = `Week ${prevWeekNum}`;
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let matchRow = rows.find(r => r.exercise === exerciseName);
+          if (matchRow && matchRow.next_load > 0) {
+            return matchRow.next_load;
+          }
+        }
+      }
+
+      // Jika tidak ada di localStorage 4 minggu terakhir, cari di data lokal saat ini
+      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
+      if (currentMatch) return currentMatch.working_load;
+
+      return 20; // Default load awal jika tidak ada riwayat
+    }
+
+    // KALKULASI SIDE LOAD & WARM-UP (DENGAN BEBAN PER SISI)
+    function calculateLoadDetails() {
+      const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const exercise = document.getElementById("inputExercise").value;
+      const sideDisplay = document.getElementById("sideLoadDisplay");
+      const notice = document.getElementById("sideLoadFormulaNotice");
+
+      if (load <= 0 || !exercise) {
+        sideDisplay.innerText = "- kg / sisi";
+        calculateWarmupPreview(0, exercise);
+        return;
+      }
+
+      let sideWeight = calculateSideWeight(exercise, load);
+      const exLower = exercise.toLowerCase();
+
+      if (exLower.includes("barbell")) {
+        notice.innerText = "*Rumus Barbell: (Total Load - 10kg) / 2";
+      } else if (exLower.includes("dumbbell")) {
+        notice.innerText = "*Rumus Dumbbell: (Total Load - 2.5kg) / 2";
+      } else {
+        notice.innerText = "*Beban Total (Cable / Machine)";
+      }
+
+      sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / sisi`;
+      calculateWarmupPreview(load, exercise);
+    }
+
+    function calculateWarmupPreview(totalLoad, exercise) {
+      const previewEl = document.getElementById("warmupPreview");
+      if (totalLoad <= 0 || !exercise) {
+        previewEl.innerHTML = `
+          <div class="bg-white p-1 rounded border">Set 1: -</div>
+          <div class="bg-white p-1 rounded border">Set 2: -</div>
+          <div class="bg-white p-1 rounded border">Set 3: -</div>
+          <div class="bg-white p-1 rounded border">Set 4: -</div>
         `;
-        container.appendChild(div);
+        return;
+      }
+
+      // Sesuai Rumus QB9-QB12: FLOOR(Load * %; 2.5)
+      const w1 = floor2_5(totalLoad * 0.40);
+      const w2 = floor2_5(totalLoad * 0.60);
+      const w3 = floor2_5(totalLoad * 0.80);
+      const w4 = floor2_5(totalLoad * 0.90);
+
+      const s1 = calculateSideWeight(exercise, w1);
+      const s2 = calculateSideWeight(exercise, w2);
+      const s3 = calculateSideWeight(exercise, w3);
+      const s4 = calculateSideWeight(exercise, w4);
+
+      previewEl.innerHTML = `
+        <div class="bg-white p-1 rounded border">Set 1: <b>${w1}k</b> (${s1.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 2: <b>${w2}k</b> (${s2.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 3: <b>${w3}k</b> (${s3.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 4: <b>${w4}k</b> (${s4.toFixed(1)}/s)</div>
+      `;
+    }
+
+    // AUTO-REGULASI & OVERRIDE WORKING LOAD SAAT DELOAD
+    function checkAutoRegulation() {
+      const targetStr = document.getElementById("inputTargetReps").value;
+      const parts = targetStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0] || 0;
+
+      const set1 = parseInt(document.getElementById("inputSet1").value, 10) || 0;
+      const set2 = parseInt(document.getElementById("inputSet2").value, 10) || 0;
+      const set3 = parseInt(document.getElementById("inputSet3").value, 10) || 0;
+      const set4 = parseInt(document.getElementById("inputSet4").value, 10) || 0;
+
+      const autoNotice = document.getElementById("autoRegNotice");
+      const autoText = document.getElementById("autoRegText");
+
+      let failedSet = 0;
+      if (set1 > 0 && set1 < minTarget) failedSet = 1;
+      else if (set2 > 0 && set2 < minTarget) failedSet = 2;
+      else if (set3 > 0 && set3 < minTarget) failedSet = 3;
+      else if (set4 > 0 && set4 < minTarget) failedSet = 4;
+
+      if (failedSet > 0 && minTarget > 0) {
+        // Mengacu rumus Excel QB13: MROUND(PU13 * 0.85; 2.5) atau MROUND(PU13 * 0.925; 2.5)
+        let deloadLoad = mround2_5(originalBaseLoad * 0.925); 
+
+        // Update Working Load langsung secara real-time
+        document.getElementById("inputWorkingLoad").value = deloadLoad;
+        calculateLoadDetails();
+
+        autoNotice.classList.remove("hidden");
+        autoText.innerText = `Kegagalan target (${minTarget} reps) pada Set ${failedSet}! Working load disesuaikan dari ${originalBaseLoad} kg ke ${deloadLoad} kg.`;
+      } else {
+        // Kembalikan ke beban dasar jika reps diperbaiki
+        document.getElementById("inputWorkingLoad").value = originalBaseLoad;
+        calculateLoadDetails();
+        autoNotice.classList.add("hidden");
       }
     }
 
-    // CHECK IF EXERCISE IS FIRST EXERCISE OF SESSION (FOR WARMUP SET DISPLAY)
-    function handleExerciseSelectChange() {
-      const exVal = document.getElementById("inputExercise").value.trim();
-      const match = exercisePresets[exVal];
-      const warmupContainer = document.getElementById("warmupContainer");
+    // REPLIKASI RUMUS EXCEL QB13 SECARA PRESISI UNTUK NEXT LOAD
+    function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13, pw13_pz13) {
+      if (!targetRepsStr || !targetRepsStr.includes("-")) return pu13;
+      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0];
+      const maxTarget = parts[1];
 
-      if (match) {
-        if (match.isFirstInSession) {
-          warmupContainer.style.display = "block";
-          calculateWarmupPreview();
+      const validReps = repsArr.filter(r => r > 0);
+      const countReps = validReps.length;
+      const minReps = countReps > 0 ? Math.min(...validReps) : 0;
+
+      // 1. IF(AND(COUNT(QD13:QG13)>0; MIN(QD13:QG13)<VALUE(LEFT($C13; FIND("-"; $C13)-1))))
+      if (countReps > 0 && minReps < minTarget) {
+        if (pu13 < pn13) {
+          return mround2_5(pu13 * 0.80);
         } else {
-          warmupContainer.style.display = "none";
+          return mround2_5(pu13 * 0.85);
         }
-      } else {
-        warmupContainer.style.display = "block";
-        calculateWarmupPreview();
-      }
-    }
-
-    // AUTO-FILL FUNCTION ON EXERCISE SELECT
-    function autoFillExerciseData(val) {
-      const match = exercisePresets[val];
-      if (match) {
-        document.getElementById("inputTargetReps").value = match.reps;
-        if (!document.getElementById("inputDaySession").value) {
-          document.getElementById("inputDaySession").value = match.session;
-        }
-        if (!document.getElementById("inputCatatan").value) {
-          document.getElementById("inputCatatan").value = match.rest;
-        }
-        
-        // Render exact set inputs (e.g. 3 sets for Triceps Pressdowns)
-        renderSetInputs(match.sets);
-      } else {
-        renderSetInputs(4);
       }
 
-      handleExerciseSelectChange();
+      // 2. IF(AND(PN13<PG13; PU13<PG13; PU13>0; COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
+      if (pn13 < pg13 && pu13 < pg13 && pu13 > 0 && countReps === 4 && minReps >= maxTarget) {
+        return pg13;
+      }
+
+      // 3. IF(AND(PG13=PN13; PN13=PU13; PU13>0; MIN(PW13:PZ13)<minTarget))
+      if (pg13 === pn13 && pn13 === pu13 && pu13 > 0 && countReps > 0 && minReps < minTarget) {
+        if (pu13 < pn13) {
+          return mround2_5(pu13 * 0.80);
+        } else {
+          return mround2_5(pu13 * 0.85);
+        }
+      }
+
+      // 4. IF(AND(PU13<PN13; PN13=PG13))
+      if (pu13 < pn13 && pn13 === pg13) {
+        return mround2_5(pn13 * 0.925);
+      }
+
+      // 5. IF(AND(COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
+      if (countReps === 4 && minReps >= maxTarget) {
+        return pu13 + 2.5;
+      }
+
+      return pu13;
     }
 
-    // INIT APP ON LOAD
+    // INIT APP
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
-      renderSetInputs(4);
       checkSession();
     });
 
-    // AUTH TAB SWITCHER
     function switchAuthTab(tab) {
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
@@ -421,7 +611,6 @@
       }
     }
 
-    // CHECK LOCAL SESSION
     function checkSession() {
       const savedUser = localStorage.getItem("workout_user");
       const savedRole = localStorage.getItem("workout_is_admin");
@@ -433,7 +622,6 @@
       }
     }
 
-    // LOGIN SUBMIT
     async function submitLogin(e) {
       e.preventDefault();
       const username = document.getElementById("loginUsername").value.trim();
@@ -451,7 +639,6 @@
       }
     }
 
-    // REGISTER SUBMIT
     async function submitRegister(e) {
       e.preventDefault();
       const username = document.getElementById("regUsername").value.trim();
@@ -464,7 +651,6 @@
       }
     }
 
-    // SHOW UI BASED ON ROLE
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
       document.getElementById("userHeaderInfo").classList.remove("hidden");
@@ -479,13 +665,11 @@
       }
     }
 
-    // LOGOUT
     function handleLogout() {
       localStorage.clear();
       location.reload();
     }
 
-    // LOAD USER PROJECTS & WORKOUT DATA
     async function loadUserData() {
       const localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
       if (localData) {
@@ -505,7 +689,6 @@
       }
     }
 
-    // RENDER WORKOUT TABLE
     function renderWorkoutTable() {
       const tbody = document.getElementById("workoutTableBody");
       tbody.innerHTML = "";
@@ -516,10 +699,7 @@
       }
 
       workoutRows.forEach((row, idx) => {
-        const repsBadge = [row.set1_reps, row.set2_reps, row.set3_reps, row.set4_reps]
-          .filter(val => val !== undefined && val !== null && val !== "")
-          .map(val => `<span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${val}</span>`)
-          .join("");
+        let sideWeight = calculateSideWeight(row.exercise, row.working_load);
 
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50 transition";
@@ -527,10 +707,16 @@
           <td class="px-4 py-3 font-semibold text-slate-700">${row.day_session}</td>
           <td class="px-4 py-3 font-bold text-indigo-900">${row.exercise}</td>
           <td class="px-4 py-3 text-center bg-slate-50 font-medium">${row.target_reps}</td>
-          <td class="px-4 py-3 text-right font-bold text-slate-800">${row.working_load} kg</td>
+          <td class="px-4 py-3 text-right font-bold text-slate-800">
+            <span class="text-indigo-600">${sideWeight.toFixed(1)} kg/sisi</span> 
+            <span class="text-xs text-slate-400 block">(${row.working_load} kg Total)</span>
+          </td>
           <td class="px-4 py-3 text-center">
             <span class="inline-flex gap-1 font-mono text-xs">
-              ${repsBadge}
+              <span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${row.set1_reps}</span>
+              <span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${row.set2_reps}</span>
+              <span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${row.set3_reps}</span>
+              <span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${row.set4_reps}</span>
             </span>
           </td>
           <td class="px-4 py-3 text-right font-bold text-emerald-600 bg-emerald-50/50">${row.next_load} kg</td>
@@ -545,55 +731,6 @@
       renderAnalyticsChart();
     }
 
-    // WARMUP & AUTO-PROGRESSION CALCULATOR
-    function calculateWarmupPreview() {
-      const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
-      const previewEl = document.getElementById("warmupPreview");
-
-      if (load <= 0) {
-        previewEl.innerHTML = `
-          <div class="bg-white p-1 rounded border">Set 1: -</div>
-          <div class="bg-white p-1 rounded border">Set 2: -</div>
-          <div class="bg-white p-1 rounded border">Set 3: -</div>
-          <div class="bg-white p-1 rounded border">Set 4: -</div>
-        `;
-        return;
-      }
-
-      const floor2_5 = (val) => Math.floor(val / 2.5) * 2.5;
-      previewEl.innerHTML = `
-        <div class="bg-white p-1 rounded border">Set 1: <b>${floor2_5(load * 0.40)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 2: <b>${floor2_5(load * 0.60)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 3: <b>${floor2_5(load * 0.80)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 4: <b>${floor2_5(load * 0.90)}</b> kg</div>
-      `;
-    }
-
-    function calculateNextWeekLoad(targetRepsStr, currentLoad, repsArr) {
-      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
-      if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return currentLoad;
-
-      const minReps = parts[0];
-      const maxReps = parts[1];
-      const validReps = repsArr.filter(r => r > 0);
-      if (validReps.length === 0) return currentLoad;
-
-      const minAchieved = Math.min(...validReps);
-
-      // DELOAD LOGIC: Jika reps tidak mencukupi target minimum
-      if (minAchieved < minReps) {
-        return Math.round((currentLoad * 0.85) / 2.5) * 2.5;
-      }
-
-      // PROGRESSION LOGIC: Jika sukses seluruh set pada reps max
-      if (validReps.length === repsArr.length && minAchieved >= maxReps) {
-        return currentLoad + 2.5;
-      }
-
-      return currentLoad;
-    }
-
-    // ADD OR UPDATE WORKOUT
     function addOrUpdateWorkout(e) {
       e.preventDefault();
 
@@ -601,26 +738,23 @@
       const exercise = document.getElementById("inputExercise").value.trim();
       const target_reps = document.getElementById("inputTargetReps").value.trim();
       const working_load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const set1_reps = parseInt(document.getElementById("inputSet1").value, 10) || 0;
+      const set2_reps = parseInt(document.getElementById("inputSet2").value, 10) || 0;
+      const set3_reps = parseInt(document.getElementById("inputSet3").value, 10) || 0;
+      const set4_reps = parseInt(document.getElementById("inputSet4").value, 10) || 0;
       const catatan = document.getElementById("inputCatatan").value.trim();
 
-      // Get reps dynamically from rendered input fields
-      const preset = exercisePresets[exercise];
-      const totalSets = preset ? preset.sets : 4;
-      const repsArr = [];
+      const repsArr = [set1_reps, set2_reps, set3_reps, set4_reps];
+      
+      // Ambil nilai riwayat minggu sebelumnya untuk formula QB13
+      const pn13 = get4WeeksHistoryLoad(exercise, currentProject); 
+      const pg13 = pn13; 
 
-      for (let i = 1; i <= totalSets; i++) {
-        const val = parseInt(document.getElementById(`inputSet${i}`)?.value, 10) || 0;
-        repsArr.push(val);
-      }
-
-      const next_load = calculateNextWeekLoad(target_reps, working_load, repsArr);
+      const next_load = calculateNextWeekLoadQB13(target_reps, working_load, repsArr, pn13, pg13, repsArr);
 
       const rowObj = {
         day_session, exercise, target_reps, working_load,
-        set1_reps: repsArr[0] || 0,
-        set2_reps: repsArr[1] || 0,
-        set3_reps: repsArr[2] || 0,
-        set4_reps: repsArr[3] || 0,
+        set1_reps, set2_reps, set3_reps, set4_reps,
         next_load, catatan, updated_at: Date.now()
       };
 
@@ -640,22 +774,22 @@
       const r = workoutRows[idx];
       editIndex = idx;
       document.getElementById("inputDaySession").value = r.day_session;
+      onSessionChange(r.day_session);
+      
       document.getElementById("inputExercise").value = r.exercise;
-      autoFillExerciseData(r.exercise);
-
       document.getElementById("inputTargetReps").value = r.target_reps;
+      
+      originalBaseLoad = r.working_load;
       document.getElementById("inputWorkingLoad").value = r.working_load;
       
-      const preset = exercisePresets[r.exercise];
-      const totalSets = preset ? preset.sets : 4;
-
-      if (document.getElementById("inputSet1")) document.getElementById("inputSet1").value = r.set1_reps;
-      if (document.getElementById("inputSet2")) document.getElementById("inputSet2").value = r.set2_reps;
-      if (document.getElementById("inputSet3")) document.getElementById("inputSet3").value = r.set3_reps;
-      if (totalSets >= 4 && document.getElementById("inputSet4")) document.getElementById("inputSet4").value = r.set4_reps;
-
+      document.getElementById("inputSet1").value = r.set1_reps;
+      document.getElementById("inputSet2").value = r.set2_reps;
+      document.getElementById("inputSet3").value = r.set3_reps;
+      document.getElementById("inputSet4").value = r.set4_reps;
       document.getElementById("inputCatatan").value = r.catatan;
-      handleExerciseSelectChange();
+      
+      calculateLoadDetails();
+      checkAutoRegulation();
     }
 
     function deleteWorkout(idx) {
@@ -669,11 +803,13 @@
     function resetForm() {
       document.getElementById("formWorkout").reset();
       editIndex = -1;
-      renderSetInputs(4);
-      handleExerciseSelectChange();
+      originalBaseLoad = 0;
+      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("todayBadge").classList.add("hidden");
+      document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/20");
+      calculateLoadDetails();
     }
 
-    // SAVE & SYNC
     function saveToLocalStorage() {
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
     }
@@ -691,7 +827,6 @@
       document.getElementById("syncStatus").innerText = res.status === "success" ? "Status: Synchronized" : "Status: Sync Failed";
     }
 
-    // PROJECT / PROGRAM MANAGEMENT
     function updateProjectDropdown() {
       const sel = document.getElementById("selectProject");
       sel.innerHTML = "";
@@ -723,7 +858,6 @@
       }
     }
 
-    // EXPORT EXCEL
     async function exportToExcel() {
       const res = await callApi({ action: "getDownloadUrl", username: currentUser, project: currentProject });
       if (res.status === "success") {
@@ -733,13 +867,12 @@
       }
     }
 
-    // CHART ANALYTICS
     function renderAnalyticsChart() {
       const ctx = document.getElementById("volumeChart").getContext("2d");
       
       const sessionVolume = {};
       workoutRows.forEach(r => {
-        const totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+        const totalReps = r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps;
         const vol = totalReps * r.working_load;
         sessionVolume[r.day_session] = (sessionVolume[r.day_session] || 0) + vol;
       });
@@ -768,7 +901,6 @@
       });
     }
 
-    // TAB APP SWITCHER
     function switchAppTab(tab) {
       if (tab === 'workout') {
         document.getElementById("tabWorkout").classList.remove("hidden");
@@ -784,11 +916,9 @@
       }
     }
 
-    // ADMIN DASHBOARD LOAD
     async function loadAdminData() {
       const res = await callApi({ action: "getAdminData", username: currentUser });
       if (res.status === "success") {
-        // Render Users
         const userTbody = document.getElementById("adminUsersTable");
         userTbody.innerHTML = "";
         (res.usersMeta || []).forEach(u => {
@@ -804,7 +934,6 @@
           userTbody.appendChild(tr);
         });
 
-        // Render Logs
         const logTbody = document.getElementById("adminLogsTable");
         logTbody.innerHTML = "";
         (res.activityLogs || []).reverse().forEach(l => {
@@ -833,7 +962,6 @@
       }
     }
 
-    // GENERIC API CALL HELPER
     async function callApi(payload) {
       try {
         const response = await fetch(API_URL, {
@@ -844,7 +972,7 @@
         return await response.json();
       } catch (err) {
         console.error("API Error:", err);
-        return { status: "error", message: "Gagal terhubung ke server Google Apps Script." };
+        return { status: "error", message: "Gagal terhubung ke server." };
       }
     }
   </script>
