@@ -1,340 +1,852 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Survey Enterprise</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resistance Training Log App</title>
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js untuk Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0066FF">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2620/2620582.png">
-
-    <!-- Tailwind CSS v4 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-    </style>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header / Navbar -->
-    <header class="bg-[#0066FF] text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-3">
-                    <i data-lucide="layout" class="w-8 h-8"></i>
-                    <span class="font-bold text-xl tracking-tight">Room Survey Enterprise</span>
-                </div>
-
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex items-center space-x-4">
-                    <button class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                        <span>Dashboard</span>
-                    </button>
-                    <button class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                        <i data-lucide="folder-kanban" class="w-4 h-4"></i>
-                        <span>Project</span>
-                    </button>
-                    <button class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-                        <span>Export Excel</span>
-                    </button>
-                    <button class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                        <i data-lucide="presentation" class="w-4 h-4"></i>
-                        <span>Export PPT</span>
-                    </button>
-                    <button class="px-3 py-2 rounded-lg text-sm font-medium bg-red-500 hover:bg-red-600 transition-colors flex items-center space-x-2">
-                        <i data-lucide="log-out" class="w-4 h-4"></i>
-                        <span>Sign Out</span>
-                    </button>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="p-2 rounded-lg text-white hover:bg-white/10 focus:outline-none">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Mobile Navigation Drawer -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2 border-t border-white/20 pt-3">
-                <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                    <span>Dashboard</span>
-                </button>
-                <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                    <i data-lucide="folder-kanban" class="w-4 h-4"></i>
-                    <span>Project</span>
-                </button>
-                <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-                    <span>Export Excel</span>
-                </button>
-                <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors flex items-center space-x-2">
-                    <i data-lucide="presentation" class="w-4 h-4"></i>
-                    <span>Export PPT</span>
-                </button>
-                <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-red-500 hover:bg-red-600 transition-colors flex items-center space-x-2">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    <span>Sign Out</span>
-                </button>
-            </div>
+  <!-- TOP NAVBAR -->
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-indigo-600 p-2 rounded-lg">
+          <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
         </div>
-    </header>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">Workout Log & Progression</h1>
+          <p class="text-xs text-slate-400" id="syncStatus">Status: Synchronized</p>
+        </div>
+      </div>
+      
+      <div id="userHeaderInfo" class="hidden flex items-center space-x-4">
+        <span class="text-sm font-medium bg-slate-800 px-3 py-1 rounded-full border border-slate-700" id="displayUsername">
+          User
+        </span>
+        <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
 
-        <!-- Section 1: Dashboard Analytics Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Stat Card 1 -->
-            <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 backdrop-blur-md">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-sm font-medium text-slate-500">Total Survey</p>
-                        <h3 class="text-3xl font-extrabold text-slate-800 mt-1">128</h3>
-                    </div>
-                    <span class="p-3 bg-blue-50 text-[#0066FF] rounded-2xl">
-                        <i data-lucide="clipboard-list" class="w-6 h-6"></i>
-                    </span>
-                </div>
-                <p class="text-xs text-emerald-600 font-semibold flex items-center">
-                    <i data-lucide="trending-up" class="w-4 h-4 mr-1"></i> +12% dari bulan lalu
-                </p>
-            </div>
+    <!-- AUTH SECTION (LOGIN / REGISTER) -->
+    <div id="authSection" class="max-w-md mx-auto my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+      <div class="flex border-b border-slate-100 bg-slate-50">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Login</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register</button>
+      </div>
 
-            <!-- Stat Card 2 -->
-            <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 backdrop-blur-md">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-sm font-medium text-slate-500">Proyek Aktif</p>
-                        <h3 class="text-3xl font-extrabold text-slate-800 mt-1">14</h3>
-                    </div>
-                    <span class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
-                        <i data-lucide="building" class="w-6 h-6"></i>
-                    </span>
-                </div>
-                <p class="text-xs text-slate-500 font-semibold">
-                    4 Dalam Status Review
-                </p>
-            </div>
+      <!-- Form Login -->
+      <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username</label>
+          <input type="text" id="loginUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN (4-6 Angka)</label>
+          <input type="password" id="loginPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-indigo-200">
+          Masuk ke Aplikasi
+        </button>
+      </form>
 
-            <!-- Stat Card 3: Chart Card -->
-            <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 backdrop-blur-md max-h-96 flex flex-col justify-between">
-                <div class="flex justify-between items-center mb-2">
-                    <h4 class="font-bold text-slate-700">Status Aset</h4>
-                    <span class="px-2.5 py-1 text-xs font-semibold text-[#0066FF] bg-blue-50 rounded-full">Live</span>
-                </div>
-                <div class="relative flex-grow flex items-center justify-center min-h-[160px]">
-                    <canvas id="surveyChart"></canvas>
-                </div>
-            </div>
-        </section>
+      <!-- Form Register -->
+      <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username Baru</label>
+          <input type="text" id="regUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Buat PIN</label>
+          <input type="password" id="regPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-200">
+          Daftar Akun Baru
+        </button>
+      </form>
+    </div>
 
-        <!-- Section 2: Admin Operations & User Data -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- MAIN APP DASHBOARD (USER) -->
+    <div id="appSection" class="hidden space-y-6">
+      
+      <!-- TOP CONTROL BAR -->
+      <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <label class="font-bold text-slate-700 text-sm whitespace-nowrap">Program / Week:</label>
+          <select id="selectProject" onchange="changeProject()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none w-full sm:w-64">
+            <!-- Dynamic Options -->
+          </select>
+          <button onclick="createNewProjectPrompt()" class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 p-2.5 rounded-xl transition">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition flex items-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i> Export XLSX
+          </button>
+          <button onclick="syncDataToServer()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Data
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT TABS -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="flex border-b border-slate-100 bg-slate-50">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-6 py-4 font-bold text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2">
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Log Workout
+          </button>
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-6 py-4 font-bold text-slate-500 hover:text-slate-700 flex items-center gap-2">
+            <i data-lucide="line-chart" class="w-4 h-4"></i> Progress Analytics
+          </button>
+        </div>
+
+        <!-- TAB 1: WORKOUT LOG FORM & TABLE -->
+        <div id="tabWorkout" class="p-4 md:p-6 space-y-6">
+          
+          <!-- INPUT FORM -->
+          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-800 text-md flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Tambah / Edit Exercise Log
+            </h3>
             
-            <!-- Left Column: User Account Approval & System Access Logs -->
-            <div class="space-y-6">
-                <!-- User Account Approval Card -->
-                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-800 text-lg">Persetujuan Akun</h3>
-                        <span class="px-2.5 py-1 text-xs font-bold bg-amber-100 text-amber-700 rounded-full">2 Pending</span>
-                    </div>
-                    <div class="space-y-3 custom-scrollbar max-h-48 overflow-y-auto pr-1">
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                            <div>
-                                <p class="text-sm font-bold text-slate-700">Budi Santoso</p>
-                                <p class="text-xs text-slate-500">budi@enterprise.com</p>
-                            </div>
-                            <div class="flex space-x-1">
-                                <button class="p-1.5 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4"></i>
-                                </button>
-                                <button class="p-1.5 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Access Logs Card -->
-                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100">
-                    <h3 class="font-bold text-slate-800 text-lg mb-4">Log Akses Sistem</h3>
-                    <div class="space-y-3 custom-scrollbar max-h-48 overflow-y-auto pr-1 text-xs">
-                        <div class="flex justify-between text-slate-500 border-b pb-2 border-slate-100">
-                            <span>Admin (Login)</span>
-                            <span class="font-mono">10:42 AM</span>
-                        </div>
-                        <div class="flex justify-between text-slate-500 border-b pb-2 border-slate-100">
-                            <span>User_02 (Export PPT)</span>
-                            <span class="font-mono">09:15 AM</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Session / Day</label>
+                <input type="text" id="inputDaySession" list="sessionList" placeholder="Contoh: Mon - Upper A" required onchange="handleExerciseSelectChange()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <datalist id="sessionList">
+                  <option value="Mon - Upper A">
+                  <option value="Tue - Lower A">
+                  <option value="Thu - Upper B">
+                  <option value="Fri - Lower B">
+                </datalist>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Nama Latihan (Exercise)</label>
+                <input type="text" id="inputExercise" list="exerciseList" onchange="autoFillExerciseData(this.value)" placeholder="Ketik untuk mencari latihan..." required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <datalist id="exerciseList">
+                  <option value="Barbell Bench Press">
+                  <option value="Chest Supported Dumbbell Row">
+                  <option value="Bodyweight Pull-Ups">
+                  <option value="Barbell Overhead Press">
+                  <option value="Dumbbell Lateral Raises - A">
+                  <option value="Triceps Pressdowns (Cable)">
+                  <option value="Dumbbell Hammer Curl">
+                  <option value="Barbell Squats">
+                  <option value="Romanian Deadlifts">
+                  <option value="Standing Barbell Calf Raises">
+                  <option value="Incline Dumbbell Press">
+                  <option value="Bent-over Barbell Row">
+                  <option value="Seated Dumbbell Press">
+                  <option value="Face Pulls (Cable)">
+                  <option value="Dumbbell Lateral Raises - B">
+                  <option value="Barbell Curl">
+                  <option value="Cable Overhead Triceps Extension">
+                  <option value="Conventional Deadlift">
+                  <option value="Dumbbell Bulgarian Split Squat">
+                </datalist>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Target Reps Range</label>
+                <input type="text" id="inputTargetReps" placeholder="Contoh: 6-8" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              </div>
             </div>
 
-            <!-- Right Column: User Survey Data Cards with Collapse Feature -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-xl border border-slate-100 flex flex-col justify-between">
-                <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
-                        <h3 class="font-bold text-slate-800 text-lg">Kartu Data Survey Pengguna</h3>
-                        <button id="toggle-all-btn" class="px-3 py-1.5 text-xs font-semibold text-[#0066FF] bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors flex items-center space-x-1">
-                            <i data-lucide="chevrons-up-down" class="w-4 h-4"></i>
-                            <span id="toggle-btn-text">Sembunyikan Semua</span>
-                        </button>
-                    </div>
+            <!-- Working Load & Warmup Calculator Preview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Working Load Utama (kg)</label>
+                <input type="number" step="0.5" id="inputWorkingLoad" oninput="calculateWarmupPreview()" placeholder="0" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm font-semibold text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              </div>
 
-                    <!-- Cards Container -->
-                    <div class="space-y-4 custom-scrollbar max-h-[380px] overflow-y-auto pr-2">
-                        <!-- Project Card 1 -->
-                        <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
-                            <div class="flex justify-between items-center cursor-pointer toggle-card">
-                                <div>
-                                    <h4 class="font-bold text-slate-800">Gedung Utama - Lantai 3</h4>
-                                    <p class="text-xs text-slate-500">Surveyor: Ahmad | Tanggal: 10 Aug 2026</p>
-                                </div>
-                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transform transition-transform duration-200 card-arrow"></i>
-                            </div>
-                            <div class="card-content mt-3 pt-3 border-t border-slate-200 text-sm space-y-2">
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <span class="text-slate-500">Kapasitas AC: <b class="text-slate-700">24.000 BTU</b></span>
-                                    <span class="text-slate-500">Kondisi Penerangan: <b class="text-emerald-600">Baik</b></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project Card 2 -->
-                        <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
-                            <div class="flex justify-between items-center cursor-pointer toggle-card">
-                                <div>
-                                    <h4 class="font-bold text-slate-800">Ruang Server - Basement</h4>
-                                    <p class="text-xs text-slate-500">Surveyor: Dian | Tanggal: 11 Aug 2026</p>
-                                </div>
-                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transform transition-transform duration-200 card-arrow"></i>
-                            </div>
-                            <div class="card-content mt-3 pt-3 border-t border-slate-200 text-sm space-y-2">
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <span class="text-slate-500">Suhu Rata-rata: <b class="text-slate-700">18°C</b></span>
-                                    <span class="text-slate-500">Status UPS: <b class="text-amber-600">Perlu Maintenance</b></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              <!-- Warmup Sets Preview Box -->
+              <div id="warmupContainer" class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
+                <span class="font-bold text-indigo-900 block mb-1">Rekomendasi Warm-up Sets (Auto):</span>
+                <div class="grid grid-cols-4 gap-1 text-center font-medium text-slate-600" id="warmupPreview">
+                  <div class="bg-white p-1 rounded border">Set 1: -</div>
+                  <div class="bg-white p-1 rounded border">Set 2: -</div>
+                  <div class="bg-white p-1 rounded border">Set 3: -</div>
+                  <div class="bg-white p-1 rounded border">Set 4: -</div>
                 </div>
+              </div>
             </div>
 
-        </section>
-    </main>
+            <!-- Actual Reps Achieved (Dynamic Sets) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">Hasil Reps Kerja (Actual Reps Per Set):</label>
+              <div id="setsContainer" class="grid grid-cols-4 gap-3">
+                <!-- Dynamic Set Inputs Rendered via JS -->
+              </div>
+            </div>
 
-    <!-- Core Application Logic Script -->
-    <script>
-        // 1. Initialize Lucide Icons
-        lucide.createIcons();
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-1">Catatan Tambahan</label>
+              <input type="text" id="inputCatatan" placeholder="Catatan RPE, Form, atau Fatigue..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
 
-        // 2. Mobile Menu Toggle
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium">Reset</button>
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200">
+                Simpan Item Latihan
+              </button>
+            </div>
+          </form>
 
-        // 3. Chart.js Initialization
-        const ctx = document.getElementById('surveyChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Selesai', 'Proses', 'Pending'],
-                datasets: [{
-                    data: [65, 25, 10],
-                    backgroundColor: ['#0066FF', '#6366F1', '#F59E0B'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 12, font: { size: 11 } }
-                    }
-                }
-            }
-        });
+          <!-- WORKOUT LOG TABLE -->
+          <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded-2xl">
+            <table class="w-full text-left text-sm text-slate-600">
+              <thead class="bg-slate-800 text-white text-xs uppercase">
+                <tr>
+                  <th class="px-4 py-3">Day / Session</th>
+                  <th class="px-4 py-3">Exercise</th>
+                  <th class="px-4 py-3 text-center">Target</th>
+                  <th class="px-4 py-3 text-right">Load (kg)</th>
+                  <th class="px-4 py-3 text-center">Reps (Set Kerja)</th>
+                  <th class="px-4 py-3 text-right text-emerald-400">Next Load (kg)</th>
+                  <th class="px-4 py-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="workoutTableBody" class="divide-y divide-slate-100 bg-white">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
 
-        // 4. Expand / Collapse UI Feature for Admin Cards
-        const toggleBtn = document.getElementById('toggle-all-btn');
-        const toggleBtnText = document.getElementById('toggle-btn-text');
-        let allExpanded = true;
+        </div>
 
-        document.querySelectorAll('.toggle-card').forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const arrow = header.querySelector('.card-arrow');
-                
-                content.classList.toggle('hidden');
-                arrow.classList.toggle('rotate-180');
-            });
-        });
+        <!-- TAB 2: PROGRESS ANALYTICS -->
+        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Total Volume Latihan per Session (kg × Reps)
+            </h3>
+            <div class="h-72 w-full">
+              <canvas id="volumeChart"></canvas>
+            </div>
+          </div>
+        </div>
 
-        toggleBtn.addEventListener('click', () => {
-            allExpanded = !allExpanded;
-            document.querySelectorAll('.card-content').forEach(content => {
-                if (allExpanded) {
-                    content.classList.remove('hidden');
-                } else {
-                    content.classList.add('hidden');
-                }
-            });
-            
-            document.querySelectorAll('.card-arrow').forEach(arrow => {
-                if (allExpanded) {
-                    arrow.classList.remove('rotate-180');
-                } else {
-                    arrow.classList.add('rotate-180');
-                }
-            });
+      </div>
 
-            toggleBtnText.innerText = allExpanded ? 'Sembunyikan Semua' : 'Tampilkan Semua';
-        });
+    </div>
 
-        // 5. Register Service Worker for PWA Offline Functionality
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('PWA Service Worker Registered successfully:', reg.scope))
-                    .catch(err => console.error('PWA Service Worker Registration Failed:', err));
-            });
+    <!-- ADMIN DASHBOARD SECTION -->
+    <div id="adminSection" class="hidden space-y-6">
+      <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold">Admin Control Center</h2>
+          <p class="text-xs text-slate-400">Kelola pengguna, persetujuan akun, dan log aktivitas sistem.</p>
+        </div>
+        <button onclick="loadAdminData()" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl text-sm font-bold transition">
+          Refresh Data Admin
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- USER APPROVAL TABLE -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-800">Manajemen Pengguna</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-slate-100 text-xs font-bold uppercase text-slate-500">
+                <tr>
+                  <th class="p-3">User</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTable" class="divide-y divide-slate-100">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ACTIVITY LOGS TABLE -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-800">Activity Logs</h3>
+          <div class="overflow-y-auto max-h-80 custom-scrollbar">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-500 uppercase sticky top-0">
+                <tr>
+                  <th class="p-2">Waktu</th>
+                  <th class="p-2">User</th>
+                  <th class="p-2">Aktivitas</th>
+                </tr>
+              </thead>
+              <tbody id="adminLogsTable" class="divide-y divide-slate-100">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // WEB APP GOOGLE APPS SCRIPT URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbyHYgqWZCLn6hoIsp9gikqwNVn0OIZfLYXeomMuxAY_8PisMP2k63rF4UYgjYXieAk7/exec";
+
+    // GLOBAL STATE
+    let currentUser = null;
+    let isAdmin = false;
+    let currentProject = "Week 1";
+    let projectsList = ["Week 1"];
+    let workoutRows = [];
+    let editIndex = -1;
+    let myChart = null;
+
+    // MASTER EXERCISE PRESETS FROM TABLE WITH SET COUNT AND FIRST-EXERCISE INDICATION
+    const exercisePresets = {
+      "Barbell Bench Press": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", sets: 4, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
+      "Barbell Overhead Press": { session: "Mon - Upper A", sets: 3, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: false },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 1-1.5 min", isFirstInSession: false },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 45-60 sec", isFirstInSession: false },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", sets: 3, reps: "8-10", rest: "Rest: 0 min", isFirstInSession: false },
+      "Barbell Squats": { session: "Tue - Lower A", sets: 4, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
+      "Romanian Deadlifts": { session: "Tue - Lower A", sets: 3, reps: "6-8", rest: "Rest: 2-3 min", isFirstInSession: false },
+      "Standing Barbell Calf Raises": { session: "Tue - Lower A", sets: 4, reps: "10-12", rest: "Rest: 45-60 sec", isFirstInSession: false },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", sets: 4, reps: "10-12", rest: "Rest: 2-3 min", isFirstInSession: true },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", sets: 4, reps: "10-12", rest: "Rest: 2-3 min", isFirstInSession: false },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 3-5 min", isFirstInSession: false },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", sets: 4, reps: "12-15", rest: "Rest: 60-90 sec", isFirstInSession: false },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 1-1.5 min", isFirstInSession: false },
+      "Barbell Curl": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 45-60 sec", isFirstInSession: false },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", sets: 3, reps: "10-12", rest: "Rest: 0 min", isFirstInSession: false },
+      "Conventional Deadlift": { session: "Fri - Lower B", sets: 3, reps: "6-8", rest: "Rest: 3-5 min", isFirstInSession: true },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", sets: 3, reps: "8-10", rest: "Rest: 1-1.5 min", isFirstInSession: false }
+    };
+
+    // RENDER DYNAMIC SET INPUTS ACCORDING TO EXERCISE SET COUNT
+    function renderSetInputs(setCount = 4) {
+      const container = document.getElementById("setsContainer");
+      container.innerHTML = "";
+      
+      // Dynamic grid columns based on set count
+      container.className = `grid grid-cols-${setCount} gap-3`;
+
+      for (let i = 1; i <= setCount; i++) {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <span class="text-xs text-slate-400 block mb-1">Set ${i}</span>
+          <input type="number" id="inputSet${i}" min="0" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    // CHECK IF EXERCISE IS FIRST EXERCISE OF SESSION (FOR WARMUP SET DISPLAY)
+    function handleExerciseSelectChange() {
+      const exVal = document.getElementById("inputExercise").value.trim();
+      const match = exercisePresets[exVal];
+      const warmupContainer = document.getElementById("warmupContainer");
+
+      if (match) {
+        if (match.isFirstInSession) {
+          warmupContainer.style.display = "block";
+          calculateWarmupPreview();
+        } else {
+          warmupContainer.style.display = "none";
         }
-    </script>
+      } else {
+        warmupContainer.style.display = "block";
+        calculateWarmupPreview();
+      }
+    }
+
+    // AUTO-FILL FUNCTION ON EXERCISE SELECT
+    function autoFillExerciseData(val) {
+      const match = exercisePresets[val];
+      if (match) {
+        document.getElementById("inputTargetReps").value = match.reps;
+        if (!document.getElementById("inputDaySession").value) {
+          document.getElementById("inputDaySession").value = match.session;
+        }
+        if (!document.getElementById("inputCatatan").value) {
+          document.getElementById("inputCatatan").value = match.rest;
+        }
+        
+        // Render exact set inputs (e.g. 3 sets for Triceps Pressdowns)
+        renderSetInputs(match.sets);
+      } else {
+        renderSetInputs(4);
+      }
+
+      handleExerciseSelectChange();
+    }
+
+    // INIT APP ON LOAD
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      renderSetInputs(4);
+      checkSession();
+    });
+
+    // AUTH TAB SWITCHER
+    function switchAuthTab(tab) {
+      if (tab === 'login') {
+        document.getElementById("formLogin").classList.remove("hidden");
+        document.getElementById("formRegister").classList.add("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition";
+      } else {
+        document.getElementById("formLogin").classList.add("hidden");
+        document.getElementById("formRegister").classList.remove("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-semibold text-emerald-600 border-b-2 border-emerald-600 transition";
+      }
+    }
+
+    // CHECK LOCAL SESSION
+    function checkSession() {
+      const savedUser = localStorage.getItem("workout_user");
+      const savedRole = localStorage.getItem("workout_is_admin");
+
+      if (savedUser) {
+        currentUser = savedUser;
+        isAdmin = (savedRole === "true");
+        showAppUI();
+      }
+    }
+
+    // LOGIN SUBMIT
+    async function submitLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value.trim();
+      const pin = document.getElementById("loginPin").value.trim();
+
+      const res = await callApi({ action: "login", username, pin });
+      if (res.status === "success") {
+        currentUser = username;
+        isAdmin = res.isAdmin;
+        localStorage.setItem("workout_user", currentUser);
+        localStorage.setItem("workout_is_admin", isAdmin);
+        showAppUI();
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // REGISTER SUBMIT
+    async function submitRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById("regUsername").value.trim();
+      const pin = document.getElementById("regPin").value.trim();
+
+      const res = await callApi({ action: "register", username, pin });
+      alert(res.message);
+      if (res.status === "success") {
+        switchAuthTab('login');
+      }
+    }
+
+    // SHOW UI BASED ON ROLE
+    function showAppUI() {
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("userHeaderInfo").classList.remove("hidden");
+      document.getElementById("displayUsername").innerText = currentUser + (isAdmin ? " (Admin)" : "");
+
+      if (isAdmin) {
+        document.getElementById("adminSection").classList.remove("hidden");
+        loadAdminData();
+      } else {
+        document.getElementById("appSection").classList.remove("hidden");
+        loadUserData();
+      }
+    }
+
+    // LOGOUT
+    function handleLogout() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    // LOAD USER PROJECTS & WORKOUT DATA
+    async function loadUserData() {
+      const localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
+      if (localData) {
+        workoutRows = JSON.parse(localData);
+        renderWorkoutTable();
+      }
+
+      const res = await callApi({ action: "getData", username: currentUser, project: currentProject });
+      if (res.status === "success") {
+        workoutRows = res.rows || [];
+        if (res.projects && res.projects.length > 0) {
+          projectsList = res.projects;
+        }
+        updateProjectDropdown();
+        renderWorkoutTable();
+        saveToLocalStorage();
+      }
+    }
+
+    // RENDER WORKOUT TABLE
+    function renderWorkoutTable() {
+      const tbody = document.getElementById("workoutTableBody");
+      tbody.innerHTML = "";
+
+      if (workoutRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">Belum ada data latihan untuk program ini.</td></tr>`;
+        return;
+      }
+
+      workoutRows.forEach((row, idx) => {
+        const repsBadge = [row.set1_reps, row.set2_reps, row.set3_reps, row.set4_reps]
+          .filter(val => val !== undefined && val !== null && val !== "")
+          .map(val => `<span class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">${val}</span>`)
+          .join("");
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50 transition";
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-semibold text-slate-700">${row.day_session}</td>
+          <td class="px-4 py-3 font-bold text-indigo-900">${row.exercise}</td>
+          <td class="px-4 py-3 text-center bg-slate-50 font-medium">${row.target_reps}</td>
+          <td class="px-4 py-3 text-right font-bold text-slate-800">${row.working_load} kg</td>
+          <td class="px-4 py-3 text-center">
+            <span class="inline-flex gap-1 font-mono text-xs">
+              ${repsBadge}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-600 bg-emerald-50/50">${row.next_load} kg</td>
+          <td class="px-4 py-3 text-center space-x-1">
+            <button onclick="editWorkout(${idx})" class="p-1 text-slate-400 hover:text-indigo-600"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            <button onclick="deleteWorkout(${idx})" class="p-1 text-slate-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+      renderAnalyticsChart();
+    }
+
+    // WARMUP & AUTO-PROGRESSION CALCULATOR
+    function calculateWarmupPreview() {
+      const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const previewEl = document.getElementById("warmupPreview");
+
+      if (load <= 0) {
+        previewEl.innerHTML = `
+          <div class="bg-white p-1 rounded border">Set 1: -</div>
+          <div class="bg-white p-1 rounded border">Set 2: -</div>
+          <div class="bg-white p-1 rounded border">Set 3: -</div>
+          <div class="bg-white p-1 rounded border">Set 4: -</div>
+        `;
+        return;
+      }
+
+      const floor2_5 = (val) => Math.floor(val / 2.5) * 2.5;
+      previewEl.innerHTML = `
+        <div class="bg-white p-1 rounded border">Set 1: <b>${floor2_5(load * 0.40)}</b> kg</div>
+        <div class="bg-white p-1 rounded border">Set 2: <b>${floor2_5(load * 0.60)}</b> kg</div>
+        <div class="bg-white p-1 rounded border">Set 3: <b>${floor2_5(load * 0.80)}</b> kg</div>
+        <div class="bg-white p-1 rounded border">Set 4: <b>${floor2_5(load * 0.90)}</b> kg</div>
+      `;
+    }
+
+    function calculateNextWeekLoad(targetRepsStr, currentLoad, repsArr) {
+      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
+      if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return currentLoad;
+
+      const minReps = parts[0];
+      const maxReps = parts[1];
+      const validReps = repsArr.filter(r => r > 0);
+      if (validReps.length === 0) return currentLoad;
+
+      const minAchieved = Math.min(...validReps);
+
+      // DELOAD LOGIC: Jika reps tidak mencukupi target minimum
+      if (minAchieved < minReps) {
+        return Math.round((currentLoad * 0.85) / 2.5) * 2.5;
+      }
+
+      // PROGRESSION LOGIC: Jika sukses seluruh set pada reps max
+      if (validReps.length === repsArr.length && minAchieved >= maxReps) {
+        return currentLoad + 2.5;
+      }
+
+      return currentLoad;
+    }
+
+    // ADD OR UPDATE WORKOUT
+    function addOrUpdateWorkout(e) {
+      e.preventDefault();
+
+      const day_session = document.getElementById("inputDaySession").value.trim();
+      const exercise = document.getElementById("inputExercise").value.trim();
+      const target_reps = document.getElementById("inputTargetReps").value.trim();
+      const working_load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const catatan = document.getElementById("inputCatatan").value.trim();
+
+      // Get reps dynamically from rendered input fields
+      const preset = exercisePresets[exercise];
+      const totalSets = preset ? preset.sets : 4;
+      const repsArr = [];
+
+      for (let i = 1; i <= totalSets; i++) {
+        const val = parseInt(document.getElementById(`inputSet${i}`)?.value, 10) || 0;
+        repsArr.push(val);
+      }
+
+      const next_load = calculateNextWeekLoad(target_reps, working_load, repsArr);
+
+      const rowObj = {
+        day_session, exercise, target_reps, working_load,
+        set1_reps: repsArr[0] || 0,
+        set2_reps: repsArr[1] || 0,
+        set3_reps: repsArr[2] || 0,
+        set4_reps: repsArr[3] || 0,
+        next_load, catatan, updated_at: Date.now()
+      };
+
+      if (editIndex >= 0) {
+        workoutRows[editIndex] = rowObj;
+        editIndex = -1;
+      } else {
+        workoutRows.push(rowObj);
+      }
+
+      renderWorkoutTable();
+      saveToLocalStorage();
+      resetForm();
+    }
+
+    function editWorkout(idx) {
+      const r = workoutRows[idx];
+      editIndex = idx;
+      document.getElementById("inputDaySession").value = r.day_session;
+      document.getElementById("inputExercise").value = r.exercise;
+      autoFillExerciseData(r.exercise);
+
+      document.getElementById("inputTargetReps").value = r.target_reps;
+      document.getElementById("inputWorkingLoad").value = r.working_load;
+      
+      const preset = exercisePresets[r.exercise];
+      const totalSets = preset ? preset.sets : 4;
+
+      if (document.getElementById("inputSet1")) document.getElementById("inputSet1").value = r.set1_reps;
+      if (document.getElementById("inputSet2")) document.getElementById("inputSet2").value = r.set2_reps;
+      if (document.getElementById("inputSet3")) document.getElementById("inputSet3").value = r.set3_reps;
+      if (totalSets >= 4 && document.getElementById("inputSet4")) document.getElementById("inputSet4").value = r.set4_reps;
+
+      document.getElementById("inputCatatan").value = r.catatan;
+      handleExerciseSelectChange();
+    }
+
+    function deleteWorkout(idx) {
+      if (confirm("Hapus item latihan ini?")) {
+        workoutRows.splice(idx, 1);
+        renderWorkoutTable();
+        saveToLocalStorage();
+      }
+    }
+
+    function resetForm() {
+      document.getElementById("formWorkout").reset();
+      editIndex = -1;
+      renderSetInputs(4);
+      handleExerciseSelectChange();
+    }
+
+    // SAVE & SYNC
+    function saveToLocalStorage() {
+      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
+    }
+
+    async function syncDataToServer() {
+      document.getElementById("syncStatus").innerText = "Status: Syncing...";
+      const res = await callApi({
+        action: "saveData",
+        username: currentUser,
+        project: currentProject,
+        rows: workoutRows
+      });
+
+      alert(res.message);
+      document.getElementById("syncStatus").innerText = res.status === "success" ? "Status: Synchronized" : "Status: Sync Failed";
+    }
+
+    // PROJECT / PROGRAM MANAGEMENT
+    function updateProjectDropdown() {
+      const sel = document.getElementById("selectProject");
+      sel.innerHTML = "";
+      projectsList.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p;
+        opt.innerText = p;
+        if (p === currentProject) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function changeProject() {
+      currentProject = document.getElementById("selectProject").value;
+      loadUserData();
+    }
+
+    function createNewProjectPrompt() {
+      const name = prompt("Masukkan nama Program/Week Baru (contoh: Week 28):");
+      if (name && name.trim() !== "") {
+        const cleanName = name.trim();
+        if (!projectsList.includes(cleanName)) {
+          projectsList.push(cleanName);
+        }
+        currentProject = cleanName;
+        workoutRows = [];
+        updateProjectDropdown();
+        renderWorkoutTable();
+      }
+    }
+
+    // EXPORT EXCEL
+    async function exportToExcel() {
+      const res = await callApi({ action: "getDownloadUrl", username: currentUser, project: currentProject });
+      if (res.status === "success") {
+        window.open(res.exportXlsxUrl, "_blank");
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // CHART ANALYTICS
+    function renderAnalyticsChart() {
+      const ctx = document.getElementById("volumeChart").getContext("2d");
+      
+      const sessionVolume = {};
+      workoutRows.forEach(r => {
+        const totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+        const vol = totalReps * r.working_load;
+        sessionVolume[r.day_session] = (sessionVolume[r.day_session] || 0) + vol;
+      });
+
+      const labels = Object.keys(sessionVolume);
+      const data = Object.values(sessionVolume);
+
+      if (myChart) myChart.destroy();
+
+      myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Volume (kg)',
+            data: data,
+            backgroundColor: 'rgba(79, 70, 229, 0.8)',
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // TAB APP SWITCHER
+    function switchAppTab(tab) {
+      if (tab === 'workout') {
+        document.getElementById("tabWorkout").classList.remove("hidden");
+        document.getElementById("tabAnalytics").classList.add("hidden");
+        document.getElementById("tabWorkoutBtn").className = "px-6 py-4 font-bold text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2";
+        document.getElementById("tabAnalyticsBtn").className = "px-6 py-4 font-bold text-slate-500 hover:text-slate-700 flex items-center gap-2";
+      } else {
+        document.getElementById("tabWorkout").classList.add("hidden");
+        document.getElementById("tabAnalytics").classList.remove("hidden");
+        document.getElementById("tabWorkoutBtn").className = "px-6 py-4 font-bold text-slate-500 hover:text-slate-700 flex items-center gap-2";
+        document.getElementById("tabAnalyticsBtn").className = "px-6 py-4 font-bold text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2";
+        renderAnalyticsChart();
+      }
+    }
+
+    // ADMIN DASHBOARD LOAD
+    async function loadAdminData() {
+      const res = await callApi({ action: "getAdminData", username: currentUser });
+      if (res.status === "success") {
+        // Render Users
+        const userTbody = document.getElementById("adminUsersTable");
+        userTbody.innerHTML = "";
+        (res.usersMeta || []).forEach(u => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="p-3 font-semibold">${u.user}</td>
+            <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${u.status}</span></td>
+            <td class="p-3 text-center space-x-2">
+              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-xs">Approve</button>` : ''}
+              <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs">Delete</button>
+            </td>
+          `;
+          userTbody.appendChild(tr);
+        });
+
+        // Render Logs
+        const logTbody = document.getElementById("adminLogsTable");
+        logTbody.innerHTML = "";
+        (res.activityLogs || []).reverse().forEach(l => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="p-2 text-slate-400">${new Date(l.time).toLocaleTimeString()}</td>
+            <td class="p-2 font-bold">${l.user}</td>
+            <td class="p-2">${l.activity}</td>
+          `;
+          logTbody.appendChild(tr);
+        });
+      }
+    }
+
+    async function approveUser(targetUser) {
+      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser });
+      alert(res.message);
+      loadAdminData();
+    }
+
+    async function deleteUser(targetUser) {
+      if (confirm(`Hapus permanen user ${targetUser} beserta seluruh datanya?`)) {
+        const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser });
+        alert(res.message);
+        loadAdminData();
+      }
+    }
+
+    // GENERIC API CALL HELPER
+    async function callApi(payload) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        return await response.json();
+      } catch (err) {
+        console.error("API Error:", err);
+        return { status: "error", message: "Gagal terhubung ke server Google Apps Script." };
+      }
+    }
+  </script>
 </body>
 </html>
