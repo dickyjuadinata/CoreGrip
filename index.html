@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resistance Training Log App</title>
+  <title>Resistance Training Log App - Week 32 Benchmark</title>
   
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -160,9 +160,9 @@
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">
                   Working Load Utama (kg)
-                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis Benchmark Excel / 4 Minggu</span>
+                  <span class="text-[10px] text-indigo-600 font-normal block">*Benchmark Week 32 / Progress M-1</span>
                 </label>
-                <input type="number" step="0.5" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
+                <input type="number" step="0.25" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
 
               <!-- Side Load Display -->
@@ -321,8 +321,8 @@
 
     let currentUser = null;
     let isAdmin = false;
-    let currentProject = "Week 1";
-    let projectsList = ["Week 1"];
+    let currentProject = "Week 32";
+    let projectsList = ["Week 32", "Week 33", "Week 34", "Week 35"];
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
@@ -331,7 +331,7 @@
     // PRESET EXERCISE
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
+      "Chest Supported DB Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
       "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
       "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
       "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min" },
@@ -354,32 +354,38 @@
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
     };
 
-    // BENCHMARK AWAL DARI WEEK 28 EXCEL SHEET LOG
+    // BENCHMARK AWAL MINGGU 32 SESUAI SHEET EXCEL terbaru
     const initialBenchmarks = {
-      "Barbell Bench Press": 60,
-      "Chest Supported Dumbbell Row": 22.5,
-      "Bodyweight Pull-Ups": 66.05,
-      "Barbell Overhead Press": 42.5,
+      // Upper A
+      "Barbell Bench Press": 52.5,
+      "Chest Supported DB Row": 22.5,
+      "Bodyweight Pull-Ups": 66.15,
+      "Barbell Overhead Press": 35,
       "Dumbbell Lateral Raises - A": 7.5,
-      "Triceps Pressdowns (Cable)": 12.5,
-      "Dumbbell Hammer Curl": 10,
-      "Barbell Squats": 70,
-      "Romanian Deadlifts": 52.5,
-      "Standing Barbell Calf Raises": 17.5,
-      "Incline Dumbbell Press": 17.5,
+      "Triceps Pressdowns (Cable)": 10,
+      "Dumbbell Hammer Curl": 7.5,
+
+      // Lower A
+      "Barbell Squats": 62.5,
+      "Romanian Deadlifts": 47.5,
+      "Standing Barbell Calf Raises": 15,
+
+      // Upper B
+      "Incline Dumbbell Press": 20,
       "Bent-over Barbell Row": 45,
-      "Seated Dumbbell Press": 15,
-      "Face Pulls (Cable)": 7.5,
+      "Seated Dumbbell Press": 17.5,
+      "Face Pulls (Cable)": 12.5,
       "Dumbbell Lateral Raises - B": 7.5,
       "Barbell Curl": 22.5,
-      "Cable Overhead Triceps Extension": 15,
-      "Conventional Deadlift": 82.5,
-      "Dumbbell Bulgarian Split Squat": 7.5
+      "Cable Overhead Triceps Extension": 17.5,
+
+      // Lower B
+      "Conventional Deadlift": 92.5,
+      "Dumbbell Bulgarian Split Squat": 10
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    // FUNGSI MATEMATIKA SESUAI EXCEL MROUND DAN FLOOR
     function mround2_5(val) {
       return Math.round(val / 2.5) * 2.5;
     }
@@ -388,25 +394,26 @@
       return Math.floor(val / 2.5) * 2.5;
     }
 
-    // HITUNG BEBAN PER SISI (TIDAK BOLEH MINUS)
+    // HITUNG BEBAN PER SISI (BEBAN ALAT TEPAT & TIDAK MINUS)
     function calculateSideWeight(exercise, totalLoad) {
       if (totalLoad <= 0) return 0;
       const exLower = exercise.toLowerCase();
       if (exLower.includes("barbell")) {
         const side = (totalLoad - 10) / 2;
         return side > 0 ? side : 0;
-      } else if (exLower.includes("dumbbell")) {
+      } else if (exLower.includes("dumbbell") || exLower.includes("db")) {
         const side = (totalLoad - 2.5) / 2;
         return side > 0 ? side : 0;
       }
       return totalLoad;
     }
 
-    // RIWAYAT 4 MINGGU TERAKHIR -> BENCHMARK
+    // MENGAMBIL BEBAN BERDASARKAN MINGGU SEBELUMNYA ATAU BENCHMARK MINGGU 32
     function get4WeeksHistoryLoad(exerciseName, currentProj) {
       const match = currentProj.match(/Week\s*(\d+)/i);
-      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+      let currentWeekNum = match ? parseInt(match[1], 10) : 32;
 
+      // Cari dari minggu sebelumnya (Week-1, Week-2, dst)
       for (let i = 1; i <= 4; i++) {
         let prevWeekNum = currentWeekNum - i;
         if (prevWeekNum < 1) break;
@@ -422,6 +429,7 @@
         }
       }
 
+      // Default benchmark jika belum ada riwayat (acuan Week 32)
       if (initialBenchmarks[exerciseName] !== undefined) {
         return initialBenchmarks[exerciseName];
       }
@@ -489,7 +497,7 @@
 
       if (exLower.includes("barbell")) {
         notice.innerText = "*Rumus Barbell: (Total Load - 10kg) / 2";
-      } else if (exLower.includes("dumbbell")) {
+      } else if (exLower.includes("dumbbell") || exLower.includes("db")) {
         notice.innerText = "*Rumus Dumbbell: (Total Load - 2.5kg) / 2";
       } else {
         notice.innerText = "*Beban Total (Cable / Machine)";
@@ -563,7 +571,8 @@
       }
     }
 
-    function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13, pw13_pz13) {
+    // FORMULA PROGRESI UNTUK MINGGU BERIKUTNYA
+    function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13) {
       if (!targetRepsStr || !targetRepsStr.includes("-")) return pu13;
       const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
       const minTarget = parts[0];
@@ -573,6 +582,7 @@
       const countReps = validReps.length;
       const minReps = countReps > 0 ? Math.min(...validReps) : 0;
 
+      // 1. Jika gagal mencapai min reps -> Deload 15% / 20%
       if (countReps > 0 && minReps < minTarget) {
         if (pu13 < pn13) {
           return mround2_5(pu13 * 0.80);
@@ -581,26 +591,12 @@
         }
       }
 
-      if (pn13 < pg13 && pu13 < pg13 && pu13 > 0 && countReps === 4 && minReps >= maxTarget) {
-        return pg13;
-      }
-
-      if (pg13 === pn13 && pn13 === pu13 && pu13 > 0 && countReps > 0 && minReps < minTarget) {
-        if (pu13 < pn13) {
-          return mround2_5(pu13 * 0.80);
-        } else {
-          return mround2_5(pu13 * 0.85);
-        }
-      }
-
-      if (pu13 < pn13 && pn13 === pg13) {
-        return mround2_5(pn13 * 0.925);
-      }
-
+      // 2. Jika sukses 4 set mencapai max reps -> Naik beban +2.5kg
       if (countReps === 4 && minReps >= maxTarget) {
         return pu13 + 2.5;
       }
 
+      // 3. Jika tercapai sebagian / stagnan -> Pertahankan beban
       return pu13;
     }
 
@@ -761,7 +757,7 @@
       const pn13 = get4WeeksHistoryLoad(exercise, currentProject); 
       const pg13 = pn13; 
 
-      const next_load = calculateNextWeekLoadQB13(target_reps, working_load, repsArr, pn13, pg13, repsArr);
+      const next_load = calculateNextWeekLoadQB13(target_reps, working_load, repsArr, pn13, pg13);
 
       const rowObj = {
         day_session, exercise, target_reps, working_load,
@@ -856,7 +852,7 @@
     }
 
     function createNewProjectPrompt() {
-      const name = prompt("Masukkan nama Program/Week Baru (contoh: Week 28):");
+      const name = prompt("Masukkan nama Program/Week Baru (contoh: Week 33):");
       if (name && name.trim() !== "") {
         const cleanName = name.trim();
         if (!projectsList.includes(cleanName)) {
