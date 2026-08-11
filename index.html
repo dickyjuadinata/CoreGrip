@@ -8,7 +8,7 @@
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Chart.js untuk Analytics -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -47,21 +47,20 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- AUTH SECTION (LOGIN / REGISTER) -->
+    <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-md mx-auto my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
       <div class="flex border-b border-slate-100 bg-slate-50">
         <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Login</button>
         <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register</button>
       </div>
 
-      <!-- Form Login -->
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username</label>
           <input type="text" id="loginUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN (4-6 Angka)</label>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN</label>
           <input type="password" id="loginPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-indigo-200">
@@ -69,7 +68,6 @@
         </button>
       </form>
 
-      <!-- Form Register -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username Baru</label>
@@ -85,15 +83,14 @@
       </form>
     </div>
 
-    <!-- MAIN APP DASHBOARD (USER) -->
+    <!-- MAIN APP DASHBOARD -->
     <div id="appSection" class="hidden space-y-6">
       
-      <!-- TOP CONTROL BAR -->
+      <!-- CONTROL BAR -->
       <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
         <div class="flex items-center gap-3 w-full sm:w-auto">
           <label class="font-bold text-slate-700 text-sm whitespace-nowrap">Program / Week:</label>
           <select id="selectProject" onchange="changeProject()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none w-full sm:w-64">
-            <!-- Dynamic Options -->
           </select>
           <button onclick="createNewProjectPrompt()" class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 p-2.5 rounded-xl transition">
             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -121,7 +118,7 @@
           </button>
         </div>
 
-        <!-- TAB 1: WORKOUT LOG FORM & TABLE -->
+        <!-- TAB WORKOUT -->
         <div id="tabWorkout" class="p-4 md:p-6 space-y-6">
           
           <!-- INPUT FORM -->
@@ -130,7 +127,6 @@
               <h3 class="font-bold text-slate-800 text-md flex items-center gap-2">
                 <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Tambah / Edit Exercise Log
               </h3>
-              <!-- Indikator Visual Hari Ini -->
               <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Sesi Hari Ini
               </span>
@@ -159,14 +155,17 @@
               </div>
             </div>
 
-            <!-- Working Load & Side Load Calculator -->
+            <!-- Working Load & Warm-up -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Working Load Utama (kg)</label>
-                <input type="number" step="0.5" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm font-semibold text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <label class="block text-xs font-bold text-slate-500 mb-1">
+                  Working Load Utama (kg)
+                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis dari Riwayat 4 Minggu</span>
+                </label>
+                <input type="number" step="0.5" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
 
-              <!-- Side Load Display (Kalkulasi Beban Per Sisi) -->
+              <!-- Side Load Display -->
               <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
                 <span class="font-bold text-slate-700 block mb-1">Beban Per Sisi (Side Load):</span>
                 <div class="text-slate-800 font-semibold text-sm" id="sideLoadDisplay">
@@ -175,10 +174,10 @@
                 <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Otomatis dikalkulasi berdasarkan jenis alat</span>
               </div>
 
-              <!-- Warmup Sets Preview Box -->
+              <!-- Warmup Sets Preview Box (Dengan Beban Per Sisi) -->
               <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 text-xs space-y-1">
-                <span class="font-bold text-indigo-900 block mb-1">Warm-up Sets (Auto):</span>
-                <div class="grid grid-cols-4 gap-1 text-center font-medium text-slate-600" id="warmupPreview">
+                <span class="font-bold text-indigo-900 block mb-1">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium text-slate-700" id="warmupPreview">
                   <div class="bg-white p-1 rounded border">Set 1: -</div>
                   <div class="bg-white p-1 rounded border">Set 2: -</div>
                   <div class="bg-white p-1 rounded border">Set 3: -</div>
@@ -190,10 +189,10 @@
             <!-- Auto-Regulation Notice Banner -->
             <div id="autoRegNotice" class="hidden bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2">
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
-              <span id="autoRegText">Terdeteksi kegagalan target reps. Disarankan Deload beban untuk set berikutnya.</span>
+              <span id="autoRegText">Terdeteksi kegagalan target reps. Working Load otomatis di-Deload.</span>
             </div>
 
-            <!-- Actual Reps Achieved (4 Sets) -->
+            <!-- Actual Reps Achieved -->
             <div>
               <label class="block text-xs font-bold text-slate-500 mb-2">Hasil Reps Kerja (Actual Reps Per Set):</label>
               <div class="grid grid-cols-4 gap-3">
@@ -244,14 +243,13 @@
                 </tr>
               </thead>
               <tbody id="workoutTableBody" class="divide-y divide-slate-100 bg-white">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
 
         </div>
 
-        <!-- TAB 2: PROGRESS ANALYTICS -->
+        <!-- TAB ANALYTICS -->
         <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
             <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -267,7 +265,7 @@
 
     </div>
 
-    <!-- ADMIN DASHBOARD SECTION -->
+    <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6">
       <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg flex justify-between items-center">
         <div>
@@ -280,7 +278,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- USER APPROVAL TABLE -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-800">Manajemen Pengguna</h3>
           <div class="overflow-x-auto">
@@ -293,13 +290,11 @@
                 </tr>
               </thead>
               <tbody id="adminUsersTable" class="divide-y divide-slate-100">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- ACTIVITY LOGS TABLE -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-800">Activity Logs</h3>
           <div class="overflow-y-auto max-h-80 custom-scrollbar">
@@ -312,7 +307,6 @@
                 </tr>
               </thead>
               <tbody id="adminLogsTable" class="divide-y divide-slate-100">
-                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
@@ -323,10 +317,8 @@
   </main>
 
   <script>
-    // WEB APP GOOGLE APPS SCRIPT URL
     const API_URL = "https://script.google.com/macros/s/AKfycbyHYgqWZCLn6hoIsp9gikqwNVn0OIZfLYXeomMuxAY_8PisMP2k63rF4UYgjYXieAk7/exec";
 
-    // GLOBAL STATE
     let currentUser = null;
     let isAdmin = false;
     let currentProject = "Week 1";
@@ -334,8 +326,8 @@
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
+    let originalBaseLoad = 0; // Menyimpan beban acuan awal sebelum deload
 
-    // MASTER EXERCISE PRESETS ACCORDING TO EXCEL SHEET
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min" },
       "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min" },
@@ -361,22 +353,35 @@
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min" }
     };
 
-    // MAP HARI KE SESSION
-    const dayToSessionMap = {
-      1: "Mon - Upper A", // Monday
-      2: "Tue - Lower A", // Tuesday
-      4: "Thu - Upper B", // Thursday
-      5: "Fri - Lower B"  // Friday
-    };
+    const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    // LOGIKA 1: FILTER EXERCISE BY SESSION & HIGHLIGHT TODAY
+    // FUNGSI HELPER MATEMATIKA SAMA DENGAN EXCEL
+    function mround2_5(val) {
+      return Math.round(val / 2.5) * 2.5;
+    }
+
+    function floor2_5(val) {
+      return Math.floor(val / 2.5) * 2.5;
+    }
+
+    function calculateSideWeight(exercise, totalLoad) {
+      if (totalLoad <= 0) return 0;
+      const exLower = exercise.toLowerCase();
+      if (exLower.includes("barbell")) {
+        return Math.max(0, (totalLoad - 10) / 2);
+      } else if (exLower.includes("dumbbell")) {
+        return Math.max(0, (totalLoad - 2.5) / 2);
+      }
+      return totalLoad;
+    }
+
+    // SESSION CHANGE & HIGHLIGHT
     function onSessionChange(sessionVal) {
       const exerciseSelect = document.getElementById("inputExercise");
       exerciseSelect.innerHTML = '<option value="">-- Pilih Latihan --</option>';
 
       if (!sessionVal) return;
 
-      // Filter latihan yang sesuai dengan session terpilih
       Object.keys(exercisePresets).forEach(ex => {
         if (exercisePresets[ex].session === sessionVal) {
           const opt = document.createElement("option");
@@ -386,8 +391,7 @@
         }
       });
 
-      // Highlight jika sesi sesuai dengan hari ini
-      const currentDay = new Date().getDay(); // 0: Sun, 1: Mon, 2: Tue, ...
+      const currentDay = new Date().getDay();
       const todaySession = dayToSessionMap[currentDay];
       const badge = document.getElementById("todayBadge");
 
@@ -400,7 +404,7 @@
       }
     }
 
-    // LOGIKA 2: AUTO LOAD DARI MINGGU PREVIOUS ATAU HISTORI PRESET
+    // OTOMATIS AMBIL WORKING LOAD DARI 4 MINGGU TERAKHIR
     function onExerciseSelect(exVal) {
       if (!exVal) return;
       const preset = exercisePresets[exVal];
@@ -408,40 +412,42 @@
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputCatatan").value = preset.rest;
 
-        // Cari histori beban sebelumnya dari program/week yang ada
-        let foundLoad = 0;
-        const previousProjectData = localStorage.getItem(`workout_data_${currentUser}_${getPreviousWeekName(currentProject)}`);
-        if (previousProjectData) {
-          const prevRows = JSON.parse(previousProjectData);
-          const match = prevRows.find(r => r.exercise === exVal);
-          if (match && match.next_load) {
-            foundLoad = match.next_load;
-          }
-        }
-
-        if (!foundLoad) {
-          const currentMatch = workoutRows.find(r => r.exercise === exVal);
-          if (currentMatch) foundLoad = currentMatch.working_load;
-        }
-
-        if (foundLoad) {
-          document.getElementById("inputWorkingLoad").value = foundLoad;
-        }
+        let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
+        originalBaseLoad = autoLoad;
+        document.getElementById("inputWorkingLoad").value = autoLoad;
 
         calculateLoadDetails();
       }
     }
 
-    function getPreviousWeekName(currentProj) {
+    function get4WeeksHistoryLoad(exerciseName, currentProj) {
       const match = currentProj.match(/Week\s*(\d+)/i);
-      if (match) {
-        const num = parseInt(match[1], 10);
-        if (num > 1) return `Week ${num - 1}`;
+      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+
+      // Cari riwayat 4 minggu ke belakang: Week -1, Week -2, Week -3, Week -4
+      for (let i = 1; i <= 4; i++) {
+        let prevWeekNum = currentWeekNum - i;
+        if (prevWeekNum < 1) break;
+
+        let prevProjName = `Week ${prevWeekNum}`;
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let matchRow = rows.find(r => r.exercise === exerciseName);
+          if (matchRow && matchRow.next_load > 0) {
+            return matchRow.next_load;
+          }
+        }
       }
-      return currentProj;
+
+      // Jika tidak ada di localStorage 4 minggu terakhir, cari di data lokal saat ini
+      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
+      if (currentMatch) return currentMatch.working_load;
+
+      return 20; // Default load awal jika tidak ada riwayat
     }
 
-    // LOGIKA 4: KALKULASI BEBAN PER SISI (SIDE LOAD) & WARMUP
+    // KALKULASI SIDE LOAD & WARM-UP (DENGAN BEBAN PER SISI)
     function calculateLoadDetails() {
       const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
       const exercise = document.getElementById("inputExercise").value;
@@ -450,34 +456,28 @@
 
       if (load <= 0 || !exercise) {
         sideDisplay.innerText = "- kg / sisi";
-        calculateWarmupPreview(0);
+        calculateWarmupPreview(0, exercise);
         return;
       }
 
-      let sideWeight = 0;
+      let sideWeight = calculateSideWeight(exercise, load);
       const exLower = exercise.toLowerCase();
 
       if (exLower.includes("barbell")) {
-        // Barbell Formula: (Total - 10) / 2
-        sideWeight = Math.max(0, (load - 10) / 2);
         notice.innerText = "*Rumus Barbell: (Total Load - 10kg) / 2";
       } else if (exLower.includes("dumbbell")) {
-        // Dumbbell Formula: (Total - 2.5) / 2
-        sideWeight = Math.max(0, (load - 2.5) / 2);
         notice.innerText = "*Rumus Dumbbell: (Total Load - 2.5kg) / 2";
       } else {
-        // Cable / Bodyweight / Machine Formula: Total Load
-        sideWeight = load;
         notice.innerText = "*Beban Total (Cable / Machine)";
       }
 
       sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / sisi`;
-      calculateWarmupPreview(load);
+      calculateWarmupPreview(load, exercise);
     }
 
-    function calculateWarmupPreview(load) {
+    function calculateWarmupPreview(totalLoad, exercise) {
       const previewEl = document.getElementById("warmupPreview");
-      if (load <= 0) {
+      if (totalLoad <= 0 || !exercise) {
         previewEl.innerHTML = `
           <div class="bg-white p-1 rounded border">Set 1: -</div>
           <div class="bg-white p-1 rounded border">Set 2: -</div>
@@ -487,16 +487,26 @@
         return;
       }
 
-      const floor2_5 = (val) => Math.floor(val / 2.5) * 2.5;
+      // Sesuai Rumus QB9-QB12: FLOOR(Load * %; 2.5)
+      const w1 = floor2_5(totalLoad * 0.40);
+      const w2 = floor2_5(totalLoad * 0.60);
+      const w3 = floor2_5(totalLoad * 0.80);
+      const w4 = floor2_5(totalLoad * 0.90);
+
+      const s1 = calculateSideWeight(exercise, w1);
+      const s2 = calculateSideWeight(exercise, w2);
+      const s3 = calculateSideWeight(exercise, w3);
+      const s4 = calculateSideWeight(exercise, w4);
+
       previewEl.innerHTML = `
-        <div class="bg-white p-1 rounded border">Set 1: <b>${floor2_5(load * 0.40)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 2: <b>${floor2_5(load * 0.60)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 3: <b>${floor2_5(load * 0.80)}</b> kg</div>
-        <div class="bg-white p-1 rounded border">Set 4: <b>${floor2_5(load * 0.90)}</b> kg</div>
+        <div class="bg-white p-1 rounded border">Set 1: <b>${w1}k</b> (${s1.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 2: <b>${w2}k</b> (${s2.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 3: <b>${w3}k</b> (${s3.toFixed(1)}/s)</div>
+        <div class="bg-white p-1 rounded border">Set 4: <b>${w4}k</b> (${s4.toFixed(1)}/s)</div>
       `;
     }
 
-    // LOGIKA 3: AUTO-REGULASI & DELOAD REAL-TIME
+    // AUTO-REGULASI & OVERRIDE WORKING LOAD SAAT DELOAD
     function checkAutoRegulation() {
       const targetStr = document.getElementById("inputTargetReps").value;
       const parts = targetStr.split("-").map(n => parseInt(n.trim(), 10));
@@ -509,9 +519,7 @@
 
       const autoNotice = document.getElementById("autoRegNotice");
       const autoText = document.getElementById("autoRegText");
-      const workingLoad = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
 
-      // Cek apakah ada set yang terisi namun di bawah minTarget
       let failedSet = 0;
       if (set1 > 0 && set1 < minTarget) failedSet = 1;
       else if (set2 > 0 && set2 < minTarget) failedSet = 2;
@@ -519,21 +527,76 @@
       else if (set4 > 0 && set4 < minTarget) failedSet = 4;
 
       if (failedSet > 0 && minTarget > 0) {
-        const deloadLoad = Math.round((workingLoad * 0.85) / 2.5) * 2.5;
+        // Mengacu rumus Excel QB13: MROUND(PU13 * 0.85; 2.5) atau MROUND(PU13 * 0.925; 2.5)
+        let deloadLoad = mround2_5(originalBaseLoad * 0.925); 
+
+        // Update Working Load langsung secara real-time
+        document.getElementById("inputWorkingLoad").value = deloadLoad;
+        calculateLoadDetails();
+
         autoNotice.classList.remove("hidden");
-        autoText.innerText = `Kegagalan target (${minTarget} reps) pada Set ${failedSet}! Turunkan beban ke ${deloadLoad} kg untuk set berikutnya (Deload 15%).`;
+        autoText.innerText = `Kegagalan target (${minTarget} reps) pada Set ${failedSet}! Working load disesuaikan dari ${originalBaseLoad} kg ke ${deloadLoad} kg.`;
       } else {
+        // Kembalikan ke beban dasar jika reps diperbaiki
+        document.getElementById("inputWorkingLoad").value = originalBaseLoad;
+        calculateLoadDetails();
         autoNotice.classList.add("hidden");
       }
     }
 
-    // INIT APP ON LOAD
+    // REPLIKASI RUMUS EXCEL QB13 SECARA PRESISI UNTUK NEXT LOAD
+    function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13, pw13_pz13) {
+      if (!targetRepsStr || !targetRepsStr.includes("-")) return pu13;
+      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0];
+      const maxTarget = parts[1];
+
+      const validReps = repsArr.filter(r => r > 0);
+      const countReps = validReps.length;
+      const minReps = countReps > 0 ? Math.min(...validReps) : 0;
+
+      // 1. IF(AND(COUNT(QD13:QG13)>0; MIN(QD13:QG13)<VALUE(LEFT($C13; FIND("-"; $C13)-1))))
+      if (countReps > 0 && minReps < minTarget) {
+        if (pu13 < pn13) {
+          return mround2_5(pu13 * 0.80);
+        } else {
+          return mround2_5(pu13 * 0.85);
+        }
+      }
+
+      // 2. IF(AND(PN13<PG13; PU13<PG13; PU13>0; COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
+      if (pn13 < pg13 && pu13 < pg13 && pu13 > 0 && countReps === 4 && minReps >= maxTarget) {
+        return pg13;
+      }
+
+      // 3. IF(AND(PG13=PN13; PN13=PU13; PU13>0; MIN(PW13:PZ13)<minTarget))
+      if (pg13 === pn13 && pn13 === pu13 && pu13 > 0 && countReps > 0 && minReps < minTarget) {
+        if (pu13 < pn13) {
+          return mround2_5(pu13 * 0.80);
+        } else {
+          return mround2_5(pu13 * 0.85);
+        }
+      }
+
+      // 4. IF(AND(PU13<PN13; PN13=PG13))
+      if (pu13 < pn13 && pn13 === pg13) {
+        return mround2_5(pn13 * 0.925);
+      }
+
+      // 5. IF(AND(COUNT(PW13:PZ13)=4; MIN(PW13:PZ13)>=maxTarget))
+      if (countReps === 4 && minReps >= maxTarget) {
+        return pu13 + 2.5;
+      }
+
+      return pu13;
+    }
+
+    // INIT APP
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       checkSession();
     });
 
-    // AUTH TAB SWITCHER
     function switchAuthTab(tab) {
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
@@ -548,7 +611,6 @@
       }
     }
 
-    // CHECK LOCAL SESSION
     function checkSession() {
       const savedUser = localStorage.getItem("workout_user");
       const savedRole = localStorage.getItem("workout_is_admin");
@@ -560,7 +622,6 @@
       }
     }
 
-    // LOGIN SUBMIT
     async function submitLogin(e) {
       e.preventDefault();
       const username = document.getElementById("loginUsername").value.trim();
@@ -578,7 +639,6 @@
       }
     }
 
-    // REGISTER SUBMIT
     async function submitRegister(e) {
       e.preventDefault();
       const username = document.getElementById("regUsername").value.trim();
@@ -591,7 +651,6 @@
       }
     }
 
-    // SHOW UI BASED ON ROLE
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
       document.getElementById("userHeaderInfo").classList.remove("hidden");
@@ -606,13 +665,11 @@
       }
     }
 
-    // LOGOUT
     function handleLogout() {
       localStorage.clear();
       location.reload();
     }
 
-    // LOAD USER PROJECTS & WORKOUT DATA
     async function loadUserData() {
       const localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
       if (localData) {
@@ -632,7 +689,6 @@
       }
     }
 
-    // RENDER WORKOUT TABLE
     function renderWorkoutTable() {
       const tbody = document.getElementById("workoutTableBody");
       tbody.innerHTML = "";
@@ -643,10 +699,7 @@
       }
 
       workoutRows.forEach((row, idx) => {
-        const exLower = row.exercise.toLowerCase();
-        let sideCalc = row.working_load;
-        if (exLower.includes("barbell")) sideCalc = Math.max(0, (row.working_load - 10) / 2);
-        else if (exLower.includes("dumbbell")) sideCalc = Math.max(0, (row.working_load - 2.5) / 2);
+        let sideWeight = calculateSideWeight(row.exercise, row.working_load);
 
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50 transition";
@@ -655,7 +708,7 @@
           <td class="px-4 py-3 font-bold text-indigo-900">${row.exercise}</td>
           <td class="px-4 py-3 text-center bg-slate-50 font-medium">${row.target_reps}</td>
           <td class="px-4 py-3 text-right font-bold text-slate-800">
-            <span class="text-indigo-600">${sideCalc.toFixed(1)} kg/sisi</span> 
+            <span class="text-indigo-600">${sideWeight.toFixed(1)} kg/sisi</span> 
             <span class="text-xs text-slate-400 block">(${row.working_load} kg Total)</span>
           </td>
           <td class="px-4 py-3 text-center">
@@ -678,29 +731,6 @@
       renderAnalyticsChart();
     }
 
-    function calculateNextWeekLoad(targetRepsStr, currentLoad, repsArr) {
-      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
-      if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return currentLoad;
-
-      const minReps = parts[0];
-      const maxReps = parts[1];
-      const validReps = repsArr.filter(r => r > 0);
-      if (validReps.length === 0) return currentLoad;
-
-      const minAchieved = Math.min(...validReps);
-
-      if (minAchieved < minReps) {
-        return Math.round((currentLoad * 0.85) / 2.5) * 2.5;
-      }
-
-      if (validReps.length === 4 && minAchieved >= maxReps) {
-        return currentLoad + 2.5;
-      }
-
-      return currentLoad;
-    }
-
-    // ADD OR UPDATE WORKOUT
     function addOrUpdateWorkout(e) {
       e.preventDefault();
 
@@ -715,7 +745,12 @@
       const catatan = document.getElementById("inputCatatan").value.trim();
 
       const repsArr = [set1_reps, set2_reps, set3_reps, set4_reps];
-      const next_load = calculateNextWeekLoad(target_reps, working_load, repsArr);
+      
+      // Ambil nilai riwayat minggu sebelumnya untuk formula QB13
+      const pn13 = get4WeeksHistoryLoad(exercise, currentProject); 
+      const pg13 = pn13; 
+
+      const next_load = calculateNextWeekLoadQB13(target_reps, working_load, repsArr, pn13, pg13, repsArr);
 
       const rowObj = {
         day_session, exercise, target_reps, working_load,
@@ -743,12 +778,16 @@
       
       document.getElementById("inputExercise").value = r.exercise;
       document.getElementById("inputTargetReps").value = r.target_reps;
+      
+      originalBaseLoad = r.working_load;
       document.getElementById("inputWorkingLoad").value = r.working_load;
+      
       document.getElementById("inputSet1").value = r.set1_reps;
       document.getElementById("inputSet2").value = r.set2_reps;
       document.getElementById("inputSet3").value = r.set3_reps;
       document.getElementById("inputSet4").value = r.set4_reps;
       document.getElementById("inputCatatan").value = r.catatan;
+      
       calculateLoadDetails();
       checkAutoRegulation();
     }
@@ -764,13 +803,13 @@
     function resetForm() {
       document.getElementById("formWorkout").reset();
       editIndex = -1;
+      originalBaseLoad = 0;
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/20");
       calculateLoadDetails();
     }
 
-    // SAVE & SYNC
     function saveToLocalStorage() {
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
     }
@@ -788,7 +827,6 @@
       document.getElementById("syncStatus").innerText = res.status === "success" ? "Status: Synchronized" : "Status: Sync Failed";
     }
 
-    // PROJECT / PROGRAM MANAGEMENT
     function updateProjectDropdown() {
       const sel = document.getElementById("selectProject");
       sel.innerHTML = "";
@@ -820,7 +858,6 @@
       }
     }
 
-    // EXPORT EXCEL
     async function exportToExcel() {
       const res = await callApi({ action: "getDownloadUrl", username: currentUser, project: currentProject });
       if (res.status === "success") {
@@ -830,7 +867,6 @@
       }
     }
 
-    // CHART ANALYTICS
     function renderAnalyticsChart() {
       const ctx = document.getElementById("volumeChart").getContext("2d");
       
@@ -865,7 +901,6 @@
       });
     }
 
-    // TAB APP SWITCHER
     function switchAppTab(tab) {
       if (tab === 'workout') {
         document.getElementById("tabWorkout").classList.remove("hidden");
@@ -881,7 +916,6 @@
       }
     }
 
-    // ADMIN DASHBOARD LOAD
     async function loadAdminData() {
       const res = await callApi({ action: "getAdminData", username: currentUser });
       if (res.status === "success") {
@@ -928,7 +962,6 @@
       }
     }
 
-    // GENERIC API CALL HELPER
     async function callApi(payload) {
       try {
         const response = await fetch(API_URL, {
@@ -939,7 +972,7 @@
         return await response.json();
       } catch (err) {
         console.error("API Error:", err);
-        return { status: "error", message: "Gagal terhubung ke server Google Apps Script." };
+        return { status: "error", message: "Gagal terhubung ke server." };
       }
     }
   </script>
