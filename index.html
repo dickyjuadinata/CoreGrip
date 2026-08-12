@@ -142,7 +142,7 @@
         </button>
       </form>
 
-      <!-- REGISTRASI DENGAN TES/UJI ANGKAT BEBAN SEDERHANA (BASELINE ASSESSMENT) -->
+      <!-- REGISTRATION WITH BASELINE ASSESSMENT -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">New Username</label>
@@ -153,13 +153,13 @@
           <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
 
-        <!-- TES BEBAN AWAL UNTUK PENGGUNA BARU -->
+        <!-- INITIAL BASELINE ASSESSMENT FOR NEW USERS -->
         <div class="border-t border-slate-200 pt-4 mt-4">
           <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100 mb-3">
             <h4 class="font-bold text-indigo-900 text-xs sm:text-sm flex items-center gap-1.5">
-              <i data-lucide="clipboard-check" class="w-4 h-4 text-indigo-600"></i> Tes / Uji Beban Sederhana (Baseline Assessment)
+              <i data-lucide="clipboard-check" class="w-4 h-4 text-indigo-600"></i> Baseline Load Assessment
             </h4>
-            <p class="text-[11px] text-slate-600 mt-1">Uji kemampuan awal Anda sesuai latihan dasar di bawah untuk menentukan baseline progresi otomatis.</p>
+            <p class="text-[11px] text-slate-600 mt-1">Test your initial capability for key exercises below to establish an automated progression baseline.</p>
           </div>
 
           <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
@@ -171,16 +171,16 @@
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
-                  <input type="number" step="0.5" id="test_load_bench" placeholder="62.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_bench" placeholder="6" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" id="test_reps_bench" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
-                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
               </div>
             </div>
@@ -193,21 +193,43 @@
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
-                  <input type="number" step="0.5" id="test_load_squat" placeholder="62.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_squat" placeholder="6" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" id="test_reps_squat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
-                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
               </div>
             </div>
 
-            <!-- Benchmark 3: Dumbbell Lateral Raises - A -->
+            <!-- Benchmark 3: Lat Pulldown -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-700">Lat Pulldown</span>
+                <span class="text-slate-500 font-medium">Target: 8-10 Reps</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_pulldown" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Reps</label>
+                  <input type="number" id="test_reps_pulldown" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
+                  <input type="number" step="0.5" id="test_rpe_pulldown" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+              </div>
+            </div>
+
+            <!-- Benchmark 4: Dumbbell Lateral Raises - A -->
             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
               <div class="flex justify-between items-center text-xs">
                 <span class="font-bold text-slate-700">Dumbbell Lateral Raises</span>
@@ -215,16 +237,16 @@
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
-                  <input type="number" step="0.5" id="test_load_lat" placeholder="7.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_lat" placeholder="8" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" id="test_reps_lat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
-                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="e.g., 0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
               </div>
             </div>
@@ -364,7 +386,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
+              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes (Optional, e.g., "RPE 8.0")</label>
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
@@ -415,7 +437,7 @@
           <div id="analyticsAlerts" class="space-y-3"></div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-            <!-- MODUL 1: LONGITUDINAL e1RM TREND LINE -->
+            <!-- MODULE 1: LONGITUDINAL e1RM TREND LINE -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
@@ -434,7 +456,7 @@
               <p class="text-[11px] text-slate-400 italic">*e1RM calculated using Brzycki (Session A) and Wathan (Session B) with effective reps RIR adjustment.</p>
             </div>
 
-            <!-- MODUL 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
+            <!-- MODULE 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
                 <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Module 2: Volume Load vs. Session RPE (sRPE)
@@ -445,7 +467,7 @@
               <p class="text-[11px] text-slate-400 italic">*Compares total external work done (kg) against internal perceptual fatigue (sRPE 1-10).</p>
             </div>
 
-            <!-- MODUL 3: DISTRIBUTION RADAR CHART -->
+            <!-- MODULE 3: DISTRIBUTION RADAR CHART -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
                 <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i> Module 3: Weekly Effective Sets / Muscle
@@ -456,7 +478,7 @@
               <p class="text-[11px] text-slate-400 italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week (Evidence-Based).</p>
             </div>
 
-            <!-- MODUL 4: FATIGUE & READINESS TRACKER (ACWR) -->
+            <!-- MODULE 4: FATIGUE & READINESS TRACKER (ACWR) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
                 <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Module 4: ACWR Fatigue & Readiness Tracker
@@ -578,6 +600,7 @@
 
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Lat Pulldown": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
@@ -604,6 +627,7 @@
 
     let initialBenchmarkLoads = {
       "Barbell Bench Press": 62.5,
+      "Lat Pulldown": 45.0,
       "Chest Supported Dumbbell Row": 22.5,
       "Bodyweight Pull-Ups": 0.0,
       "Barbell Overhead Press": 40.0,
@@ -837,7 +861,7 @@
     }
 
     function get4WeeksHistoryLoad(exerciseName, currentProj) {
-      // Prioritaskan baseline jika diset oleh tes/uji angkat beban awal
+      // Prioritize baseline if set during initial load assessment
       const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
       const defaultLoad = savedBenchmarks[exerciseName] ?? (initialBenchmarkLoads[exerciseName] ?? 20);
 
@@ -969,20 +993,20 @@
     }
 
     /* ==========================================================================
-       ALGORITMA PENYESUAIAN BEBAN OTOMATIS BERBASIS COMPOUND VS ISOLATION
+       AUTOMATIC LOAD ADJUSTMENT ALGORITHM BASED ON COMPOUND VS ISOLATION
        ========================================================================== */
     function calculate_next_load(exercise_type, current_load, min_reps, max_reps, reps_performed, rpe_output) {
       let new_load = current_load;
       let status = "";
 
-      // 1. LOGIKA GERAKAN COMPOUND
+      // 1. COMPOUND EXERCISE LOGIC
       if (exercise_type === "COMPOUND") {
         if (reps_performed >= max_reps) {
           if (rpe_output <= 7.0) {
-            new_load = current_load * 1.05;  // Naik 5% (Beban terlalu ringan)
+            new_load = current_load * 1.05;  // Increase 5% (Too light)
             status = "INCREASE_LOAD_HIGH";
           } else if (rpe_output >= 7.5 && rpe_output <= 8.5) {
-            new_load = current_load * 1.025; // Naik 2.5% (Ideal)
+            new_load = current_load * 1.025; // Increase 2.5% (Ideal)
             status = "INCREASE_LOAD_MODERATE";
           } else { // RPE 9.0 - 10
             new_load = current_load;
@@ -990,7 +1014,7 @@
           }
         } else {
           if (rpe_output >= 9.5) {
-            new_load = current_load * 0.95;  // Turun 5% (Terlalu berat / Failure)
+            new_load = current_load * 0.95;  // Decrease 5% (Too heavy / Failure)
             status = "DECREASE_LOAD";
           } else {
             new_load = current_load;
@@ -998,7 +1022,7 @@
           }
         }
       }
-      // 2. LOGIKA GERAKAN ISOLATION (DOUBLE PROGRESSION)
+      // 2. ISOLATION EXERCISE LOGIC (DOUBLE PROGRESSION)
       else if (exercise_type === "ISOLATION") {
         if (reps_performed >= max_reps) {
           if (rpe_output <= 7.5) {
@@ -1010,7 +1034,7 @@
           }
         } else {
           if (rpe_output >= 9.5 && reps_performed < min_reps) {
-            new_load = current_load - 2.0;  // Turun 1 step terkecil
+            new_load = current_load - 2.0;  // Decrease 1 smallest step
             status = "DECREASE_LOAD";
           } else {
             new_load = current_load;
@@ -1019,8 +1043,8 @@
         }
       }
 
-      // 3. PARAMETER PENGAMAN (SAFETY SAFEGUARDS)
-      // Safeguard: Cap Limit Kenaikan Beban Maksimum 10%
+      // 3. SAFETY SAFEGUARDS
+      // Safeguard: Cap Maximum Load Increase to 10%
       if (new_load > current_load * 1.10) {
         new_load = current_load * 1.10;
       }
@@ -1044,15 +1068,15 @@
       const minRepsPerformed = Math.min(...validReps);
       const maxRepsPerformed = Math.max(...validReps);
 
-      // Parsing RPE dari Catatan/Notes
+      // Parse RPE from Notes
       const rpeOutput = parseSRPEFromNotes(catatan);
       const exType = exercisePresets[exerciseName]?.type || "COMPOUND";
 
-      // Memanggil Algoritma Utama Penyesuaian Beban
+      // Call Main Load Adjustment Algorithm
       let result = calculate_next_load(exType, currentLoad, minReps, maxReps, maxRepsPerformed, rpeOutput);
       let nextLoad = result.next_load;
 
-      // Safeguard: Aturan Deload Otomatis (3 sesi DECREASE_LOAD berturut-turut)
+      // Safeguard: Auto-Deload Rule (3 consecutive DECREASE_LOAD sessions)
       const isDecrease = (result.status === "DECREASE_LOAD" || minRepsPerformed < minReps);
       if (checkConsecutiveDecrease(exerciseName, isDecrease)) {
         nextLoad = Math.round((currentLoad * 0.85) * 10) / 10; // Deload -15%
@@ -1219,7 +1243,7 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      // Memproses Baseline Assessment / Tes Uji Beban
+      // Process Baseline Assessment
       let userBenchmarks = {};
 
       const benchLoad = parseFloat(document.getElementById("test_load_bench").value);
@@ -1238,6 +1262,15 @@
       if (!isNaN(squatLoad) && !isNaN(squatReps)) {
         let res = calculate_next_load("COMPOUND", squatLoad, 6, 8, squatReps, squatRpe || 8.0);
         userBenchmarks["Barbell Squats"] = res.next_load;
+      }
+
+      const pulldownLoad = parseFloat(document.getElementById("test_load_pulldown").value);
+      const pulldownReps = parseInt(document.getElementById("test_reps_pulldown").value, 10);
+      const pulldownRpe = parseFloat(document.getElementById("test_rpe_pulldown").value);
+
+      if (!isNaN(pulldownLoad) && !isNaN(pulldownReps)) {
+        let res = calculate_next_load("COMPOUND", pulldownLoad, 8, 10, pulldownReps, pulldownRpe || 8.0);
+        userBenchmarks["Lat Pulldown"] = res.next_load;
       }
 
       const latLoad = parseFloat(document.getElementById("test_load_lat").value);
@@ -1626,7 +1659,7 @@
       const { weeks, historyMap } = getMultiWeekUserData();
       const selectedEx = document.getElementById("analyticsExerciseFilter").value;
 
-      // 1. MODUL 1: e1RM Trend
+      // 1. MODULE 1: e1RM Trend
       let e1rmData = [];
       weeks.forEach(wk => {
         let rows = historyMap[wk] || [];
@@ -1664,7 +1697,7 @@
         }
       });
 
-      // 2. MODUL 2: Dual-Axis Volume Load vs sRPE
+      // 2. MODULE 2: Dual-Axis Volume Load vs sRPE
       const sessions = ["Mon - Upper A", "Tue - Lower A", "Thu - Upper B", "Fri - Lower B"];
       let volData = [0, 0, 0, 0];
       let rpeData = [0, 0, 0, 0];
@@ -1723,7 +1756,7 @@
         }
       });
 
-      // 3. MODUL 3: Radar Chart
+      // 3. MODULE 3: Radar Chart
       let muscleSets = { "Chest": 0, "Back": 0, "Deltoids": 0, "Arms": 0, "Quads": 0, "Posterior Chain": 0, "Calves": 0 };
       workoutRows.forEach(r => {
         let preset = exercisePresets[r.exercise];
@@ -1761,7 +1794,7 @@
         }
       });
 
-      // 4. MODUL 4: ACWR Tracker
+      // 4. MODULE 4: ACWR Tracker
       let acwrData = [];
       let weeklyWorkloads = [];
 
