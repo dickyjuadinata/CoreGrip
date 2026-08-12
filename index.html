@@ -190,7 +190,7 @@
                 <label class="block text-xs font-bold text-slate-500 mb-1">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-slate-200 text-slate-600 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-300">Week</span>
-                  <input type="number" id="inputProject" min="1" value="" placeholder="1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <input type="number" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
@@ -211,7 +211,6 @@
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Body Weight (kg)</label>
-                <!-- PERMINTAAN 1: Value diawal dipastikan kosong (blank) -->
                 <input type="number" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 66" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
@@ -285,15 +284,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes</label>
-              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="btnSaveWorkout">
+              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes (Optional)</label>
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
-            <div class="flex justify-end gap-2 pt-2">
-              <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium active:scale-95">Reset</button>
-              <button type="submit" id="btnSaveWorkout" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200 active:scale-95">
-                Save Exercise Record
+            <div class="flex justify-between items-center gap-2 pt-2 flex-wrap">
+              <button type="button" onclick="deleteEntireSession()" class="px-3 py-2 text-xs text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl font-bold transition flex items-center gap-1 active:scale-95">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Session
               </button>
+              <div class="flex items-center gap-2 ml-auto">
+                <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium active:scale-95">Reset</button>
+                <button type="submit" id="btnSaveWorkout" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200 active:scale-95">
+                  Save Exercise Record
+                </button>
+              </div>
             </div>
           </form>
 
@@ -335,7 +339,7 @@
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
-                  <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Modul 1: Dynamic e1RM Progression
+                  <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Module 1: Dynamic e1RM Progression
                 </h3>
                 <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
@@ -347,13 +351,13 @@
               <div class="h-64 w-full">
                 <canvas id="chartE1RM"></canvas>
               </div>
-              <p class="text-[11px] text-slate-400 italic">*e1RM calculated using Brzycki (Sesi A) and Wathan (Sesi B) with effective reps RIR adjustment.</p>
+              <p class="text-[11px] text-slate-400 italic">*e1RM calculated using Brzycki (Session A) and Wathan (Session B) with effective reps RIR adjustment.</p>
             </div>
 
             <!-- MODUL 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Modul 2: Volume Load vs. Session RPE (sRPE)
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Module 2: Volume Load vs. Session RPE (sRPE)
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartVolumeRpe"></canvas>
@@ -364,7 +368,7 @@
             <!-- MODUL 3: DISTRIBUTION RADAR CHART (SETS PER MUSCLE GROUP) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i> Modul 3: Weekly Effective Sets / Muscle
+                <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i> Module 3: Weekly Effective Sets / Muscle
               </h3>
               <div class="h-64 w-full flex justify-center">
                 <canvas id="chartMuscleDistribution"></canvas>
@@ -375,7 +379,7 @@
             <!-- MODUL 4: FATIGUE & READINESS TRACKER (ACWR) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Modul 4: ACWR Fatigue & Readiness Tracker
+                <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Module 4: ACWR Fatigue & Readiness Tracker
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartACWR"></canvas>
@@ -478,7 +482,7 @@
 
     let currentUser = null;
     let isAdmin = false;
-    let currentProject = "Week 1";
+    let currentProject = ""; // Landing state: blank before selection
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
@@ -755,6 +759,8 @@
     }
 
     function get4WeeksHistoryLoad(exerciseName, currentProj) {
+      if (!currentProj) return initialBenchmarkLoads[exerciseName] ?? 20;
+      
       const match = currentProj.match(/Week\s*(\d+)/i);
       let currentWeekNum = match ? parseInt(match[1], 10) : 1;
 
@@ -925,14 +931,14 @@
       lucide.createIcons();
       checkSession();
       registerServiceWorker();
-      setupEnterNavigation(); // PERMINTAAN 2: Setup navigasi tombol Enter
+      setupEnterNavigation();
 
       window.addEventListener('online', updateOnlineStatus);
       window.addEventListener('offline', updateOnlineStatus);
       updateOnlineStatus();
     });
 
-    // PERMINTAAN 2: Navigasi Tombol Enter pada Form Input
+    // PERMINTAAN 1: Navigasi Enter & Opsi Opsional pada Execution Notes
     function setupEnterNavigation() {
       const inputs = document.querySelectorAll('.enter-nav');
       inputs.forEach(input => {
@@ -940,10 +946,12 @@
           if (e.key === 'Enter') {
             e.preventDefault();
             
+            const isOptional = this.getAttribute('data-optional') === 'true';
             const val = this.value.trim();
-            if (!val) {
-              const fieldName = this.previousElementSibling ? this.previousElementSibling.innerText : "kolom ini";
-              showModernAlert(`Silakan isi ${fieldName} terlebih dahulu sebelum melanjutkan!`, "Instruksi Pengisian", "alert-circle");
+
+            if (!val && !isOptional) {
+              const fieldName = this.previousElementSibling ? this.previousElementSibling.innerText : "this field";
+              showModernAlert(`Please fill in ${fieldName} before proceeding!`, "Required Field", "alert-circle");
               this.focus();
               return;
             }
@@ -1073,7 +1081,11 @@
         loadAdminData();
       } else {
         document.getElementById("appSection").classList.remove("hidden");
-        loadUserData();
+        // PERMINTAAN 2: Pastikan data & landing page blank sebelum Week dipilih
+        document.getElementById("inputProject").value = "";
+        currentProject = "";
+        workoutRows = [];
+        renderWorkoutTable();
       }
     }
 
@@ -1083,9 +1095,18 @@
     }
 
     async function loadUserData() {
+      if (!currentProject) {
+        workoutRows = [];
+        renderWorkoutTable();
+        return;
+      }
+
       const localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
       if (localData) {
         workoutRows = JSON.parse(localData);
+        renderWorkoutTable();
+      } else {
+        workoutRows = [];
         renderWorkoutTable();
       }
 
@@ -1108,7 +1129,6 @@
 
       const bwInput = document.getElementById("inputBodyWeight");
       
-      // PERMINTAAN 1: Kosongkan nilai body weight jika belum ada data terisi
       if (workoutRows.length > 0) {
         const firstBw = workoutRows.find(r => r.body_weight > 0);
         if (firstBw) {
@@ -1124,7 +1144,7 @@
       }
 
       if (workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No exercise logs recorded for this week program.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">${currentProject ? 'No exercise logs recorded for this week program.' : 'Please select or enter a Week Number to display workout data.'}</td></tr>`;
         return;
       }
 
@@ -1247,6 +1267,30 @@
       }
     }
 
+    // PERMINTAAN 3: Opsi Hapus 1 Sesi Sekaligus
+    async function deleteEntireSession() {
+      const activeSession = document.getElementById("inputDaySession").value;
+      if (!activeSession) {
+        await showModernAlert("Please select a Training Session first to delete.", "Select Session Required", "alert-circle");
+        return;
+      }
+
+      const count = workoutRows.filter(r => r.day_session === activeSession).length;
+      if (count === 0) {
+        await showModernAlert(`No recorded exercise entries found for session: ${activeSession}`, "Session Empty", "info");
+        return;
+      }
+
+      const confirmed = await showModernConfirm(`Are you sure you want to delete ALL ${count} exercise logs for "${activeSession}" in ${currentProject || 'this week'}?`, "Delete Entire Session", "trash-2");
+      if (confirmed) {
+        workoutRows = workoutRows.filter(r => r.day_session !== activeSession);
+        renderWorkoutTable();
+        saveToLocalStorage();
+        resetForm();
+        await showModernAlert(`All exercise entries for "${activeSession}" have been successfully deleted.`, "Session Deleted", "check-circle");
+      }
+    }
+
     function resetForm() {
       resetFormWithNextExercise("", "");
     }
@@ -1256,13 +1300,15 @@
       const keepBW = lastBodyWeight || document.getElementById("inputBodyWeight").value;
       const bwReadOnly = document.getElementById("inputBodyWeight").readOnly;
 
-      const match = currentProject.match(/Week\s*(\d+)/i);
+      const match = currentProject ? currentProject.match(/Week\s*(\d+)/i) : null;
       const activeWeekNum = match ? match[1] : "";
 
       document.getElementById("formWorkout").reset();
       
       if (activeWeekNum) {
         document.getElementById("inputProject").value = activeWeekNum;
+      } else {
+        document.getElementById("inputProject").value = "";
       }
 
       editIndex = -1;
@@ -1292,7 +1338,6 @@
           document.getElementById("inputBodyWeight").classList.add("bg-slate-100", "cursor-not-allowed");
         }
       } else {
-        // PERMINTAAN 1: Pastikan kosong jika belum ada BW tersimpan
         document.getElementById("inputBodyWeight").value = "";
       }
 
@@ -1309,14 +1354,14 @@
       calculateLoadDetails();
     }
 
-    // PERMINTAAN 3: Memastikan data tersimpan aman saat refresh browser
     function saveToLocalStorage() {
+      if (!currentProject) return;
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       autoSyncToServer();
     }
 
     async function autoSyncToServer() {
-      if (!navigator.onLine || !currentUser) return;
+      if (!navigator.onLine || !currentUser || !currentProject) return;
       
       const txt = document.getElementById("statusText");
       if (txt) txt.innerText = "Syncing...";
@@ -1333,11 +1378,16 @@
       }
     }
 
+    // PERMINTAAN 2: Handler saat pengguna memasukkan Week Number
     function changeProjectFreetext() {
       const val = document.getElementById("inputProject").value.trim();
       if (val !== "") {
         currentProject = "Week " + val;
         loadUserData();
+      } else {
+        currentProject = "";
+        workoutRows = [];
+        renderWorkoutTable();
       }
     }
 
@@ -1367,7 +1417,7 @@
     }
 
     function getMultiWeekUserData() {
-      const match = currentProject.match(/Week\s*(\d+)/i);
+      const match = currentProject ? currentProject.match(/Week\s*(\d+)/i) : null;
       let currentWkNum = match ? parseInt(match[1], 10) : 1;
       
       let startWk = Math.max(1, currentWkNum - 3);
@@ -1425,7 +1475,7 @@
         }
       });
 
-      // 2. MODUL 2: Dual-Axis Volume Load vs sRPE (Per Session Current Week)
+      // 2. MODUL 2: Dual-Axis Volume Load vs sRPE
       const sessions = ["Mon - Upper A", "Tue - Lower A", "Thu - Upper B", "Fri - Lower B"];
       let volData = [0, 0, 0, 0];
       let rpeData = [0, 0, 0, 0];
@@ -1569,11 +1619,12 @@
       checkAnalyticsRuleAlerts(e1rmData, acwrData, selectedEx);
     }
 
+    // PERMINTAAN 4: Penyesuaian Pesan Alert ke US English
     function checkAnalyticsRuleAlerts(e1rmData, acwrData, exerciseName) {
       const container = document.getElementById("analyticsAlerts");
       container.innerHTML = "";
 
-      // Alert 1: Plateau Detection (3-Wk Rolling e1RM Progress <= 0.5%)
+      // Alert 1: Plateau Detection
       if (e1rmData.length >= 3) {
         let first = e1rmData[e1rmData.length - 3];
         let latest = e1rmData[e1rmData.length - 1];
@@ -1585,8 +1636,8 @@
             div.innerHTML = `
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
               <div>
-                <span class="font-bold block">⚠️ Stagnansi Terdeteksi pada ${exerciseName}:</span>
-                Progress e1RM rolling 3-minggu (${pctDiff.toFixed(2)}%) berada di bawah threshold 0.5% pada intensitas tinggi. Pertimbangkan variasi beban atau deload.
+                <span class="font-bold block">⚠️ Stagnation Detected on ${exerciseName}:</span>
+                3-week rolling e1RM progression (${pctDiff.toFixed(2)}%) is below the 0.5% high-intensity threshold. Consider adjusting load variables or scheduling a deload week.
               </div>
             `;
             container.appendChild(div);
@@ -1594,7 +1645,7 @@
         }
       }
 
-      // Alert 2: ACWR Danger Zone (ACWR > 1.50)
+      // Alert 2: ACWR Danger Zone
       let currentACWR = acwrData[acwrData.length - 1] || 1.0;
       if (currentACWR > 1.50) {
         let div = document.createElement("div");
@@ -1602,8 +1653,8 @@
         div.innerHTML = `
           <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 shrink-0 mt-0.5"></i>
           <div>
-            <span class="font-bold block">🚨 Peringatan Kelelahan Akseleratif (ACWR: ${currentACWR}):</span>
-            Beban kerja akut melebihi ambang batas aman (> 1.50). Risiko cedera dan overreaching non-fungsional tinggi. Direkomendasikan menerapkan <b>Deload Phase</b> (potong volume 40-50%).
+            <span class="font-bold block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
+            Acute workload exceeds safe limits (> 1.50), increasing injury risk and non-functional overreaching. A <b>Deload Phase</b> (40-50% volume reduction) is highly recommended.
           </div>
         `;
         container.appendChild(div);
