@@ -44,11 +44,10 @@
     document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
   </script>
 
-  <!-- Tailwind CSS & Lucide Icons -->
+  <!-- Tailwind CSS & Secondary CDN Fallbacks -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js" onerror="this.src='https://unpkg.com/lucide@latest'"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" onerror="this.src='https://cdn.jsdelivr.net/npm/chart.js'"></script>
 
   <style>
     /* Prevent Horizontal Overflow on Mobile */
@@ -696,7 +695,10 @@
         modalTitle.innerText = title;
         modalMessage.innerText = message;
         modalIcon.setAttribute("data-lucide", iconName);
-        lucide.createIcons();
+        
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+          lucide.createIcons();
+        }
 
         cancelBtn.classList.add("hidden");
         confirmBtn.innerText = "OK";
@@ -732,7 +734,10 @@
         modalTitle.innerText = title;
         modalMessage.innerText = message;
         modalIcon.setAttribute("data-lucide", iconName);
-        lucide.createIcons();
+        
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+          lucide.createIcons();
+        }
 
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Cancel";
@@ -992,41 +997,35 @@
       }
     }
 
-    /* ==========================================================================
-       AUTOMATIC LOAD ADJUSTMENT ALGORITHM BASED ON COMPOUND VS ISOLATION
-       ========================================================================== */
     function calculate_next_load(exercise_type, current_load, min_reps, max_reps, reps_performed, rpe_output) {
       let new_load = current_load;
       let status = "";
 
-      // 1. COMPOUND EXERCISE LOGIC
       if (exercise_type === "COMPOUND") {
         if (reps_performed >= max_reps) {
           if (rpe_output <= 7.0) {
-            new_load = current_load * 1.05;  // Increase 5% (Too light)
+            new_load = current_load * 1.05;
             status = "INCREASE_LOAD_HIGH";
           } else if (rpe_output >= 7.5 && rpe_output <= 8.5) {
-            new_load = current_load * 1.025; // Increase 2.5% (Ideal)
+            new_load = current_load * 1.025;
             status = "INCREASE_LOAD_MODERATE";
-          } else { // RPE 9.0 - 10
+          } else {
             new_load = current_load;
             status = "MAINTAIN_LOAD";
           }
         } else {
           if (rpe_output >= 9.5) {
-            new_load = current_load * 0.95;  // Decrease 5% (Too heavy / Failure)
+            new_load = current_load * 0.95;
             status = "DECREASE_LOAD";
           } else {
             new_load = current_load;
             status = "MAINTAIN_LOAD_CHECK_FORM";
           }
         }
-      }
-      // 2. ISOLATION EXERCISE LOGIC (DOUBLE PROGRESSION)
-      else if (exercise_type === "ISOLATION") {
+      } else if (exercise_type === "ISOLATION") {
         if (reps_performed >= max_reps) {
           if (rpe_output <= 7.5) {
-            new_load = current_load + 2.0; // Increment 2 kg
+            new_load = current_load + 2.0;
             status = "INCREASE_LOAD_RESET_REPS";
           } else {
             new_load = current_load;
@@ -1034,7 +1033,7 @@
           }
         } else {
           if (rpe_output >= 9.5 && reps_performed < min_reps) {
-            new_load = current_load - 2.0;  // Decrease 1 smallest step
+            new_load = current_load - 2.0;
             status = "DECREASE_LOAD";
           } else {
             new_load = current_load;
@@ -1043,8 +1042,6 @@
         }
       }
 
-      // 3. SAFETY SAFEGUARDS
-      // Safeguard: Cap Maximum Load Increase to 10%
       if (new_load > current_load * 1.10) {
         new_load = current_load * 1.10;
       }
@@ -1068,18 +1065,15 @@
       const minRepsPerformed = Math.min(...validReps);
       const maxRepsPerformed = Math.max(...validReps);
 
-      // Parse RPE from Notes
       const rpeOutput = parseSRPEFromNotes(catatan);
       const exType = exercisePresets[exerciseName]?.type || "COMPOUND";
 
-      // Call Main Load Adjustment Algorithm
       let result = calculate_next_load(exType, currentLoad, minReps, maxReps, maxRepsPerformed, rpeOutput);
       let nextLoad = result.next_load;
 
-      // Safeguard: Auto-Deload Rule (3 consecutive DECREASE_LOAD sessions)
       const isDecrease = (result.status === "DECREASE_LOAD" || minRepsPerformed < minReps);
       if (checkConsecutiveDecrease(exerciseName, isDecrease)) {
-        nextLoad = Math.round((currentLoad * 0.85) * 10) / 10; // Deload -15%
+        nextLoad = Math.round((currentLoad * 0.85) * 10) / 10;
         showModernAlert(`Auto-Deload triggered for ${exerciseName} due to 3 consecutive high-fatigue sessions. Load reduced by 15%.`, "Deload Triggered", "alert-triangle");
       }
 
@@ -1111,7 +1105,9 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
       checkSession();
       registerServiceWorker();
       setupEnterNavigation();
@@ -1243,7 +1239,6 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      // Process Baseline Assessment
       let userBenchmarks = {};
 
       const benchLoad = parseFloat(document.getElementById("test_load_bench").value);
@@ -1403,7 +1398,9 @@
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
     }
 
     function addOrUpdateWorkout(e) {
@@ -1615,10 +1612,6 @@
       }
     }
 
-    /* ==========================================================================
-       PERFORMANCE ANALYTICS IMPLEMENTATION
-       ========================================================================== */
-
     function parseSRPEFromNotes(catatan) {
       if (!catatan) return 8.0; 
       const match = catatan.match(/RPE\s*(\d+(\.\d+)?)/i);
@@ -1656,10 +1649,11 @@
     }
 
     function renderAnalyticsDashboard() {
+      if (typeof Chart === 'undefined') return;
+
       const { weeks, historyMap } = getMultiWeekUserData();
       const selectedEx = document.getElementById("analyticsExerciseFilter").value;
 
-      // 1. MODULE 1: e1RM Trend
       let e1rmData = [];
       weeks.forEach(wk => {
         let rows = historyMap[wk] || [];
@@ -1673,31 +1667,32 @@
         }
       });
 
-      let ctx1 = document.getElementById("chartE1RM").getContext("2d");
-      if (chartInstanceE1RM) chartInstanceE1RM.destroy();
-      chartInstanceE1RM = new Chart(ctx1, {
-        type: 'line',
-        data: {
-          labels: weeks,
-          datasets: [{
-            label: `e1RM (kg) - ${selectedEx}`,
-            data: e1rmData,
-            borderColor: '#4f46e5',
-            backgroundColor: 'rgba(79, 70, 229, 0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 5,
-            pointHoverRadius: 7
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { beginAtZero: false } }
-        }
-      });
+      let ctx1 = document.getElementById("chartE1RM")?.getContext("2d");
+      if (ctx1) {
+        if (chartInstanceE1RM) chartInstanceE1RM.destroy();
+        chartInstanceE1RM = new Chart(ctx1, {
+          type: 'line',
+          data: {
+            labels: weeks,
+            datasets: [{
+              label: `e1RM (kg) - ${selectedEx}`,
+              data: e1rmData,
+              borderColor: '#4f46e5',
+              backgroundColor: 'rgba(79, 70, 229, 0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: false } }
+          }
+        });
+      }
 
-      // 2. MODULE 2: Dual-Axis Volume Load vs sRPE
       const sessions = ["Mon - Upper A", "Tue - Lower A", "Thu - Upper B", "Fri - Lower B"];
       let volData = [0, 0, 0, 0];
       let rpeData = [0, 0, 0, 0];
@@ -1719,44 +1714,45 @@
         rpeData[i] = count > 0 ? Math.round((sRpeSum / count) * 10) / 10 : 8.0;
       });
 
-      let ctx2 = document.getElementById("chartVolumeRpe").getContext("2d");
-      if (chartInstanceVolumeRpe) chartInstanceVolumeRpe.destroy();
-      chartInstanceVolumeRpe = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: ["Upper A", "Lower A", "Upper B", "Lower B"],
-          datasets: [
-            {
-              type: 'bar',
-              label: 'Volume Load (kg)',
-              data: volData,
-              backgroundColor: 'rgba(99, 102, 241, 0.85)',
-              borderRadius: 6,
-              yAxisID: 'y'
-            },
-            {
-              type: 'line',
-              label: 'Session RPE (sRPE)',
-              data: rpeData,
-              borderColor: '#ef4444',
-              backgroundColor: '#ef4444',
-              borderWidth: 3,
-              pointRadius: 4,
-              yAxisID: 'y1'
+      let ctx2 = document.getElementById("chartVolumeRpe")?.getContext("2d");
+      if (ctx2) {
+        if (chartInstanceVolumeRpe) chartInstanceVolumeRpe.destroy();
+        chartInstanceVolumeRpe = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: ["Upper A", "Lower A", "Upper B", "Lower B"],
+            datasets: [
+              {
+                type: 'bar',
+                label: 'Volume Load (kg)',
+                data: volData,
+                backgroundColor: 'rgba(99, 102, 241, 0.85)',
+                borderRadius: 6,
+                yAxisID: 'y'
+              },
+              {
+                type: 'line',
+                label: 'Session RPE (sRPE)',
+                data: rpeData,
+                borderColor: '#ef4444',
+                backgroundColor: '#ef4444',
+                borderWidth: 3,
+                pointRadius: 4,
+                yAxisID: 'y1'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { type: 'linear', position: 'left', title: { display: true, text: 'Volume Load (kg)' } },
+              y1: { type: 'linear', position: 'right', min: 1, max: 10, grid: { drawOnChartArea: false }, title: { display: true, text: 'sRPE (1-10)' } }
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { type: 'linear', position: 'left', title: { display: true, text: 'Volume Load (kg)' } },
-            y1: { type: 'linear', position: 'right', min: 1, max: 10, grid: { drawOnChartArea: false }, title: { display: true, text: 'sRPE (1-10)' } }
           }
-        }
-      });
+        });
+      }
 
-      // 3. MODULE 3: Radar Chart
       let muscleSets = { "Chest": 0, "Back": 0, "Deltoids": 0, "Arms": 0, "Quads": 0, "Posterior Chain": 0, "Calves": 0 };
       workoutRows.forEach(r => {
         let preset = exercisePresets[r.exercise];
@@ -1771,30 +1767,31 @@
         }
       });
 
-      let ctx3 = document.getElementById("chartMuscleDistribution").getContext("2d");
-      if (chartInstanceMuscleDist) chartInstanceMuscleDist.destroy();
-      chartInstanceMuscleDist = new Chart(ctx3, {
-        type: 'radar',
-        data: {
-          labels: Object.keys(muscleSets),
-          datasets: [{
-            label: 'Effective Sets / Week',
-            data: Object.values(muscleSets),
-            backgroundColor: 'rgba(16, 185, 129, 0.2)',
-            borderColor: '#10b981',
-            pointBackgroundColor: '#10b981'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            r: { min: 0, suggestedMax: 20, ticks: { stepSize: 5 } }
+      let ctx3 = document.getElementById("chartMuscleDistribution")?.getContext("2d");
+      if (ctx3) {
+        if (chartInstanceMuscleDist) chartInstanceMuscleDist.destroy();
+        chartInstanceMuscleDist = new Chart(ctx3, {
+          type: 'radar',
+          data: {
+            labels: Object.keys(muscleSets),
+            datasets: [{
+              label: 'Effective Sets / Week',
+              data: Object.values(muscleSets),
+              backgroundColor: 'rgba(16, 185, 129, 0.2)',
+              borderColor: '#10b981',
+              pointBackgroundColor: '#10b981'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: { min: 0, suggestedMax: 20, ticks: { stepSize: 5 } }
+            }
           }
-        }
-      });
+        });
+      }
 
-      // 4. MODULE 4: ACWR Tracker
       let acwrData = [];
       let weeklyWorkloads = [];
 
@@ -1814,30 +1811,31 @@
         acwrData.push(Math.round(ratio * 100) / 100);
       });
 
-      let ctx4 = document.getElementById("chartACWR").getContext("2d");
-      if (chartInstanceACWR) chartInstanceACWR.destroy();
-      chartInstanceACWR = new Chart(ctx4, {
-        type: 'line',
-        data: {
-          labels: weeks,
-          datasets: [{
-            label: 'ACWR Index',
-            data: acwrData,
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-            fill: true,
-            borderWidth: 2,
-            pointRadius: 5
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { min: 0.5, max: 2.0 } }
-        }
-      });
+      let ctx4 = document.getElementById("chartACWR")?.getContext("2d");
+      if (ctx4) {
+        if (chartInstanceACWR) chartInstanceACWR.destroy();
+        chartInstanceACWR = new Chart(ctx4, {
+          type: 'line',
+          data: {
+            labels: weeks,
+            datasets: [{
+              label: 'ACWR Index',
+              data: acwrData,
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              fill: true,
+              borderWidth: 2,
+              pointRadius: 5
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { min: 0.5, max: 2.0 } }
+          }
+        });
+      }
 
-      // 5. SMART RULE ALERT BANNER LOGIC
       checkAnalyticsRuleAlerts(e1rmData, acwrData, selectedEx);
     }
 
@@ -1845,7 +1843,6 @@
       const container = document.getElementById("analyticsAlerts");
       container.innerHTML = "";
 
-      // Alert 1: Plateau Detection
       if (e1rmData.length >= 3) {
         let first = e1rmData[e1rmData.length - 3];
         let latest = e1rmData[e1rmData.length - 1];
@@ -1866,7 +1863,6 @@
         }
       }
 
-      // Alert 2: ACWR Danger Zone
       let currentACWR = acwrData[acwrData.length - 1] || 1.0;
       if (currentACWR > 1.50) {
         let div = document.createElement("div");
@@ -1881,7 +1877,9 @@
         container.appendChild(div);
       }
 
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
     }
 
     function switchAppTab(tab) {
@@ -1954,16 +1952,22 @@
     }
 
     async function callApi(payload) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s Timeout
+
       try {
         const response = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         return await response.json();
       } catch (err) {
+        clearTimeout(timeoutId);
         console.error("API Error:", err);
-        return { status: "error", message: "Failed to establish server connection." };
+        return { status: "error", message: "Failed or timed out establishing server connection." };
       }
     }
   </script>
