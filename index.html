@@ -1081,7 +1081,6 @@
         loadAdminData();
       } else {
         document.getElementById("appSection").classList.remove("hidden");
-        // PERMINTAAN 2: Pastikan data & landing page blank sebelum Week dipilih
         document.getElementById("inputProject").value = "";
         currentProject = "";
         workoutRows = [];
@@ -1228,7 +1227,6 @@
       saveToLocalStorage();
       resetFormWithNextExercise(day_session, exercise);
 
-      // PERMINTAAN 1: Setelah save berhasil, kursor otomatis pindah ke Actual Reps Completed Per Set: set 1
       const set1Input = document.getElementById("inputSet1");
       if (set1Input) {
         set1Input.focus();
@@ -1383,7 +1381,6 @@
       }
     }
 
-    // PERMINTAAN 2: Handler saat pengguna memasukkan Week Number
     function changeProjectFreetext() {
       const val = document.getElementById("inputProject").value.trim();
       if (val !== "") {
