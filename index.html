@@ -2,7 +2,7 @@
 <html lang="en" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CoreGrip</title>
   
   <!-- PWA Meta Tags & Manifest -->
@@ -173,6 +173,7 @@
     @media (max-width: 640px) {
       input, select, button {
         min-height: 44px;
+        font-size: 16px !important; /* Prevents auto-zoom on mobile iOS/Android */
       }
     }
   </style>
@@ -359,8 +360,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -374,13 +379,9 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
-                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
                   <option value="">-- Select Session First --</option>
                 </select>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
@@ -1425,6 +1426,20 @@
       }
     }
 
+    async function callApi(payload) {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        console.error("API Call Error:", err);
+        return { status: "error", message: "Network connection error." };
+      }
+    }
+
     async function submitLogin(e) {
       e.preventDefault();
 
@@ -2180,52 +2195,99 @@
       // Gabungkan pengguna lokal
       const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       localUsers.forEach(u => {
-        if (!userList.some(item => item.user === u)) {
-          userList.push({ user: u, status: 'ACTIVE' });
+        if (!userList.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+          userList.push({ username: u, status: "Active" });
         }
       });
 
-      const userTbody = document.getElementById("adminUsersTable");
-      userTbody.innerHTML = "";
-      userList.forEach(u => {
+      renderAdminUsersTable(userList);
+      if (res.logs) renderAdminLogsTable(res.logs);
+    }
+
+    function renderAdminUsersTable(users) {
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 themed-text-muted">No users registered yet.</td></tr>`;
+        return;
+      }
+
+      users.forEach(u => {
         const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-100 dark:hover:bg-slate-800/40 transition";
         tr.innerHTML = `
-          <td class="p-3 font-semibold">${u.user}</td>
-          <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800'}">${u.status}</span></td>
-          <td class="p-3 text-center space-x-2">
-            <button onclick="viewUserProfile('${u.user}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition shadow-sm">Profil & Stats</button>
-            ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-emerald-700 transition shadow-sm">Approve</button>` : ''}
-            <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-red-700 transition shadow-sm">Delete</button>
+          <td class="p-3 font-semibold">${u.username}</td>
+          <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">${u.status || 'Active'}</span></td>
+          <td class="p-3 text-center">
+            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition">View Profile</button>
           </td>
         `;
-        userTbody.appendChild(tr);
-      });
-
-      const logTbody = document.getElementById("adminLogsTable");
-      logTbody.innerHTML = "";
-      (res.activityLogs || []).reverse().forEach(l => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="p-2.5 themed-text-muted">${new Date(l.time).toLocaleTimeString()}</td>
-          <td class="p-2.5 font-semibold">${l.user}</td>
-          <td class="p-2.5">${l.activity}</td>
-        `;
-        logTbody.appendChild(tr);
+        tbody.appendChild(tr);
       });
     }
 
-    async function callApi(payload) {
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        return await response.json();
-      } catch (err) {
-        console.error("API Call Error:", err);
-        return { status: "error", message: err.message };
+    function renderAdminLogsTable(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 themed-text-muted">No audit logs.</td></tr>`;
+        return;
       }
+
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.username || '-'}</td>
+          <td class="p-2.5">${l.action || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewUserDetail(targetUser) {
+      const container = document.getElementById("adminUserDetailContainer");
+      const title = document.getElementById("userDetailTitle");
+      title.innerText = `Profile & Performance: ${targetUser}`;
+
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${targetUser}`) || "{}");
+      const benchmarksContainer = document.getElementById("userBenchmarksList");
+      benchmarksContainer.innerHTML = "";
+
+      if (Object.keys(savedBenchmarks).length > 0) {
+        Object.keys(savedBenchmarks).forEach(k => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2 rounded-lg text-xs flex justify-between items-center";
+          div.innerHTML = `<span class="truncate pr-1">${k}:</span> <b class="text-blue-600 dark:text-blue-400">${savedBenchmarks[k]} kg</b>`;
+          benchmarksContainer.appendChild(div);
+        });
+      } else {
+        benchmarksContainer.innerHTML = `<div class="col-span-4 text-xs themed-text-muted italic">No custom benchmarks set. Using defaults.</div>`;
+      }
+
+      const overviewContainer = document.getElementById("userStatsOverview");
+      overviewContainer.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-center">
+          <span class="text-xs themed-text-muted">Target Program</span>
+          <p class="text-base font-bold text-blue-600 dark:text-blue-400">4-Day Upper/Lower</p>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-center">
+          <span class="text-xs themed-text-muted">Account Type</span>
+          <p class="text-base font-bold text-emerald-600 dark:text-emerald-400">Standard User</p>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-center">
+          <span class="text-xs themed-text-muted">Data Sync</span>
+          <p class="text-base font-bold text-purple-600 dark:text-purple-400">Cloud & Local</p>
+        </div>
+      `;
+
+      container.classList.remove("hidden");
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
   </script>
 </body>
