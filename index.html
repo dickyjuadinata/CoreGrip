@@ -15,6 +15,11 @@
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
   
+  <!-- Google Font: Inter (Standard Sans-Serif Modern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <!-- Dynamic Web App Manifest Injection -->
   <script>
     const manifestData = {
@@ -51,6 +56,11 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    /* Standard Sans-Serif modern configuration */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
     /* Vibrant / Bright Palette Auto Light and Dark System */
     :root {
       --bg-page: #f8fafc;
@@ -190,7 +200,7 @@
         <span class="text-xs md:text-sm font-semibold bg-white/20 px-3.5 py-1.5 rounded-lg border border-white/30 shadow-inner" id="displayUsername">
           User
         </span>
-        <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 active:scale-95 font-bold shadow-sm">
+        <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 active:scale-95 font-semibold shadow-sm">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -206,20 +216,20 @@
     <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm">Register & Assessment</button>
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm">Register & Assessment</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Username</label>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Username</label>
           <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="loginPin">
         </div>
         <div>
-          <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">PIN</label>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">PIN</label>
           <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
-        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] uppercase tracking-wider text-sm">
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
           Sign In to Portal
         </button>
       </form>
@@ -227,18 +237,18 @@
       <!-- REGISTRATION WITH BASELINE ASSESSMENT -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
-          <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">New Username</label>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">New Username</label>
           <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="regPin">
         </div>
         <div>
-          <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Create PIN</label>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Create PIN</label>
           <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="test_load_bench">
         </div>
 
         <!-- FIRST-SET ASSESSMENT FOR NEW USERS -->
         <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
           <div class="themed-subcard p-3.5 rounded-xl border mb-3">
-            <h4 class="font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 text-blue-600 dark:text-blue-400">
+            <h4 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
               <i data-lucide="clipboard-check" class="w-4 h-4"></i> Baseline Load Assessment
             </h4>
             <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
@@ -248,20 +258,20 @@
             <!-- Benchmark 1: Barbell Bench Press -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold">Barbell Bench Press</span>
+                <span class="font-semibold">Barbell Bench Press</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_reps_bench">
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
-                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_rpe_bench">
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_bench">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_load_squat">
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
                 </div>
               </div>
             </div>
@@ -269,20 +279,20 @@
             <!-- Benchmark 2: Barbell Squats -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold">Barbell Squats</span>
+                <span class="font-semibold">Barbell Squats</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_reps_squat">
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
-                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_rpe_squat">
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_squat">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_load_lat">
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_lat">
                 </div>
               </div>
             </div>
@@ -290,27 +300,27 @@
             <!-- Benchmark 3: Dumbbell Lateral Raises - A -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold">Dumbbell Lateral Raises</span>
+                <span class="font-semibold">Dumbbell Lateral Raises</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_reps_lat">
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
-                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="test_rpe_lat">
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_lat">
                 </div>
                 <div>
-                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold enter-nav" data-next="btnRegisterSubmit">
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="btnRegisterSubmit">
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] uppercase tracking-wider text-sm">
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
           Submit & Create Account
         </button>
       </form>
@@ -322,10 +332,10 @@
       <!-- MAIN CONTENT TABS -->
       <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
         <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
           </button>
-          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider">
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5">
             <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
           </button>
         </div>
@@ -336,24 +346,24 @@
           <!-- INPUT FORM -->
           <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-5 md:p-6 rounded-2xl border space-y-4 transition-all w-full">
             <div class="flex justify-between items-center flex-wrap gap-2">
-              <h3 class="font-black uppercase tracking-wider text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i> Log / Edit Exercise Record
               </h3>
-              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <span id="todayBadge" class="hidden text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm uppercase">
                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
               </span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Week Number</label>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
-                  <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-bold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Training Session</label>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
                 <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
                   <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
@@ -363,39 +373,39 @@
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Exercise Name</label>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
                 <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Body Weight (kg)</label>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
                 <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Target Rep Range</label>
-                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-bold focus:outline-none cursor-not-allowed">
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
+                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Rest Interval Target</label>
-                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-bold focus:outline-none cursor-not-allowed">
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Rest Interval Target</label>
+                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
             </div>
 
             <!-- Working Load & Warm-up -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">
                   Primary Working Load (kg)
-                  <span class="text-[10px] font-semibold text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
+                  <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-black focus:ring-2 focus:outline-none">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none">
               </div>
 
               <!-- Side Load Display -->
               <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
-                <div class="font-black text-sm" id="sideLoadDisplay">
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
+                <div class="font-bold text-sm" id="sideLoadDisplay">
                   - kg / side
                 </div>
                 <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
@@ -403,7 +413,7 @@
 
               <!-- Warmup Sets Preview Box -->
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1 sm:col-span-2 md:col-span-1">
-                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
                   <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
                   <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
@@ -421,39 +431,39 @@
 
             <!-- Actual Reps Achieved -->
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
+              <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
-                  <span class="text-xs font-bold themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
-                  <span class="text-xs font-bold themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
-                  <span class="text-xs font-bold themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
-                  <span class="text-xs font-bold themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
+              <label class="block text-xs font-semibold themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
             <div class="flex justify-between items-center gap-2 pt-2 flex-wrap">
-              <button type="button" onclick="deleteEntireSession()" class="px-3.5 py-2 text-xs text-red-600 hover:text-red-700 dark:text-red-300 bg-red-100 hover:bg-red-200 dark:bg-red-950/70 border border-red-300 dark:border-red-800/80 rounded-xl font-bold transition flex items-center gap-1.5 active:scale-95 uppercase tracking-wider shadow-sm">
+              <button type="button" onclick="deleteEntireSession()" class="px-3.5 py-2 text-xs text-red-600 hover:text-red-700 dark:text-red-300 bg-red-100 hover:bg-red-200 dark:bg-red-950/70 border border-red-300 dark:border-red-800/80 rounded-xl font-semibold transition flex items-center gap-1.5 active:scale-95 shadow-sm">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Session
               </button>
               <div class="flex items-center gap-2 ml-auto">
-                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-black uppercase tracking-wider themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
-                <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-black transition shadow-lg shadow-blue-500/30 active:scale-95 uppercase tracking-wider">
+                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+                <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
                   Save Exercise Record
                 </button>
               </div>
@@ -465,7 +475,7 @@
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
               <table class="w-full text-left text-sm min-w-[640px] border-collapse">
                 <!-- Sticky Header -->
-                <thead class="themed-table-header text-xs font-black uppercase tracking-wider sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
+                <thead class="themed-table-header text-xs font-semibold sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
                   <tr>
                     <th class="px-4 py-3.5">Day / Session</th>
                     <th class="px-4 py-3.5">Exercise</th>
@@ -494,10 +504,10 @@
             <!-- MODULE 1: LONGITUDINAL e1RM TREND LINE -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
-                <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                   <i data-lucide="trending-up" class="w-4 h-4"></i> Module 1: Dynamic e1RM Progression
                 </h3>
-                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2">
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
                   <option value="Barbell Squats">Barbell Squats</option>
                   <option value="Conventional Deadlift">Conventional Deadlift</option>
@@ -512,7 +522,7 @@
 
             <!-- MODULE 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
               </h3>
               <div class="h-64 w-full">
@@ -523,7 +533,7 @@
 
             <!-- MODULE 3: DISTRIBUTION RADAR CHART -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
               </h3>
               <div class="h-64 w-full flex justify-center">
@@ -534,7 +544,7 @@
 
             <!-- MODULE 4: FATIGUE & READINESS TRACKER (ACWR) -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
               </h3>
               <div class="h-64 w-full">
@@ -554,22 +564,22 @@
     <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
       <div class="themed-header p-6 rounded-2xl shadow-xl flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 class="text-xl font-black uppercase tracking-wider text-white">Admin Management Console</h2>
+          <h2 class="text-xl font-bold text-white">Admin Management Console</h2>
           <p class="text-xs opacity-90">Manage system users, access approvals, view user profiles & statistics.</p>
         </div>
-        <button onclick="loadAdminData()" class="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm">
+        <button onclick="loadAdminData()" class="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
           Refresh Console
         </button>
       </div>
 
       <!-- User Management Table -->
       <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
-        <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
           <i data-lucide="users" class="w-4 h-4"></i> User Management & Profiles
         </h3>
         <div class="overflow-x-auto w-full">
           <table class="w-full text-sm text-left">
-            <thead class="themed-table-header text-xs font-black uppercase tracking-wider">
+            <thead class="themed-table-header text-xs font-semibold">
               <tr>
                 <th class="p-3">User</th>
                 <th class="p-3">Status</th>
@@ -585,16 +595,16 @@
       <!-- User Profile & Stats Modal / Container -->
       <div id="adminUserDetailContainer" class="hidden themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full border-2 border-blue-500/30">
         <div class="flex justify-between items-center">
-          <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
+          <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
             <i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats
           </h3>
-          <button onclick="closeUserDetail()" class="text-xs font-bold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
+          <button onclick="closeUserDetail()" class="text-xs font-semibold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="userStatsOverview">
           <!-- Summary Cards Injected dynamically -->
         </div>
         <div>
-          <h4 class="font-extrabold text-xs uppercase tracking-wider themed-text-muted mb-2">Baseline Lift Benchmarks (kg)</h4>
+          <h4 class="font-semibold text-xs themed-text-muted mb-2">Baseline Lift Benchmarks (kg)</h4>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="userBenchmarksList">
             <!-- Benchmarks injected dynamically -->
           </div>
@@ -603,12 +613,12 @@
 
       <!-- Audit Logs Table -->
       <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
-        <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
           <i data-lucide="file-text" class="w-4 h-4"></i> System Activity Audit Logs
         </h3>
         <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
           <table class="w-full text-xs text-left">
-            <thead class="themed-table-header uppercase sticky top-0 font-black">
+            <thead class="themed-table-header sticky top-0 font-semibold">
               <tr>
                 <th class="p-2.5">Timestamp</th>
                 <th class="p-2.5">User</th>
@@ -638,7 +648,7 @@
   <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
     <div class="themed-card p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
       <div class="w-10 h-10 border-4 border-gray-300 dark:border-slate-600 border-t-blue-600 rounded-full animate-spin"></div>
-      <p id="loadingMessage" class="text-xs font-black uppercase tracking-wider">Processing Request...</p>
+      <p id="loadingMessage" class="text-xs font-semibold">Processing Request...</p>
     </div>
   </div>
 
@@ -650,13 +660,13 @@
           <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 id="modalTitle" class="text-base font-black uppercase tracking-wider">System Notification</h3>
+          <h3 id="modalTitle" class="text-base font-bold">System Notification</h3>
           <p id="modalMessage" class="text-xs themed-text-muted mt-1 leading-relaxed"></p>
         </div>
       </div>
       <div id="modalFooter" class="flex justify-end gap-2 pt-2">
-        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-bold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition uppercase tracking-wider hidden">Cancel</button>
-        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md uppercase tracking-wider">OK</button>
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md">OK</button>
       </div>
     </div>
   </div>
@@ -736,21 +746,6 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    // API Call Utility
-    async function callApi(payload) {
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        return await response.json();
-      } catch (err) {
-        console.error("API Call Error:", err);
-        return { status: "error", message: err.message };
-      }
-    }
-
     // FLOATING TOAST NOTIFICATION SYSTEM
     function showToast(message, type = "info", duration = 3000) {
       const container = document.getElementById("toastContainer");
@@ -771,7 +766,7 @@
         icon = "alert-circle";
       }
 
-      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-bold transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
+      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
       toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
 
       container.appendChild(toast);
@@ -836,7 +831,7 @@
 
         cancelBtn.classList.add("hidden");
         confirmBtn.innerText = "OK";
-        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md uppercase tracking-wider";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -873,7 +868,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Cancel";
         confirmBtn.innerText = "Confirm";
-        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md uppercase tracking-wider";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -1342,7 +1337,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Close";
         confirmBtn.innerText = "Sync Now";
-        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md uppercase tracking-wider";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -1405,13 +1400,13 @@
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
         document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm";
       } else {
         document.getElementById("formLogin").classList.add("hidden");
         document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm";
       }
     }
 
@@ -1612,7 +1607,7 @@
       }
 
       if (workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 themed-text-muted font-bold">${currentProject ? 'No exercise logs recorded for this week program.' : 'Please select or enter a Week Number to display workout data.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 themed-text-muted font-semibold">${currentProject ? 'No exercise logs recorded for this week program.' : 'Please select or enter a Week Number to display workout data.'}</td></tr>`;
         return;
       }
 
@@ -1624,22 +1619,22 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-100 dark:hover:bg-slate-800/40 transition border-b border-gray-200 dark:border-slate-800/60";
         tr.innerHTML = `
-          <td class="px-4 py-3.5 font-bold">${row.day_session}</td>
-          <td class="px-4 py-3.5 font-black text-blue-600 dark:text-blue-400">${row.exercise}</td>
-          <td class="px-4 py-3.5 text-center font-bold">${row.target_reps}</td>
-          <td class="px-4 py-3.5 text-right font-extrabold">
+          <td class="px-4 py-3.5 font-semibold">${row.day_session}</td>
+          <td class="px-4 py-3.5 font-bold text-blue-600 dark:text-blue-400">${row.exercise}</td>
+          <td class="px-4 py-3.5 text-center font-semibold">${row.target_reps}</td>
+          <td class="px-4 py-3.5 text-right font-bold">
             <span>${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/side'}</span> 
-            <span class="text-xs themed-text-muted block">(${row.working_load} kg Total Load)</span>
+            <span class="text-xs themed-text-muted block font-normal">(${row.working_load} kg Total Load)</span>
           </td>
           <td class="px-4 py-3.5 text-center">
             <span class="inline-flex gap-1.5 font-mono text-xs">
-              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set1_reps}</span>
-              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set2_reps}</span>
-              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set3_reps}</span>
-              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set4_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-semibold">${row.set1_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-semibold">${row.set2_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-semibold">${row.set3_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-semibold">${row.set4_reps}</span>
             </span>
           </td>
-          <td class="px-4 py-3.5 text-right font-black text-emerald-600 dark:text-emerald-400">${row.next_load} kg</td>
+          <td class="px-4 py-3.5 text-right font-bold text-emerald-600 dark:text-emerald-400">${row.next_load} kg</td>
           <td class="px-4 py-3.5 text-center space-x-1">
             <button onclick="editWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-blue-600 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
             <button onclick="deleteWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-red-500 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
@@ -2133,7 +2128,7 @@
             div.innerHTML = `
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
               <div>
-                <span class="font-black block">⚠️ Stagnation Detected on ${exerciseName}:</span>
+                <span class="font-bold block">⚠️ Stagnation Detected on ${exerciseName}:</span>
                 3-week rolling e1RM progression (${pctDiff.toFixed(2)}%) is below the 0.5% high-intensity threshold. Consider adjusting load variables or scheduling a deload week.
               </div>
             `;
@@ -2149,7 +2144,7 @@
         div.innerHTML = `
           <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5"></i>
           <div>
-            <span class="font-black block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
+            <span class="font-bold block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
             Acute workload exceeds safe limits (> 1.50), increasing injury risk and non-functional overreaching. A <b>Deload Phase</b> (40-50% volume reduction) is highly recommended.
           </div>
         `;
@@ -2163,13 +2158,13 @@
       if (tab === 'workout') {
         document.getElementById("tabWorkout").classList.remove("hidden");
         document.getElementById("tabAnalytics").classList.add("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
       } else {
         document.getElementById("tabWorkout").classList.add("hidden");
         document.getElementById("tabAnalytics").classList.remove("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
         renderAnalyticsDashboard();
       }
     }
@@ -2195,12 +2190,12 @@
       userList.forEach(u => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="p-3 font-bold">${u.user}</td>
-          <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-black ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800'}">${u.status}</span></td>
+          <td class="p-3 font-semibold">${u.user}</td>
+          <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800'}">${u.status}</span></td>
           <td class="p-3 text-center space-x-2">
-            <button onclick="viewUserProfile('${u.user}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-xs font-black transition uppercase tracking-wider shadow-sm">Profil & Stats</button>
-            ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:bg-emerald-700 transition uppercase tracking-wider shadow-sm">Approve</button>` : ''}
-            <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:bg-red-700 transition uppercase tracking-wider shadow-sm">Delete</button>
+            <button onclick="viewUserProfile('${u.user}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition shadow-sm">Profil & Stats</button>
+            ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-emerald-700 transition shadow-sm">Approve</button>` : ''}
+            <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-red-700 transition shadow-sm">Delete</button>
           </td>
         `;
         userTbody.appendChild(tr);
@@ -2212,109 +2207,24 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="p-2.5 themed-text-muted">${new Date(l.time).toLocaleTimeString()}</td>
-          <td class="p-2.5 font-bold">${l.user}</td>
+          <td class="p-2.5 font-semibold">${l.user}</td>
           <td class="p-2.5">${l.activity}</td>
         `;
         logTbody.appendChild(tr);
       });
     }
 
-    // DASHBOARD ADMIN: LIHAT PROFIL & STATISTIK USER DETIL
-    function viewUserProfile(targetUser) {
-      const container = document.getElementById("adminUserDetailContainer");
-      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${targetUser}</b>`;
-      
-      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${targetUser}`) || "{}");
-      
-      let totalLogs = 0;
-      let totalVolume = 0;
-      let lastActive = "No logs yet";
-
-      // Hitung statistik dari LocalStorage
-      for (let key in localStorage) {
-        if (key.startsWith(`workout_data_${targetUser}_`)) {
-          const logs = JSON.parse(localStorage.getItem(key) || "[]");
-          totalLogs += logs.length;
-          logs.forEach(r => {
-            totalVolume += ((r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps) * r.working_load);
-            if (r.updated_at) {
-              const d = new Date(r.updated_at);
-              lastActive = d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-          });
-        }
-      }
-
-      document.getElementById("userStatsOverview").innerHTML = `
-        <div class="themed-subcard p-4 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-semibold">Total Logged Sets</span>
-          <span class="text-xl font-black text-blue-600 dark:text-blue-400">${totalLogs} records</span>
-        </div>
-        <div class="themed-subcard p-4 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-semibold">Accumulated Volume</span>
-          <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">${totalVolume.toLocaleString()} kg</span>
-        </div>
-        <div class="themed-subcard p-4 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-semibold">Last Recorded Activity</span>
-          <span class="text-sm font-bold">${lastActive}</span>
-        </div>
-      `;
-
-      const benchList = document.getElementById("userBenchmarksList");
-      benchList.innerHTML = "";
-      
-      if (Object.keys(benchmarks).length === 0) {
-        benchList.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No custom benchmark baseline saved for this user.</p>`;
-      } else {
-        Object.keys(benchmarks).forEach(ex => {
-          const div = document.createElement("div");
-          div.className = "themed-subcard p-2 rounded-lg border text-xs flex justify-between items-center";
-          div.innerHTML = `<span class="truncate font-semibold">${ex}:</span> <b class="text-blue-600 dark:text-blue-400 ml-1">${benchmarks[ex]} kg</b>`;
-          benchList.appendChild(div);
+    async function callApi(payload) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
         });
-      }
-
-      container.classList.remove("hidden");
-      lucide.createIcons();
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    async function approveUser(username) {
-      showSpinner(`Approving user access: ${username}...`);
-      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser: username });
-      hideSpinner();
-      if (res.status === "success") {
-        showToast(`User ${username} approved!`, "success");
-        loadAdminData();
-      } else {
-        await showModernAlert(res.message || "Approval failed.", "Action Failed", "alert-circle");
-      }
-    }
-
-    async function deleteUser(username) {
-      const confirmed = await showModernConfirm(`Are you sure you want to PERMANENTLY delete user "${username}" and all associated workout logs?`, "Delete User Account", "user-x");
-      if (confirmed) {
-        showSpinner(`Deleting user account: ${username}...`);
-        const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser: username });
-        hideSpinner();
-        
-        // Clear local storage data for user
-        const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]").filter(u => u !== username);
-        localStorage.setItem("registered_users_list", JSON.stringify(localUsers));
-        localStorage.removeItem(`workout_benchmarks_${username}`);
-        
-        for (let key in localStorage) {
-          if (key.startsWith(`workout_data_${username}_`)) {
-            localStorage.removeItem(key);
-          }
-        }
-
-        showToast(`User ${username} deleted successfully.`, "success");
-        closeUserDetail();
-        loadAdminData();
+        return await response.json();
+      } catch (err) {
+        console.error("API Call Error:", err);
+        return { status: "error", message: err.message };
       }
     }
   </script>
