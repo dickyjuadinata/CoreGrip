@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Resistance Training Log App</title>
+  <title>Resistance Training Log & Auto-Progression System</title>
   
   <!-- PWA Meta Tags & Manifest -->
   <meta name="theme-color" content="#0f172a">
-  <meta name="description" content="Aplikasi pencatat latihan beban dan progres otomatis.">
+  <meta name="description" content="Enterprise-grade resistance training log and auto-progression tracking application.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,7 +24,7 @@
       "display": "standalone",
       "background_color": "#f1f5f9",
       "theme_color": "#0f172a",
-      "description": "Aplikasi pencatat latihan beban dan progres otomatis.",
+      "description": "Enterprise-grade resistance training log and auto-progression tracking application.",
       "icons": [
         {
           "src": "https://cdn-icons-png.flaticon.com/512/2548/2548537.png",
@@ -67,17 +67,17 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
 
   <!-- TOP NAVBAR -->
-  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <div class="bg-indigo-600 p-2 rounded-lg shrink-0">
           <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base md:text-lg leading-tight">Workout Log & Progression</h1>
+          <h1 class="font-bold text-base md:text-lg leading-tight">Resistance Training & Auto-Progression</h1>
           <p class="text-xs text-slate-400 flex items-center gap-1.5" id="syncStatus">
             <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
-            <span id="statusText">Online - Terhubung</span>
+            <span id="statusText">Online - Connected</span>
           </p>
         </div>
       </div>
@@ -87,7 +87,7 @@
           User
         </span>
         <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition flex items-center gap-1 active:scale-95">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Logout</span>
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
@@ -99,35 +99,35 @@
     <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-md mx-auto my-8 md:my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
       <div class="flex border-b border-slate-100 bg-slate-50">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Login</button>
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Sign In</button>
         <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username</label>
-          <input type="text" id="loginUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN</label>
-          <input type="password" id="loginPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-indigo-200 active:scale-[0.98]">
-          Masuk ke Aplikasi
+          Sign In to Portal
         </button>
       </form>
 
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Username Baru</label>
-          <input type="text" id="regUsername" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">New Username</label>
+          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Buat PIN</label>
-          <input type="password" id="regPin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Create PIN</label>
+          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-200 active:scale-[0.98]">
-          Daftar Akun Baru
+          Create Account
         </button>
       </form>
     </div>
@@ -139,10 +139,10 @@
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="flex border-b border-slate-100 bg-slate-50">
           <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2">
-            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Log Workout
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
           </button>
           <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-500 hover:text-slate-700 flex items-center gap-2">
-            <i data-lucide="line-chart" class="w-4 h-4"></i> Progress Analytics
+            <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
           </button>
         </div>
 
@@ -153,26 +153,25 @@
           <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="bg-slate-50 p-3 sm:p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4 transition-all">
             <div class="flex justify-between items-center flex-wrap gap-2">
               <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Tambah / Edit Exercise Log
+                <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Log / Edit Exercise Record
               </h3>
               <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
-                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Sesi Hari Ini
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
               </span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
-              <!-- PERMINTAAN 3 & 4: Kolom Program/Week Pindah ke Sini & Hanya Input Angka -->
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Week / Minggu</label>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-slate-200 text-slate-600 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-300">Week</span>
                   <input type="number" id="inputProject" min="1" value="1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Session / Day</label>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Training Session</label>
                 <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                  <option value="">-- Pilih Sesi --</option>
+                  <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
                   <option value="Tue - Lower A">Tue - Lower A</option>
                   <option value="Thu - Upper B">Thu - Upper B</option>
@@ -180,18 +179,17 @@
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Nama Latihan (Exercise)</label>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Exercise Name</label>
                 <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                  <option value="">-- Pilih Sesi Terlebih Dahulu --</option>
+                  <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
-                <!-- PERMINTAAN 1: Kolom Berat Badan -->
-                <label class="block text-xs font-bold text-slate-500 mb-1">Berat Badan Hari Ini (kg)</label>
-                <input type="number" step="0.1" id="inputBodyWeight" placeholder="misal: 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Body Weight (kg)</label>
+                <input type="number" step="0.1" id="inputBodyWeight" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Target Reps Range</label>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Target Rep Range</label>
                 <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 focus:outline-none cursor-not-allowed">
               </div>
             </div>
@@ -200,19 +198,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">
-                  Working Load Utama (kg)
-                  <span class="text-[10px] text-indigo-600 font-normal block">*Otomatis dari Riwayat 4 Minggu</span>
+                  Primary Working Load (kg)
+                  <span class="text-[10px] text-indigo-600 font-normal block">*Auto-calculated from 4-week history</span>
                 </label>
                 <input type="number" step="0.1" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
 
               <!-- Side Load Display -->
               <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
-                <span class="font-bold text-slate-700 block mb-1">Beban Per Sisi (Side Load):</span>
+                <span class="font-bold text-slate-700 block mb-1">Side Load Calculation:</span>
                 <div class="text-slate-800 font-semibold text-sm" id="sideLoadDisplay">
-                  - kg / sisi
+                  - kg / side
                 </div>
-                <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Otomatis dikalkulasi berdasarkan jenis alat</span>
+                <span class="text-[10px] text-slate-400 block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
               </div>
 
               <!-- Warmup Sets Preview Box -->
@@ -230,12 +228,12 @@
             <!-- Auto-Regulation Notice Banner -->
             <div id="autoRegNotice" class="hidden bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2">
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
-              <span id="autoRegText">Terdeteksi kegagalan target reps. Working Load otomatis di-Deload.</span>
+              <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
             <!-- Actual Reps Achieved -->
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-2">Hasil Reps Kerja (Actual Reps Per Set):</label>
+              <label class="block text-xs font-bold text-slate-500 mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs text-slate-400 block mb-1">Set 1</span>
@@ -258,19 +256,19 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Rest Time Target</label>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Rest Interval Target</label>
                 <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-medium text-slate-600 focus:outline-none cursor-not-allowed">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Catatan Tambahan</label>
-                <input type="text" id="inputCatatan" placeholder="Catatan RPE, Form, atau Fatigue..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes</label>
+                <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
               </div>
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
               <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium active:scale-95">Reset</button>
               <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200 active:scale-95">
-                Simpan Item Latihan
+                Save Exercise Record
               </button>
             </div>
           </form>
@@ -286,7 +284,7 @@
                   <th class="px-4 py-3 text-right">Load (Side / Total)</th>
                   <th class="px-4 py-3 text-center">Reps (Set 1-4)</th>
                   <th class="px-4 py-3 text-right text-emerald-400">Next Load (kg)</th>
-                  <th class="px-4 py-3 text-center">Aksi</th>
+                  <th class="px-4 py-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="workoutTableBody" class="divide-y divide-slate-100 bg-white">
@@ -300,7 +298,7 @@
         <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
             <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Total Volume Latihan per Session (kg × Reps)
+              <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Total Session Volume (kg × Reps)
             </h3>
             <div class="h-72 w-full">
               <canvas id="volumeChart"></canvas>
@@ -316,24 +314,24 @@
     <div id="adminSection" class="hidden space-y-6">
       <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 class="text-xl font-bold">Admin Control Center</h2>
-          <p class="text-xs text-slate-400">Kelola pengguna, persetujuan akun, dan log aktivitas sistem.</p>
+          <h2 class="text-xl font-bold">Admin Management Console</h2>
+          <p class="text-xs text-slate-400">Manage system users, access approvals, and audit activity logs.</p>
         </div>
         <button onclick="loadAdminData()" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl text-sm font-bold transition">
-          Refresh Data Admin
+          Refresh Console
         </button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h3 class="font-bold text-slate-800">Manajemen Pengguna</h3>
+          <h3 class="font-bold text-slate-800">User Management</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-slate-100 text-xs font-bold uppercase text-slate-500">
                 <tr>
                   <th class="p-3">User</th>
                   <th class="p-3">Status</th>
-                  <th class="p-3 text-center">Aksi</th>
+                  <th class="p-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="adminUsersTable" class="divide-y divide-slate-100">
@@ -343,14 +341,14 @@
         </div>
 
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h3 class="font-bold text-slate-800">Activity Logs</h3>
+          <h3 class="font-bold text-slate-800">System Activity Audit Logs</h3>
           <div class="overflow-y-auto max-h-80 custom-scrollbar">
             <table class="w-full text-xs text-left">
               <thead class="bg-slate-100 text-slate-500 uppercase sticky top-0">
                 <tr>
-                  <th class="p-2">Waktu</th>
+                  <th class="p-2">Timestamp</th>
                   <th class="p-2">User</th>
-                  <th class="p-2">Aktivitas</th>
+                  <th class="p-2">Activity Description</th>
                 </tr>
               </thead>
               <tbody id="adminLogsTable" class="divide-y divide-slate-100">
@@ -363,6 +361,33 @@
 
   </main>
 
+  <!-- MODERN UI LOADING SPINNER OVERLAY -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl border border-slate-100 flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+      <p id="loadingMessage" class="text-xs font-semibold text-slate-700">Processing Request...</p>
+    </div>
+  </div>
+
+  <!-- MODERN UI POP-UP MODAL (ALERT & CONFIRM) -->
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+    <div class="bg-white max-w-sm w-full rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
+      <div class="flex items-start gap-3">
+        <div id="modalIconContainer" class="p-2 rounded-xl bg-indigo-50 text-indigo-600 shrink-0">
+          <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold text-slate-800">System Notification</h3>
+          <p id="modalMessage" class="text-xs text-slate-600 mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+      <div id="modalFooter" class="flex justify-end gap-2 pt-2">
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-100 rounded-xl transition hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-md shadow-indigo-200">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyHYgqWZCLn6hoIsp9gikqwNVn0OIZfLYXeomMuxAY_8PisMP2k63rF4UYgjYXieAk7/exec";
 
@@ -374,7 +399,6 @@
     let myChart = null;
     let originalBaseLoad = 0;
 
-    // Variabel penyimpanan persistent untuk Sesi & Berat Badan saat ini
     let lastSelectedSession = "";
     let lastBodyWeight = "";
 
@@ -429,6 +453,103 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
+    // MODERN UI SPINNER HELPER
+    function showSpinner(msg = "Processing Request...") {
+      document.getElementById("loadingMessage").innerText = msg;
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.remove("hidden");
+      setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+    }
+
+    function hideSpinner() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.add("opacity-0");
+      setTimeout(() => overlay.classList.add("hidden"), 200);
+    }
+
+    // MODERN UI POP-UP MODAL HELPERS (Alert & Confirm Replacement)
+    function showModernAlert(message, title = "System Notification", iconName = "info") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.add("hidden");
+        confirmBtn.innerText = "OK";
+        confirmBtn.className = "px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-md shadow-indigo-200";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function showModernConfirm(message, title = "Confirm Action", iconName = "help-circle") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Cancel";
+        confirmBtn.innerText = "Confirm";
+        confirmBtn.className = "px-4 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-md shadow-red-200";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
     function mround2_5(val) {
       return Math.round(val / 2.5) * 2.5;
     }
@@ -441,7 +562,6 @@
       return Math.round(val * 4) / 4;
     }
 
-    // PERMINTAAN 2: Beban Pull-Up adalah Beban Berat Badan (ditambah working load jika ada)
     function calculateSideWeight(exercise, totalLoad) {
       const exLower = exercise.toLowerCase();
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
@@ -460,11 +580,10 @@
       return roundToQuarter(side);
     }
 
-    // SESSION CHANGE & HIGHLIGHT
     function onSessionChange(sessionVal) {
       lastSelectedSession = sessionVal;
       const exerciseSelect = document.getElementById("inputExercise");
-      exerciseSelect.innerHTML = '<option value="">-- Pilih Latihan --</option>';
+      exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
 
       if (!sessionVal) return;
 
@@ -561,7 +680,7 @@
       if (bwVal) lastBodyWeight = bwVal;
 
       if (!exercise) {
-        sideDisplay.innerText = "- kg / sisi";
+        sideDisplay.innerText = "- kg / side";
         calculateWarmupPreview(0, exercise);
         return;
       }
@@ -569,19 +688,18 @@
       let sideWeight = calculateSideWeight(exercise, load);
       const exLower = exercise.toLowerCase();
 
-      // PERMINTAAN 2: Penyesuaian keterangan beban Pull-Up
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
         const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
-        notice.innerText = `*Pull-Up: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
-        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Beban`;
+        notice.innerText = `*Pull-Up Formula: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Load`;
       } else if (exLower.includes("barbell")) {
-        notice.innerText = "*Rumus Barbell: (Total Load - 10kg) / 2";
-        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / sisi`;
+        notice.innerText = "*Barbell Formula: (Total Load - 10kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
       } else if (exLower.includes("dumbbell")) {
-        notice.innerText = "*Rumus Dumbbell: (Total Load - 2.5kg) / 2";
-        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / sisi`;
+        notice.innerText = "*Dumbbell Formula: (Total Load - 2.5kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
       } else {
-        notice.innerText = "*Beban Total (Cable / Machine)";
+        notice.innerText = "*Total Stack Load (Cable / Machine)";
         sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total`;
       }
 
@@ -645,7 +763,7 @@
         calculateLoadDetails();
 
         autoNotice.classList.remove("hidden");
-        autoText.innerText = `Kegagalan target (${minTarget} reps) pada Set ${failedSet}! Working load disesuaikan dari ${originalBaseLoad} kg ke ${deloadLoad} kg.`;
+        autoText.innerText = `Rep target failure (${minTarget} reps) on Set ${failedSet}! Working load adjusted from ${originalBaseLoad} kg to ${deloadLoad} kg.`;
       } else {
         document.getElementById("inputWorkingLoad").value = originalBaseLoad;
         calculateLoadDetails();
@@ -709,11 +827,11 @@
       const txt = document.getElementById("statusText");
       if (navigator.onLine) {
         ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block";
-        txt.innerText = "Online - Terhubung";
+        txt.innerText = "Online - Connected";
         autoSyncToServer();
       } else {
         ind.className = "w-2 h-2 rounded-full bg-red-500 inline-block";
-        txt.innerText = "Offline - Mode Lokal";
+        txt.innerText = "Offline - Local Storage Mode";
       }
     }
 
@@ -773,7 +891,10 @@
       const username = document.getElementById("loginUsername").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
 
+      showSpinner("Authenticating credentials...");
       const res = await callApi({ action: "login", username, pin });
+      hideSpinner();
+
       if (res.status === "success") {
         currentUser = username;
         isAdmin = res.isAdmin;
@@ -781,7 +902,7 @@
         localStorage.setItem("workout_is_admin", isAdmin);
         showAppUI();
       } else {
-        alert(res.message);
+        await showModernAlert(res.message, "Authentication Failed", "alert-circle");
       }
     }
 
@@ -790,8 +911,11 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
+      showSpinner("Registering new user...");
       const res = await callApi({ action: "register", username, pin });
-      alert(res.message);
+      hideSpinner();
+
+      await showModernAlert(res.message, res.status === "success" ? "Registration Submitted" : "Registration Failed", res.status === "success" ? "check-circle" : "alert-circle");
       if (res.status === "success") {
         switchAuthTab('login');
       }
@@ -824,7 +948,10 @@
       }
 
       if (navigator.onLine) {
+        showSpinner("Loading user workout history...");
         const res = await callApi({ action: "getData", username: currentUser, project: currentProject });
+        hideSpinner();
+
         if (res.status === "success") {
           workoutRows = res.rows || [];
           renderWorkoutTable();
@@ -837,7 +964,6 @@
       const tbody = document.getElementById("workoutTableBody");
       tbody.innerHTML = "";
 
-      // PERMINTAAN 1: Apabila data latihan sudah ada pada sesi, kunci otomatis kolom berat badan
       const bwInput = document.getElementById("inputBodyWeight");
       if (workoutRows.length > 0) {
         const firstBw = workoutRows.find(r => r.body_weight > 0);
@@ -853,7 +979,7 @@
       }
 
       if (workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">Belum ada data latihan untuk program ini.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No exercise logs recorded for this week program.</td></tr>`;
         return;
       }
 
@@ -869,7 +995,7 @@
           <td class="px-4 py-3 font-bold text-indigo-900">${row.exercise}</td>
           <td class="px-4 py-3 text-center bg-slate-50 font-medium">${row.target_reps}</td>
           <td class="px-4 py-3 text-right font-bold text-slate-800">
-            <span class="text-indigo-600">${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/sisi'}</span> 
+            <span class="text-indigo-600">${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/side'}</span> 
             <span class="text-xs text-slate-400 block">(${row.working_load} kg Total Load)</span>
           </td>
           <td class="px-4 py-3 text-center">
@@ -882,8 +1008,8 @@
           </td>
           <td class="px-4 py-3 text-right font-bold text-emerald-600 bg-emerald-50/50">${row.next_load} kg</td>
           <td class="px-4 py-3 text-center space-x-1">
-            <button onclick="editWorkout(${idx})" class="p-1 text-slate-400 hover:text-indigo-600"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-            <button onclick="deleteWorkout(${idx})" class="p-1 text-slate-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="editWorkout(${idx})" class="p-1 text-slate-400 hover:text-indigo-600" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            <button onclick="deleteWorkout(${idx})" class="p-1 text-slate-400 hover:text-red-600" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -927,7 +1053,6 @@
         workoutRows.push(rowObj);
       }
 
-      // PERMINTAAN 1: Kunci input berat badan secara otomatis setelah input exercise awal disimpan
       if (body_weight > 0) {
         lastBodyWeight = body_weight;
         const bwInput = document.getElementById("inputBodyWeight");
@@ -969,8 +1094,9 @@
       checkAutoRegulation();
     }
 
-    function deleteWorkout(idx) {
-      if (confirm("Hapus item latihan ini?")) {
+    async function deleteWorkout(idx) {
+      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise log?", "Delete Exercise Record", "trash-2");
+      if (confirmed) {
         workoutRows.splice(idx, 1);
         renderWorkoutTable();
         saveToLocalStorage();
@@ -1029,11 +1155,10 @@
       });
 
       if (txt) {
-        txt.innerText = res.status === "success" ? "Online - Terhubung" : "Sync Gagal";
+        txt.innerText = res.status === "success" ? "Online - Connected" : "Sync Failed";
       }
     }
 
-    // PERMINTAAN 3: Format nama project berdasarkan input angka saja
     function changeProjectFreetext() {
       const val = document.getElementById("inputProject").value.trim();
       if (val !== "") {
@@ -1092,7 +1217,10 @@
     }
 
     async function loadAdminData() {
+      showSpinner("Fetching administration data...");
       const res = await callApi({ action: "getAdminData", username: currentUser });
+      hideSpinner();
+
       if (res.status === "success") {
         const userTbody = document.getElementById("adminUsersTable");
         userTbody.innerHTML = "";
@@ -1102,8 +1230,8 @@
             <td class="p-3 font-semibold">${u.user}</td>
             <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${u.status}</span></td>
             <td class="p-3 text-center space-x-2">
-              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-xs">Approve</button>` : ''}
-              <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs">Delete</button>
+              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-emerald-700 transition">Approve</button>` : ''}
+              <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-700 transition">Delete</button>
             </td>
           `;
           userTbody.appendChild(tr);
@@ -1124,15 +1252,20 @@
     }
 
     async function approveUser(targetUser) {
+      showSpinner("Approving account access...");
       const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser });
-      alert(res.message);
+      hideSpinner();
+      await showModernAlert(res.message, "User Status Updated", "check-circle");
       loadAdminData();
     }
 
     async function deleteUser(targetUser) {
-      if (confirm(`Hapus permanen user ${targetUser} beserta seluruh datanya?`)) {
+      const confirmed = await showModernConfirm(`Permanently delete user '${targetUser}' and purge all stored workout logs?`, "Confirm User Deletion", "alert-triangle");
+      if (confirmed) {
+        showSpinner("Deleting user account...");
         const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser });
-        alert(res.message);
+        hideSpinner();
+        await showModernAlert(res.message, "Account Purged", "check-circle");
         loadAdminData();
       }
     }
@@ -1147,7 +1280,7 @@
         return await response.json();
       } catch (err) {
         console.error("API Error:", err);
-        return { status: "error", message: "Gagal terhubung ke server." };
+        return { status: "error", message: "Failed to establish server connection." };
       }
     }
   </script>
