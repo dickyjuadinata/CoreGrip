@@ -198,7 +198,7 @@
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm box-border h-[calc(1.5rem+8px)] md:h-auto">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -2227,67 +2227,7 @@
         document.getElementById("tabAnalytics").classList.remove("hidden");
         document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
         document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
-        renderAnalyticsDashboard();
       }
-    }
-
-    async function loadAdminData() {
-      if (!isAdmin) return;
-      showSpinner("Loading admin console data...");
-      const res = await callApi({ action: "getAdminData" });
-      hideSpinner();
-
-      if (res.status === "success") {
-        renderAdminUsers(res.users || []);
-        renderAdminLogs(res.logs || []);
-      }
-    }
-
-    function renderAdminUsers(users) {
-      const tbody = document.getElementById("adminUsersTable");
-      tbody.innerHTML = "";
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "border-b border-gray-200 dark:border-slate-800";
-        tr.innerHTML = `
-          <td class="p-3 font-semibold">${u.username}</td>
-          <td class="p-3"><span class="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-semibold">${u.status || 'Active'}</span></td>
-          <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u.username}')" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg font-semibold transition">View Profile</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderAdminLogs(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      tbody.innerHTML = "";
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "border-b border-gray-200 dark:border-slate-800";
-        tr.innerHTML = `
-          <td class="p-2.5 themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold">${l.username || '-'}</td>
-          <td class="p-2.5">${l.description || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    async function viewUserDetail(username) {
-      showSpinner("Fetching user details...");
-      const res = await callApi({ action: "getUserDetail", username });
-      hideSpinner();
-
-      if (res.status === "success") {
-        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: ${username}`;
-      }
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
   </script>
 </body>
