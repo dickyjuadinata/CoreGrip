@@ -736,6 +736,21 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
+    // API Call Utility
+    async function callApi(payload) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        return await response.json();
+      } catch (err) {
+        console.error("API Call Error:", err);
+        return { status: "error", message: err.message };
+      }
+    }
+
     // FLOATING TOAST NOTIFICATION SYSTEM
     function showToast(message, type = "info", duration = 3000) {
       const container = document.getElementById("toastContainer");
@@ -2221,45 +2236,42 @@
           const logs = JSON.parse(localStorage.getItem(key) || "[]");
           totalLogs += logs.length;
           logs.forEach(r => {
-            const reps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
-            totalVolume += (reps * (r.working_load || 0));
+            totalVolume += ((r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps) * r.working_load);
             if (r.updated_at) {
-              lastActive = new Date(r.updated_at).toLocaleDateString();
+              const d = new Date(r.updated_at);
+              lastActive = d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
           });
         }
       }
 
-      // Summary Overview
       document.getElementById("userStatsOverview").innerHTML = `
-        <div class="themed-subcard p-3.5 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-bold">Total Exercises Logged</span>
-          <span class="text-xl font-black text-blue-600 dark:text-blue-400">${totalLogs} Logs</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-semibold">Total Logged Sets</span>
+          <span class="text-xl font-black text-blue-600 dark:text-blue-400">${totalLogs} records</span>
         </div>
-        <div class="themed-subcard p-3.5 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-bold">Total Volume Load</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-semibold">Accumulated Volume</span>
           <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">${totalVolume.toLocaleString()} kg</span>
         </div>
-        <div class="themed-subcard p-3.5 rounded-xl border">
-          <span class="text-xs themed-text-muted block font-bold">Last Activity</span>
-          <span class="text-base font-bold">${lastActive}</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-semibold">Last Recorded Activity</span>
+          <span class="text-sm font-bold">${lastActive}</span>
         </div>
       `;
 
-      // Benchmarks list
-      const benchContainer = document.getElementById("userBenchmarksList");
-      benchContainer.innerHTML = "";
-      if (Object.keys(benchmarks).length > 0) {
-        for (let ex in benchmarks) {
-          benchContainer.innerHTML += `
-            <div class="themed-subcard p-2 rounded-lg border text-xs">
-              <span class="themed-text-muted block text-[10px] truncate">${ex}</span>
-              <span class="font-black text-blue-600 dark:text-blue-400">${benchmarks[ex]} kg</span>
-            </div>
-          `;
-        }
+      const benchList = document.getElementById("userBenchmarksList");
+      benchList.innerHTML = "";
+      
+      if (Object.keys(benchmarks).length === 0) {
+        benchList.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No custom benchmark baseline saved for this user.</p>`;
       } else {
-        benchContainer.innerHTML = `<p class="text-xs themed-text-muted italic col-span-4">No baseline benchmark records found.</p>`;
+        Object.keys(benchmarks).forEach(ex => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2 rounded-lg border text-xs flex justify-between items-center";
+          div.innerHTML = `<span class="truncate font-semibold">${ex}:</span> <b class="text-blue-600 dark:text-blue-400 ml-1">${benchmarks[ex]} kg</b>`;
+          benchList.appendChild(div);
+        });
       }
 
       container.classList.remove("hidden");
@@ -2270,52 +2282,39 @@
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
 
-    async function approveUser(targetUser) {
-      showSpinner("Approving account access...");
-      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser });
+    async function approveUser(username) {
+      showSpinner(`Approving user access: ${username}...`);
+      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser: username });
       hideSpinner();
-      await showModernAlert(res.message || "User approved successfully.", "User Status Updated", "check-circle");
-      loadAdminData();
-    }
-
-    async function deleteUser(targetUser) {
-      const confirmed = await showModernConfirm(`Permanently delete user '${targetUser}' and purge all stored workout logs?`, "Confirm User Deletion", "alert-triangle");
-      if (confirmed) {
-        showSpinner("Deleting user account...");
-        
-        // Hapus dari daftar user lokal
-        let localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-        localUsers = localUsers.filter(u => u !== targetUser);
-        localStorage.setItem("registered_users_list", JSON.stringify(localUsers));
-        localStorage.removeItem(`workout_benchmarks_${targetUser}`);
-
-        const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser });
-        hideSpinner();
-        await showModernAlert(res.message || "User deleted successfully.", "Account Purged", "check-circle");
-        closeUserDetail();
+      if (res.status === "success") {
+        showToast(`User ${username} approved!`, "success");
         loadAdminData();
+      } else {
+        await showModernAlert(res.message || "Approval failed.", "Action Failed", "alert-circle");
       }
     }
 
-    async function callApi(payload) {
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status}`);
+    async function deleteUser(username) {
+      const confirmed = await showModernConfirm(`Are you sure you want to PERMANENTLY delete user "${username}" and all associated workout logs?`, "Delete User Account", "user-x");
+      if (confirmed) {
+        showSpinner(`Deleting user account: ${username}...`);
+        const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser: username });
+        hideSpinner();
+        
+        // Clear local storage data for user
+        const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]").filter(u => u !== username);
+        localStorage.setItem("registered_users_list", JSON.stringify(localUsers));
+        localStorage.removeItem(`workout_benchmarks_${username}`);
+        
+        for (let key in localStorage) {
+          if (key.startsWith(`workout_data_${username}_`)) {
+            localStorage.removeItem(key);
+          }
         }
 
-        return await response.json();
-      } catch (err) {
-        console.error("API Error:", err);
-        return { 
-          status: "error", 
-          message: "Failed to establish server connection. Please verify script deployment permissions." 
-        };
+        showToast(`User ${username} deleted successfully.`, "success");
+        closeUserDetail();
+        loadAdminData();
       }
     }
   </script>
