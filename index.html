@@ -171,7 +171,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_bench" placeholder="" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
@@ -192,7 +192,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_squat" placeholder="" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
@@ -213,7 +213,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_lat" placeholder="" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                 </div>
                 <div>
                   <label class="text-[10px] text-slate-400 block">Reps</label>
@@ -599,27 +599,29 @@
       "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
+    // Disesuaikan berdasarkan beban hasil assessment: Bench Press 20kg, Squat 20kg, Lateral Raises 5kg
+    // beserta persentase derivasi Sports Science & Exercise Physiology
     let initialBenchmarkLoads = {
-      "Barbell Bench Press": 62.5,
-      "Chest Supported Dumbbell Row": 22.5,
+      "Barbell Bench Press": 20.0,
+      "Chest Supported Dumbbell Row": 20.0, // 100% Bench Press (Horizontal Pull)
       "Bodyweight Pull-Ups": 0.0,
-      "Barbell Overhead Press": 40.0,
-      "Dumbbell Lateral Raises - A": 7.5,
-      "Triceps Pressdowns (Cable)": 10.0,
-      "Dumbbell Hammer Curl": 7.5,
-      "Barbell Squats": 62.5,
-      "Romanian Deadlifts": 50.0,
-      "Standing Barbell Calf Raises - A": 15.0,
-      "Incline Dumbbell Press": 20.0,
-      "Bent-over Barbell Row": 45.0,
-      "Seated Dumbbell Press": 17.5,
-      "Face Pulls (Cable)": 12.5,
-      "Dumbbell Lateral Raises - B": 7.5,
-      "Barbell Curl": 20.0,
-      "Cable Overhead Triceps Extension": 17.5,
-      "Conventional Deadlift": 92.5,
-      "Dumbbell Bulgarian Split Squat": 10.0,
-      "Standing Barbell Calf Raises - B": 15.0
+      "Barbell Overhead Press": 12.5,       // ~62.5% Bench Press (Vertical Push)
+      "Dumbbell Lateral Raises - A": 5.0,  // Assessment Baseline
+      "Triceps Pressdowns (Cable)": 7.5,    // ~37.5% Bench Press (Push Isolation)
+      "Dumbbell Hammer Curl": 7.5,          // ~37.5% Bench Press (Pull Isolation)
+      "Barbell Squats": 20.0,               // Assessment Baseline
+      "Romanian Deadlifts": 17.5,           // ~85% Squat (Posterior Chain)
+      "Standing Barbell Calf Raises - A": 12.5, // ~60% Squat
+      "Incline Dumbbell Press": 12.5,       // ~60% Bench Press
+      "Bent-over Barbell Row": 20.0,        // 100% Bench Press
+      "Seated Dumbbell Press": 10.0,        // ~50% Bench Press
+      "Face Pulls (Cable)": 10.0,           // ~50% Bench Press
+      "Dumbbell Lateral Raises - B": 5.0,  // Assessment Baseline
+      "Barbell Curl": 7.5,                  // ~37.5% Bench Press
+      "Cable Overhead Triceps Extension": 7.5, // ~37.5% Bench Press
+      "Conventional Deadlift": 25.0,        // ~125% Squat (Heavy Posterior Chain)
+      "Dumbbell Bulgarian Split Squat": 7.5,// ~37.5% Squat
+      "Standing Barbell Calf Raises - B": 12.5 // ~60% Squat
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
@@ -1247,31 +1249,45 @@
 
       let userBenchmarks = {};
 
-      const benchLoad = parseFloat(document.getElementById("test_load_bench").value);
-      const benchReps = parseInt(document.getElementById("test_reps_bench").value, 10);
-      const benchRpe = parseFloat(document.getElementById("test_rpe_bench").value);
+      const benchLoad = parseFloat(document.getElementById("test_load_bench").value) || 20;
+      const benchReps = parseInt(document.getElementById("test_reps_bench").value, 10) || 7;
+      const benchRpe = parseFloat(document.getElementById("test_rpe_bench").value) || 8.0;
 
-      if (!isNaN(benchLoad) && !isNaN(benchReps)) {
-        userBenchmarks["Barbell Bench Press"] = first_set_assessment("COMPOUND", benchLoad, benchReps, benchRpe || 8.0);
-      }
+      let assessedBench = first_set_assessment("COMPOUND", benchLoad, benchReps, benchRpe);
+      userBenchmarks["Barbell Bench Press"] = assessedBench;
 
-      const squatLoad = parseFloat(document.getElementById("test_load_squat").value);
-      const squatReps = parseInt(document.getElementById("test_reps_squat").value, 10);
-      const squatRpe = parseFloat(document.getElementById("test_rpe_squat").value);
+      const squatLoad = parseFloat(document.getElementById("test_load_squat").value) || 20;
+      const squatReps = parseInt(document.getElementById("test_reps_squat").value, 10) || 7;
+      const squatRpe = parseFloat(document.getElementById("test_rpe_squat").value) || 8.0;
 
-      if (!isNaN(squatLoad) && !isNaN(squatReps)) {
-        userBenchmarks["Barbell Squats"] = first_set_assessment("COMPOUND", squatLoad, squatReps, squatRpe || 8.0);
-      }
+      let assessedSquat = first_set_assessment("COMPOUND", squatLoad, squatReps, squatRpe);
+      userBenchmarks["Barbell Squats"] = assessedSquat;
 
-      const latLoad = parseFloat(document.getElementById("test_load_lat").value);
-      const latReps = parseInt(document.getElementById("test_reps_lat").value, 10);
-      const latRpe = parseFloat(document.getElementById("test_rpe_lat").value);
+      const latLoad = parseFloat(document.getElementById("test_load_lat").value) || 5;
+      const latReps = parseInt(document.getElementById("test_reps_lat").value, 10) || 9;
+      const latRpe = parseFloat(document.getElementById("test_rpe_lat").value) || 8.0;
 
-      if (!isNaN(latLoad) && !isNaN(latReps)) {
-        let assessedLoad = first_set_assessment("ISOLATION", latLoad, latReps, latRpe || 8.0);
-        userBenchmarks["Dumbbell Lateral Raises - A"] = assessedLoad;
-        userBenchmarks["Dumbbell Lateral Raises - B"] = assessedLoad;
-      }
+      let assessedLat = first_set_assessment("ISOLATION", latLoad, latReps, latRpe);
+      userBenchmarks["Dumbbell Lateral Raises - A"] = assessedLat;
+      userBenchmarks["Dumbbell Lateral Raises - B"] = assessedLat;
+
+      // Penyesuaian persentase derivasi Push, Pull, Lower, & Isolation secara terintegrasi
+      userBenchmarks["Chest Supported Dumbbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Bodyweight Pull-Ups"] = 0.0;
+      userBenchmarks["Barbell Overhead Press"] = mround2_5(assessedBench * 0.625);
+      userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
+      userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
+      userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
+      userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Seated Dumbbell Press"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Face Pulls (Cable)"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Barbell Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Conventional Deadlift"] = mround2_5(assessedSquat * 1.25);
+      userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
+      userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
 
       showSpinner("Registering user & setting up initial load baseline...");
       const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
