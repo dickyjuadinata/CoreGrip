@@ -320,20 +320,63 @@
         </div>
 
         <!-- TAB ANALYTICS -->
-        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Total Session Volume (kg × Reps)
-            </h3>
-            <div class="h-72 w-full">
-              <canvas id="volumeChart"></canvas>
+        <div id="tabAnalytics" class="p-3 sm:p-4 md:p-6 space-y-6 hidden">
+          
+          <!-- SMART ALERT BANNERS CONTAINER -->
+          <div id="analyticsAlertsContainer" class="space-y-3">
+            <!-- Dynamic alerts for Plateau and ACWR Danger Zone will be injected here -->
+          </div>
+
+          <!-- ANALYTICS DASHBOARD GRID -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            
+            <!-- MODUL 1: LONGITUDINAL e1RM TREND LINE -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                  <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Modul 1: Trend e1RM (3-Wk SMA)
+                </h3>
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsChart()" class="w-full sm:w-auto px-3 py-1.5 bg-white rounded-xl border border-slate-300 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <!-- Exercise options injected dynamically -->
+                </select>
+              </div>
+              <div class="h-64 sm:h-72 w-full">
+                <canvas id="e1rmChart"></canvas>
+              </div>
             </div>
+
+            <!-- MODUL 2: DUAL-AXIS VOLUME LOAD VS SESSION RPE -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Modul 2: Volume Load vs. Session RPE
+              </h3>
+              <div class="h-64 sm:h-72 w-full">
+                <canvas id="volumeRpeChart"></canvas>
+              </div>
+            </div>
+
+            <!-- MODUL 3: DISTRIBUTION HEATMAP / RADAR (EFFECTIVE SETS) -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="target" class="w-5 h-5 text-indigo-600"></i> Modul 3: Distro Set Efektif (Target 10-20 Set)
+              </h3>
+              <div class="h-64 sm:h-72 w-full flex items-center justify-center">
+                <canvas id="muscleDistributionChart"></canvas>
+              </div>
+            </div>
+
+            <!-- MODUL 4: FATIGUE & READINESS TRACKER (ACWR) -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Modul 4: ACWR Fatigue Tracker
+              </h3>
+              <div class="h-64 sm:h-72 w-full">
+                <canvas id="acwrChart"></canvas>
+              </div>
+            </div>
+
           </div>
         </div>
-
-      </div>
-
-    </div>
 
     <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6">
