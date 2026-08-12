@@ -458,16 +458,11 @@
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
-            <div class="flex justify-between items-center gap-2 pt-2 flex-wrap">
-              <button type="button" onclick="deleteEntireSession()" class="px-3.5 py-2 text-xs text-red-600 hover:text-red-700 dark:text-red-300 bg-red-100 hover:bg-red-200 dark:bg-red-950/70 border border-red-300 dark:border-red-800/80 rounded-xl font-semibold transition flex items-center gap-1.5 active:scale-95 shadow-sm">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Session
+            <div class="flex justify-end items-center gap-2 pt-2">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+              <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
+                Save Exercise Record
               </button>
-              <div class="flex items-center gap-2 ml-auto">
-                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
-                <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
-                  Save Exercise Record
-                </button>
-              </div>
             </div>
           </form>
 
@@ -650,6 +645,26 @@
     <div class="themed-card p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
       <div class="w-10 h-10 border-4 border-gray-300 dark:border-slate-600 border-t-blue-600 rounded-full animate-spin"></div>
       <p id="loadingMessage" class="text-xs font-semibold">Processing Request...</p>
+    </div>
+  </div>
+
+  <!-- GROUPED ACTIONS POPOVER / BOTTOM SHEET -->
+  <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
+    <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
+      <div class="p-1 space-y-1 text-xs font-semibold">
+        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">✏️</span> Edit Exercise
+        </button>
+        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">🗑️</span> Delete Exercise
+        </button>
+      </div>
+      <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
+      <div class="p-1">
+        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
+          <span class="text-base">🚨</span> Delete Entire Session
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1650,14 +1665,71 @@
             </span>
           </td>
           <td class="px-4 py-3.5 text-right font-bold text-emerald-600 dark:text-emerald-400">${row.next_load} kg</td>
-          <td class="px-4 py-3.5 text-center space-x-1">
-            <button onclick="editWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-blue-600 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-            <button onclick="deleteWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-red-500 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <td class="px-4 py-3.5 text-center">
+            <button onclick="openActionPopover(event, ${idx})" class="p-2 themed-text-muted hover:text-blue-600 transition rounded-xl hover:bg-gray-200 dark:hover:bg-slate-800 focus:outline-none" title="Options / Actions">
+              <i data-lucide="more-vertical" class="w-5 h-5"></i>
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
       lucide.createIcons();
+    }
+
+    /* ==========================================================================
+       GROUPED ACTIONS POPOVER & BOTTOM SHEET IMPLEMENTATION
+       ========================================================================== */
+
+    function openActionPopover(event, idx) {
+      event.stopPropagation();
+      const popover = document.getElementById("actionPopover");
+      const menu = document.getElementById("actionPopoverMenu");
+      const row = workoutRows[idx];
+
+      document.getElementById("btnMenuEdit").onclick = () => {
+        closeActionPopover();
+        editWorkout(idx);
+      };
+
+      document.getElementById("btnMenuDeleteExercise").onclick = () => {
+        closeActionPopover();
+        deleteWorkout(idx);
+      };
+
+      document.getElementById("btnMenuDeleteSession").onclick = () => {
+        closeActionPopover();
+        deleteEntireSessionByRow(idx);
+      };
+
+      popover.classList.remove("hidden");
+
+      const isMobile = window.innerWidth < 640;
+      if (isMobile) {
+        menu.style.left = "0";
+        menu.style.right = "0";
+        menu.style.bottom = "0";
+        menu.style.top = "auto";
+        menu.style.width = "100%";
+        menu.classList.add("rounded-t-2xl", "rounded-b-none");
+      } else {
+        menu.classList.remove("rounded-t-2xl", "rounded-b-none");
+        menu.style.width = "16rem";
+        const rect = event.currentTarget.getBoundingClientRect();
+        let top = rect.bottom + 6;
+        let left = rect.left - 200;
+
+        if (left < 10) left = 10;
+        if (top + 160 > window.innerHeight) top = rect.top - 165;
+
+        menu.style.top = `${top}px`;
+        menu.style.left = `${left}px`;
+        menu.style.bottom = "auto";
+        menu.style.right = "auto";
+      }
+    }
+
+    function closeActionPopover() {
+      document.getElementById("actionPopover").classList.add("hidden");
     }
 
     function addOrUpdateWorkout(e) {
@@ -1739,7 +1811,9 @@
     }
 
     async function deleteWorkout(idx) {
-      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise log?", "Delete Exercise Record", "trash-2");
+      const row = workoutRows[idx];
+      const exName = row ? row.exercise : "Exercise";
+      const confirmed = await showModernConfirm(`Hapus ${exName} dari sesi ini?`, "Hapus Exercise", "trash-2");
       if (confirmed) {
         workoutRows.splice(idx, 1);
         renderWorkoutTable();
@@ -1747,26 +1821,19 @@
       }
     }
 
-    async function deleteEntireSession() {
-      const activeSession = document.getElementById("inputDaySession").value;
-      if (!activeSession) {
-        await showModernAlert("Please select a Training Session first to delete.", "Select Session Required", "alert-circle");
-        return;
-      }
+    async function deleteEntireSessionByRow(idx) {
+      const targetSession = workoutRows[idx] ? workoutRows[idx].day_session : "";
+      if (!targetSession) return;
 
-      const count = workoutRows.filter(r => r.day_session === activeSession).length;
-      if (count === 0) {
-        await showModernAlert(`No recorded exercise entries found for session: ${activeSession}`, "Session Empty", "info");
-        return;
-      }
+      const exerciseCount = workoutRows.filter(r => r.day_session === targetSession).length;
+      const confirmed = await showModernConfirm(`Hapus seluruh ${targetSession} beserta ${exerciseCount} exercise di dalamnya? Data tidak dapat dikembalikan.`, "Hapus Entire Session", "alert-triangle");
 
-      const confirmed = await showModernConfirm(`Are you sure you want to delete ALL ${count} exercise logs for "${activeSession}" in ${currentProject || 'this week'}?`, "Delete Entire Session", "trash-2");
       if (confirmed) {
-        workoutRows = workoutRows.filter(r => r.day_session !== activeSession);
+        workoutRows = workoutRows.filter(r => r.day_session !== targetSession);
         renderWorkoutTable();
         saveToLocalStorage();
         resetForm();
-        await showModernAlert(`All exercise entries for "${activeSession}" have been successfully deleted.`, "Session Deleted", "check-circle");
+        await showModernAlert(`Seluruh data sesi ${targetSession} berhasil dihapus.`, "Session Deleted", "check-circle");
       }
     }
 
@@ -2160,13 +2227,11 @@
           <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5"></i>
           <div>
             <span class="font-bold block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
-            Acute workload exceeds safe limits (> 1.50), increasing injury risk and non-functional overreaching. A <b>Deload Phase</b> (40-50% volume reduction) is highly recommended.
+            Acute workload significantly exceeds chronic workload. High risk of overtraining or injury. Consider reducing volume or intensity next week.
           </div>
         `;
         container.appendChild(div);
       }
-
-      lucide.createIcons();
     }
 
     function switchAppTab(tab) {
@@ -2184,106 +2249,77 @@
       }
     }
 
-    /* DASHBOARD ADMIN: LOAD PROFIL & STATISTIK USER */
     async function loadAdminData() {
-      showSpinner("Fetching administration data...");
-      const res = await callApi({ action: "getAdminData", username: currentUser });
+      if (!isAdmin) return;
+      showSpinner("Loading admin console data...");
+      const res = await callApi({ action: "getAdminData" });
       hideSpinner();
 
-      let userList = res.usersMeta || [];
-
-      // Gabungkan pengguna lokal
-      const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-      localUsers.forEach(u => {
-        if (!userList.some(x => x.username.toLowerCase() === u.toLowerCase())) {
-          userList.push({ username: u, status: "Active" });
-        }
-      });
-
-      renderAdminUsersTable(userList);
-      if (res.logs) renderAdminLogsTable(res.logs);
+      if (res.status === "success") {
+        renderAdminUsers(res.users || []);
+        renderAdminLogs(res.logs || []);
+      }
     }
 
-    function renderAdminUsersTable(users) {
+    function renderAdminUsers(users) {
       const tbody = document.getElementById("adminUsersTable");
       tbody.innerHTML = "";
-
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 themed-text-muted">No users registered yet.</td></tr>`;
-        return;
-      }
-
       users.forEach(u => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-100 dark:hover:bg-slate-800/40 transition";
+        tr.className = "border-b border-gray-200 dark:border-slate-800";
         tr.innerHTML = `
           <td class="p-3 font-semibold">${u.username}</td>
-          <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">${u.status || 'Active'}</span></td>
+          <td class="p-3"><span class="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-semibold">${u.status || 'Active'}</span></td>
           <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition">View Profile</button>
+            <button onclick="viewUserDetail('${u.username}')" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg font-semibold transition">View Profile</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function renderAdminLogsTable(logs) {
+    function renderAdminLogs(logs) {
       const tbody = document.getElementById("adminLogsTable");
       tbody.innerHTML = "";
-
-      if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 themed-text-muted">No audit logs.</td></tr>`;
-        return;
-      }
-
       logs.forEach(l => {
         const tr = document.createElement("tr");
+        tr.className = "border-b border-gray-200 dark:border-slate-800";
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 themed-text-muted">${l.timestamp || '-'}</td>
           <td class="p-2.5 font-semibold">${l.username || '-'}</td>
-          <td class="p-2.5">${l.action || '-'}</td>
+          <td class="p-2.5">${l.description || '-'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function viewUserDetail(targetUser) {
-      const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      title.innerText = `Profile & Performance: ${targetUser}`;
+    async function viewUserDetail(username) {
+      showSpinner("Fetching user details...");
+      const res = await callApi({ action: "getUserDetail", username });
+      hideSpinner();
 
-      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${targetUser}`) || "{}");
-      const benchmarksContainer = document.getElementById("userBenchmarksList");
-      benchmarksContainer.innerHTML = "";
+      if (res.status === "success") {
+        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: ${username}`;
+        
+        const overview = document.getElementById("userStatsOverview");
+        overview.innerHTML = `
+          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Total Sessions Logged</span><span class="text-lg font-bold">${res.totalSessions || 0}</span></div>
+          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Total Exercises Logged</span><span class="text-lg font-bold">${res.totalExercises || 0}</span></div>
+          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Current Program Week</span><span class="text-lg font-bold">${res.currentWeek || 'N/A'}</span></div>
+        `;
 
-      if (Object.keys(savedBenchmarks).length > 0) {
-        Object.keys(savedBenchmarks).forEach(k => {
+        const benchmarksList = document.getElementById("userBenchmarksList");
+        benchmarksList.innerHTML = "";
+        const bm = res.benchmarks || {};
+        Object.keys(bm).forEach(key => {
           const div = document.createElement("div");
-          div.className = "themed-subcard p-2 rounded border text-xs flex justify-between items-center";
-          div.innerHTML = `<span class="truncate font-medium">${k}</span><b class="text-blue-600 dark:text-blue-400 ml-2">${savedBenchmarks[k]} kg</b>`;
-          benchmarksContainer.appendChild(div);
+          div.className = "themed-subcard p-2 rounded-lg border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${key}</span><span class="font-bold">${bm[key]} kg</span>`;
+          benchmarksList.appendChild(div);
         });
-      } else {
-        benchmarksContainer.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No baseline benchmark data recorded.</p>`;
+        lucide.createIcons();
       }
-
-      const overviewContainer = document.getElementById("userStatsOverview");
-      overviewContainer.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Status</span>
-          <span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">Active User</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Total Benchmarks Defined</span>
-          <span class="font-bold text-sm">${Object.keys(savedBenchmarks).length} Exercises</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Account Type</span>
-          <span class="font-bold text-sm">Standard Athlete</span>
-        </div>
-      `;
-
-      container.classList.remove("hidden");
     }
 
     function closeUserDetail() {
