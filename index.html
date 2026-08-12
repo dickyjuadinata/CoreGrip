@@ -2259,27 +2259,27 @@
       if (Object.keys(savedBenchmarks).length > 0) {
         Object.keys(savedBenchmarks).forEach(k => {
           const div = document.createElement("div");
-          div.className = "themed-subcard p-2 rounded-lg text-xs flex justify-between items-center";
-          div.innerHTML = `<span class="truncate pr-1">${k}:</span> <b class="text-blue-600 dark:text-blue-400">${savedBenchmarks[k]} kg</b>`;
+          div.className = "themed-subcard p-2 rounded border text-xs flex justify-between items-center";
+          div.innerHTML = `<span class="truncate font-medium">${k}</span><b class="text-blue-600 dark:text-blue-400 ml-2">${savedBenchmarks[k]} kg</b>`;
           benchmarksContainer.appendChild(div);
         });
       } else {
-        benchmarksContainer.innerHTML = `<div class="col-span-4 text-xs themed-text-muted italic">No custom benchmarks set. Using defaults.</div>`;
+        benchmarksContainer.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No baseline benchmark data recorded.</p>`;
       }
 
       const overviewContainer = document.getElementById("userStatsOverview");
       overviewContainer.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border text-center">
-          <span class="text-xs themed-text-muted">Target Program</span>
-          <p class="text-base font-bold text-blue-600 dark:text-blue-400">4-Day Upper/Lower</p>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Status</span>
+          <span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">Active User</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border text-center">
-          <span class="text-xs themed-text-muted">Account Type</span>
-          <p class="text-base font-bold text-emerald-600 dark:text-emerald-400">Standard User</p>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Total Benchmarks Defined</span>
+          <span class="font-bold text-sm">${Object.keys(savedBenchmarks).length} Exercises</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border text-center">
-          <span class="text-xs themed-text-muted">Data Sync</span>
-          <p class="text-base font-bold text-purple-600 dark:text-purple-400">Cloud & Local</p>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Account Type</span>
+          <span class="font-bold text-sm">Standard Athlete</span>
         </div>
       `;
 
