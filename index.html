@@ -190,12 +190,12 @@
                 <label class="block text-xs font-bold text-slate-500 mb-1">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-slate-200 text-slate-600 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-300">Week</span>
-                  <input type="number" id="inputProject" min="1" value="" placeholder="1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <input type="number" id="inputProject" min="1" value="" placeholder="1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Training Session</label>
-                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputExercise">
                   <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
                   <option value="Tue - Lower A">Tue - Lower A</option>
@@ -205,19 +205,19 @@
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Exercise Name</label>
-                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputBodyWeight">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Body Weight (kg)</label>
-                <input type="number" step="0.1" id="inputBodyWeight" placeholder="e.g., 66" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <!-- PERMINTAAN 1: Value diawal dipastikan kosong (blank) -->
+                <input type="number" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 66" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Target Rep Range</label>
                 <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 focus:outline-none cursor-not-allowed">
               </div>
-              <!-- REPEAT PERMINTAAN 1: Kolom Rest Interval Target Dipindahkan ke Sini -->
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Rest Interval Target</label>
                 <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-medium text-slate-600 focus:outline-none cursor-not-allowed">
@@ -267,31 +267,31 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs text-slate-400 block mb-1">Set 1</span>
-                  <input type="number" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <input type="number" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs text-slate-400 block mb-1">Set 2</span>
-                  <input type="number" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <input type="number" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs text-slate-400 block mb-1">Set 3</span>
-                  <input type="number" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <input type="number" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs text-slate-400 block mb-1">Set 4</span>
-                  <input type="number" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <input type="number" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes</label>
-              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="btnSaveWorkout">
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
               <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium active:scale-95">Reset</button>
-              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200 active:scale-95">
+              <button type="submit" id="btnSaveWorkout" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-200 active:scale-95">
                 Save Exercise Record
               </button>
             </div>
@@ -925,11 +925,44 @@
       lucide.createIcons();
       checkSession();
       registerServiceWorker();
+      setupEnterNavigation(); // PERMINTAAN 2: Setup navigasi tombol Enter
 
       window.addEventListener('online', updateOnlineStatus);
       window.addEventListener('offline', updateOnlineStatus);
       updateOnlineStatus();
     });
+
+    // PERMINTAAN 2: Navigasi Tombol Enter pada Form Input
+    function setupEnterNavigation() {
+      const inputs = document.querySelectorAll('.enter-nav');
+      inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            
+            const val = this.value.trim();
+            if (!val) {
+              const fieldName = this.previousElementSibling ? this.previousElementSibling.innerText : "kolom ini";
+              showModernAlert(`Silakan isi ${fieldName} terlebih dahulu sebelum melanjutkan!`, "Instruksi Pengisian", "alert-circle");
+              this.focus();
+              return;
+            }
+
+            const nextId = this.getAttribute('data-next');
+            if (nextId) {
+              const nextEl = document.getElementById(nextId);
+              if (nextEl) {
+                if (nextEl.tagName === 'BUTTON') {
+                  nextEl.click();
+                } else {
+                  nextEl.focus();
+                }
+              }
+            }
+          }
+        });
+      });
+    }
 
     function updateOnlineStatus() {
       const ind = document.getElementById("statusIndicator");
@@ -1074,6 +1107,8 @@
       tbody.innerHTML = "";
 
       const bwInput = document.getElementById("inputBodyWeight");
+      
+      // PERMINTAAN 1: Kosongkan nilai body weight jika belum ada data terisi
       if (workoutRows.length > 0) {
         const firstBw = workoutRows.find(r => r.body_weight > 0);
         if (firstBw) {
@@ -1083,6 +1118,7 @@
           bwInput.classList.add("bg-slate-100", "cursor-not-allowed");
         }
       } else {
+        bwInput.value = "";
         bwInput.readOnly = false;
         bwInput.classList.remove("bg-slate-100", "cursor-not-allowed");
       }
@@ -1170,8 +1206,6 @@
 
       renderWorkoutTable();
       saveToLocalStorage();
-      
-      // REPEAT PERMINTAAN 2: Menggulir Otomatis ke Exercise Berikutnya
       resetFormWithNextExercise(day_session, exercise);
     }
 
@@ -1213,12 +1247,10 @@
       }
     }
 
-    // Fungsi reset standar saat tombol "Reset" ditekan secara manual
     function resetForm() {
       resetFormWithNextExercise("", "");
     }
 
-    // REPEAT PERMINTAAN 2: Fungsi Auto-Advance ke Exercise Berikutnya
     function resetFormWithNextExercise(currentSession, currentExercise) {
       const keepSession = currentSession || lastSelectedSession || document.getElementById("inputDaySession").value;
       const keepBW = lastBodyWeight || document.getElementById("inputBodyWeight").value;
@@ -1241,7 +1273,6 @@
         document.getElementById("inputDaySession").value = keepSession;
         onSessionChange(keepSession);
 
-        // Cari Latihan Selanjutnya dalam Sesi yang Sama
         if (currentExercise) {
           const exercisesInSession = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === keepSession);
           const currentIndex = exercisesInSession.indexOf(currentExercise);
@@ -1260,6 +1291,9 @@
           document.getElementById("inputBodyWeight").readOnly = true;
           document.getElementById("inputBodyWeight").classList.add("bg-slate-100", "cursor-not-allowed");
         }
+      } else {
+        // PERMINTAAN 1: Pastikan kosong jika belum ada BW tersimpan
+        document.getElementById("inputBodyWeight").value = "";
       }
 
       if (!document.getElementById("inputExercise").value) {
@@ -1275,6 +1309,7 @@
       calculateLoadDetails();
     }
 
+    // PERMINTAAN 3: Memastikan data tersimpan aman saat refresh browser
     function saveToLocalStorage() {
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       autoSyncToServer();
