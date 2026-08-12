@@ -192,13 +192,13 @@
         </div>
       </div>
       
-      <!-- POSISI INFORMASI KONEKSI INTERNET PINDAH KE KANAN ATAS -->
+      <!-- POSISI INFORMASI KONEKSI INTERNET PINDAH KE KANAN ATAS (Disembunyikan secara default pada halaman login) -->
       <div class="flex items-center space-x-2">
-        <p class="text-[11px] md:text-xs opacity-90 flex items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
+        <p class="hidden text-[11px] md:text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm box-border h-[calc(1.5rem+8px)] md:h-auto">
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -1553,7 +1553,11 @@
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
       
-      // Tampilkan Tombol Sign Out di Header (menggantikan posisi user info lama)
+      // Tampilkan indikator status koneksi dan tombol Sign Out di Header setelah login
+      const syncStatusEl = document.getElementById("syncStatus");
+      syncStatusEl.classList.remove("hidden");
+      syncStatusEl.classList.add("flex");
+
       document.getElementById("signOutBtnHeader").classList.remove("hidden");
       document.getElementById("signOutBtnHeader").classList.add("flex");
 
@@ -2173,62 +2177,6 @@
           }
         }
       });
-
-      checkAnalyticsRuleAlerts(e1rmData, acwrData, selectedEx);
-    }
-
-    function checkAnalyticsRuleAlerts(e1rmData, acwrData, exerciseName) {
-      const container = document.getElementById("analyticsAlerts");
-      container.innerHTML = "";
-
-      if (e1rmData.length >= 3) {
-        let first = e1rmData[e1rmData.length - 3];
-        let latest = e1rmData[e1rmData.length - 1];
-        if (first && latest && first > 0) {
-          let pctDiff = ((latest - first) / first) * 100;
-          if (pctDiff <= 0.5) {
-            let div = document.createElement("div");
-            div.className = "bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/80 dark:border-amber-600/60 dark:text-amber-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
-            div.innerHTML = `
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
-              <div>
-                <span class="font-bold block">⚠️ Stagnation Detected on ${exerciseName}:</span>
-                3-week rolling e1RM progression (${pctDiff.toFixed(2)}%) is below the 0.5% high-intensity threshold. Consider adjusting load variables or scheduling a deload week.
-              </div>
-            `;
-            container.appendChild(div);
-          }
-        }
-      }
-
-      let currentACWR = acwrData[acwrData.length - 1] || 1.0;
-      if (currentACWR > 1.50) {
-        let div = document.createElement("div");
-        div.className = "bg-red-100 border border-red-300 text-red-800 dark:bg-red-950/80 dark:border-red-600/60 dark:text-red-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
-        div.innerHTML = `
-          <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5"></i>
-          <div>
-            <span class="font-bold block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
-            Acute workload significantly exceeds chronic workload. High risk of overtraining or injury. Consider reducing volume or intensity next week.
-          </div>
-        `;
-        container.appendChild(div);
-      }
-    }
-
-    function switchAppTab(tab) {
-      if (tab === 'workout') {
-        document.getElementById("tabWorkout").classList.remove("hidden");
-        document.getElementById("tabAnalytics").classList.add("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
-      } else {
-        document.getElementById("tabWorkout").classList.add("hidden");
-        document.getElementById("tabAnalytics").classList.remove("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
-      }
-    }
   </script>
 </body>
 </html>
