@@ -968,18 +968,17 @@
        FIRST-SET ASSESSMENT & AUTO-PROGRESSION ALGORITHMS
        ========================================================================== */
 
-    // 1. First-Set Assessment: Calculates initial baseline load for beginners
     function first_set_assessment(exercise_type, trial_load, reps_performed, rpe_output) {
       let initial_baseline = trial_load;
       
       if (exercise_type === "COMPOUND") {
         if (reps_performed >= 6 && reps_performed <= 8) {
           if (rpe_output <= 6.5) {
-            initial_baseline = trial_load * 1.05; // Load too light, scale up by 5%
+            initial_baseline = trial_load * 1.05;
           } else if (rpe_output >= 7.0 && rpe_output <= 8.5) {
-            initial_baseline = trial_load; // Perfect baseline
+            initial_baseline = trial_load;
           } else if (rpe_output >= 9.0) {
-            initial_baseline = trial_load * 0.95; // Too heavy for baseline
+            initial_baseline = trial_load * 0.95;
           }
         } else if (reps_performed > 8) {
           initial_baseline = trial_load * 1.075;
@@ -1005,7 +1004,6 @@
       return Math.round(mround2_5(initial_baseline) * 10) / 10;
     }
 
-    // 2. Existing Progression Algorithm
     function calculate_next_load(exercise_type, current_load, min_reps, max_reps, reps_performed, rpe_output) {
       let new_load = current_load;
       let status = "";
@@ -1231,14 +1229,14 @@
       const res = await callApi({ action: "login", username, pin });
       hideSpinner();
 
-      if (res.status === "success") {
+      if (res.status === "success" || res.authenticated) {
         currentUser = username;
-        isAdmin = res.isAdmin;
+        isAdmin = res.isAdmin || false;
         localStorage.setItem("workout_user", currentUser);
         localStorage.setItem("workout_is_admin", isAdmin);
         showAppUI();
       } else {
-        await showModernAlert(res.message, "Authentication Failed", "alert-circle");
+        await showModernAlert(res.message || "Invalid username or PIN.", "Authentication Failed", "alert-circle");
       }
     }
 
@@ -1281,10 +1279,10 @@
 
       if (res.status === "success") {
         localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
-        await showModernAlert(res.message + " Initial exercise load baseline saved successfully!", "Registration Completed", "check-circle");
+        await showModernAlert((res.message || "Registration successful!") + " Initial exercise load baseline saved successfully!", "Registration Completed", "check-circle");
         switchAuthTab('login');
       } else {
-        await showModernAlert(res.message, "Registration Failed", "alert-circle");
+        await showModernAlert(res.message || "Unable to complete registration.", "Registration Failed", "alert-circle");
       }
     }
 
@@ -1927,7 +1925,7 @@
       showSpinner("Approving account access...");
       const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser });
       hideSpinner();
-      await showModernAlert(res.message, "User Status Updated", "check-circle");
+      await showModernAlert(res.message || "User approved successfully.", "User Status Updated", "check-circle");
       loadAdminData();
     }
 
@@ -1937,7 +1935,7 @@
         showSpinner("Deleting user account...");
         const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser });
         hideSpinner();
-        await showModernAlert(res.message, "Account Purged", "check-circle");
+        await showModernAlert(res.message || "User deleted successfully.", "Account Purged", "check-circle");
         loadAdminData();
       }
     }
@@ -1949,10 +1947,18 @@
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
         return await response.json();
       } catch (err) {
         console.error("API Error:", err);
-        return { status: "error", message: "Failed to establish server connection." };
+        return { 
+          status: "error", 
+          message: "Failed to establish server connection. Please verify script deployment permissions." 
+        };
       }
     }
   </script>
