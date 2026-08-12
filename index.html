@@ -178,9 +178,10 @@
         </div>
         <div>
           <h1 class="font-black tracking-wider text-base md:text-lg leading-tight uppercase">CoreGrip</h1>
-          <p class="text-xs opacity-90 flex items-center gap-1.5" id="syncStatus">
+          <!-- Status Indikator di Header Interaktif (Disembunyikan di Halaman Login) -->
+          <p class="text-xs opacity-90 flex items-center gap-1.5 hidden cursor-pointer hover:underline transition" id="syncStatus" onclick="showSyncDetailModal()">
             <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
-            <span id="statusText">Online - Connected</span>
+            <span id="statusText">Online · Synced</span>
           </p>
         </div>
       </div>
@@ -195,6 +196,9 @@
       </div>
     </div>
   </header>
+
+  <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
@@ -668,6 +672,11 @@
     let myChart = null;
     let originalBaseLoad = 0;
 
+    // State Pelacak Sinkronisasi & Waktu
+    let lastSyncedTime = null;
+    let pendingQueueCount = 0;
+    let wasOnline = navigator.onLine;
+
     let chartInstanceE1RM = null;
     let chartInstanceVolumeRpe = null;
     let chartInstanceMuscleDist = null;
@@ -726,6 +735,42 @@
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
+
+    // FLOATING TOAST NOTIFICATION SYSTEM
+    function showToast(message, type = "info", duration = 3000) {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+
+      const toast = document.createElement("div");
+      let bgColor = "bg-slate-800 text-white";
+      let icon = "info";
+
+      if (type === "warning") {
+        bgColor = "bg-amber-600 text-white";
+        icon = "alert-triangle";
+      } else if (type === "success") {
+        bgColor = "bg-emerald-600 text-white";
+        icon = "check-circle";
+      } else if (type === "error") {
+        bgColor = "bg-red-600 text-white";
+        icon = "alert-circle";
+      }
+
+      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-bold transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove("translate-y-4", "opacity-0");
+      });
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
 
     // SHORTCUT SCROLLER LOGIC
     window.addEventListener("scroll", () => {
@@ -1178,8 +1223,8 @@
       registerServiceWorker();
       setupEnterNavigation();
 
-      window.addEventListener('online', updateOnlineStatus);
-      window.addEventListener('offline', updateOnlineStatus);
+      window.addEventListener('online', handleNetworkChange);
+      window.addEventListener('offline', handleNetworkChange);
       updateOnlineStatus();
     });
 
@@ -1224,17 +1269,95 @@
       });
     }
 
+    // PENANGANAN TRANSISI STATUS JARINGAN (TOAST 2-3 DETIK)
+    function handleNetworkChange() {
+      const isNowOnline = navigator.onLine;
+      if (wasOnline !== isNowOnline) {
+        wasOnline = isNowOnline;
+        if (isNowOnline) {
+          showToast("You are back online. Syncing data...", "success", 2500);
+        } else {
+          showToast("You are now offline. Data will be saved locally.", "warning", 3000);
+        }
+      }
+      updateOnlineStatus();
+    }
+
     function updateOnlineStatus() {
       const ind = document.getElementById("statusIndicator");
       const txt = document.getElementById("statusText");
+      if (!ind || !txt) return;
+
       if (navigator.onLine) {
         ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400";
-        txt.innerText = "Online - Connected";
+        txt.innerText = "Online · Synced";
         autoSyncToServer();
       } else {
-        ind.className = "w-2 h-2 rounded-full bg-red-500 inline-block shadow-sm shadow-red-500";
-        txt.innerText = "Offline - Local Storage Mode";
+        ind.className = "w-2 h-2 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500";
+        if (pendingQueueCount > 0) {
+          txt.innerText = `Offline · [${pendingQueueCount}] pending`;
+        } else {
+          txt.innerText = "Offline · Saved locally";
+        }
       }
+    }
+
+    // POP-UP MODAL DETAIL INTERAKTIF KETIKA INDIKATOR STATUS DITAP/DIKLIK
+    function showSyncDetailModal() {
+      const timeStr = lastSyncedTime ? lastSyncedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not synced yet";
+      const statusStr = navigator.onLine ? "Online" : "Offline";
+      const queueStr = pendingQueueCount > 0 ? `${pendingQueueCount} items queued for sync` : "No pending queue";
+
+      const message = `Current Status: ${statusStr}\nLast synced at: ${timeStr}\nSync Queue: ${queueStr}`;
+
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = "Connection & Sync Details";
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", navigator.onLine ? "refresh-cw" : "wifi-off");
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Close";
+        confirmBtn.innerText = "Sync Now";
+        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md uppercase tracking-wider";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            if (navigator.onLine) {
+              autoSyncToServer(true);
+            } else {
+              showToast("Cannot sync: Device is offline.", "error", 2500);
+            }
+            resolve(true);
+          }, 200);
+        };
+      });
     }
 
     function registerServiceWorker() {
@@ -1285,11 +1408,23 @@
         currentUser = savedUser;
         isAdmin = (savedRole === "true");
         showAppUI();
+      } else {
+        // Halaman Login Aktif: Sembunyikan Indikator Status di Header
+        const syncStatusEl = document.getElementById("syncStatus");
+        if (syncStatusEl) syncStatusEl.classList.add("hidden");
       }
     }
 
     async function submitLogin(e) {
       e.preventDefault();
+
+      // Penanganan Percobaan Login Tanpa Jaringan
+      if (!navigator.onLine) {
+        showToast("Cannot sign in: Internet connection is offline.", "error", 3500);
+        await showModernAlert("Sign in requires an active internet connection. Please check your network and try again.", "Network Offline", "wifi-off");
+        return;
+      }
+
       const username = document.getElementById("loginUsername").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
 
@@ -1311,6 +1446,13 @@
     // MANAJEMEN USER: TOLAK PENDAFTARAN BILA NAMA SAMA
     async function submitRegister(e) {
       e.preventDefault();
+
+      if (!navigator.onLine) {
+        showToast("Cannot register: Internet connection is offline.", "error", 3500);
+        await showModernAlert("User registration requires an active internet connection.", "Network Offline", "wifi-off");
+        return;
+      }
+
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
@@ -1381,6 +1523,11 @@
       document.getElementById("authSection").classList.add("hidden");
       document.getElementById("userHeaderInfo").classList.remove("hidden");
       document.getElementById("displayUsername").innerText = currentUser + (isAdmin ? " (Admin)" : "");
+
+      // Tampilkan Indikator Status di Top Navigation Bar Setelah Pengguna Login
+      const syncStatusEl = document.getElementById("syncStatus");
+      if (syncStatusEl) syncStatusEl.classList.remove("hidden");
+      updateOnlineStatus();
 
       if (isAdmin) {
         document.getElementById("adminSection").classList.remove("hidden");
@@ -1664,14 +1811,29 @@
     function saveToLocalStorage() {
       if (!currentProject) return;
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-      autoSyncToServer();
+      
+      if (!navigator.onLine) {
+        pendingQueueCount++;
+        updateOnlineStatus();
+      } else {
+        autoSyncToServer();
+      }
     }
 
-    async function autoSyncToServer() {
-      if (!navigator.onLine || !currentUser || !currentProject) return;
+    async function autoSyncToServer(isManual = false) {
+      if (!currentUser || !currentProject) return;
       
+      if (!navigator.onLine) {
+        updateOnlineStatus();
+        if (isManual) showToast("Cannot sync: Offline mode.", "error");
+        return;
+      }
+
       const txt = document.getElementById("statusText");
+      const ind = document.getElementById("statusIndicator");
+      
       if (txt) txt.innerText = "Syncing...";
+      if (ind) ind.className = "w-2 h-2 rounded-full bg-blue-400 inline-block animate-pulse";
 
       const res = await callApi({
         action: "saveData",
@@ -1680,8 +1842,16 @@
         rows: workoutRows
       });
 
-      if (txt) {
-        txt.innerText = res.status === "success" ? "Online - Connected" : "Sync Failed";
+      if (res.status === "success") {
+        lastSyncedTime = new Date();
+        pendingQueueCount = 0;
+        if (txt) txt.innerText = "Online · Synced";
+        if (ind) ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400";
+        if (isManual) showToast("Sync completed successfully!", "success", 2000);
+      } else {
+        if (txt) txt.innerText = "Sync Failed";
+        if (ind) ind.className = "w-2 h-2 rounded-full bg-red-500 inline-block shadow-sm shadow-red-500";
+        if (isManual) showToast("Sync failed. Check connection.", "error", 2500);
       }
     }
 
