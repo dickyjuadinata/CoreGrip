@@ -46,7 +46,7 @@
     const stringManifest = JSON.stringify(manifestData);
     const blobManifest = new Blob([stringManifest], {type: 'application/json'});
     const manifestURL = URL.createObjectURL(blobManifest);
-    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+    // document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
   </script>
 
   <!-- Tailwind CSS & Lucide Icons -->
@@ -192,13 +192,14 @@
         </div>
       </div>
       
-      <!-- POSISI INFORMASI KONEKSI INTERNET PINDAH KE KANAN ATAS (Disembunyikan secara default pada halaman login) -->
+      <!-- POSISI INFORMASI KONEKSI INTERNET & TOMBOL SIGN OUT -->
       <div class="flex items-center space-x-2">
         <p class="hidden text-[11px] md:text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
+        <!-- PERBAIKAN UKURAN TOMBOL SIGN OUT AGAR SERAGAM & PROPOSIONAL PADA SEMUA UKURAN LAYAR -->
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg transition items-center justify-center gap-1 active:scale-95 font-semibold shadow-sm shrink-0">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -214,9 +215,9 @@
     <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
-        <!-- PERBAIKAN TULISAN REGISTER & ASSESSMENT AGAR PROPOSIONAL -->
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
+        <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center cursor-pointer">Sign In</button>
+        <!-- PERBAIKAN LABEL MENJADI SIGN UP DAN MEMASTIKAN BISA DIBUKA/KLIK -->
+        <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center cursor-pointer">Sign Up</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
@@ -228,7 +229,7 @@
           <label class="block text-xs font-semibold themed-text-muted mb-1.5">PIN</label>
           <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
-        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm cursor-pointer">
           Sign In to Portal
         </button>
       </form>
@@ -319,7 +320,7 @@
           </div>
         </div>
 
-        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm cursor-pointer">
           Submit & Create Account
         </button>
       </form>
@@ -331,10 +332,10 @@
       <!-- MAIN CONTENT TABS -->
       <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
         <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5">
+          <button type="button" id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 cursor-pointer">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
           </button>
-          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5">
+          <button type="button" id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 cursor-pointer">
             <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
           </button>
         </div>
@@ -457,8 +458,8 @@
             </div>
 
             <div class="flex justify-end items-center gap-2 pt-2">
-              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
-              <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95 cursor-pointer">Reset</button>
+              <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95 cursor-pointer">
                 Save Exercise Record
               </button>
             </div>
@@ -561,7 +562,7 @@
           <h2 class="text-xl font-bold text-white">Admin Management Console</h2>
           <p class="text-xs opacity-90">Manage system users, access approvals, view user profiles & statistics.</p>
         </div>
-        <button onclick="loadAdminData()" class="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
+        <button type="button" onclick="loadAdminData()" class="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm cursor-pointer">
           Refresh Console
         </button>
       </div>
@@ -592,7 +593,7 @@
           <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
             <i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats
           </h3>
-          <button onclick="closeUserDetail()" class="text-xs font-semibold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
+          <button type="button" onclick="closeUserDetail()" class="text-xs font-semibold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg cursor-pointer">Close</button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="userStatsOverview">
           <!-- Summary Cards Injected dynamically -->
@@ -634,7 +635,7 @@
   </footer>
 
   <!-- SHORTCUT SCROLLER BUTTON -->
-  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-blue-600 hover:bg-blue-700 border border-blue-400 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
+  <button type="button" id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-blue-600 hover:bg-blue-700 border border-blue-400 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center cursor-pointer">
     <i data-lucide="arrow-up" class="w-5 h-5"></i>
   </button>
 
@@ -650,16 +651,16 @@
   <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
     <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
       <div class="p-1 space-y-1 text-xs font-semibold">
-        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+        <button type="button" id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200 cursor-pointer">
           <span class="text-base">✏️</span> Edit Exercise
         </button>
-        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+        <button type="button" id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200 cursor-pointer">
           <span class="text-base">🗑️</span> Delete Exercise
         </button>
       </div>
       <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
       <div class="p-1">
-        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
+        <button type="button" id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold cursor-pointer">
           <span class="text-base">🚨</span> Delete Entire Session
         </button>
       </div>
@@ -679,8 +680,8 @@
         </div>
       </div>
       <div id="modalFooter" class="flex justify-end gap-2 pt-2">
-        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition hidden">Cancel</button>
-        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md">OK</button>
+        <button type="button" id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition hidden cursor-pointer">Cancel</button>
+        <button type="button" id="modalConfirmBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md cursor-pointer">OK</button>
       </div>
     </div>
   </div>
@@ -845,7 +846,7 @@
 
         cancelBtn.classList.add("hidden");
         confirmBtn.innerText = "OK";
-        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md cursor-pointer";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -882,7 +883,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Cancel";
         confirmBtn.innerText = "Confirm";
-        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md cursor-pointer";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -1351,7 +1352,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Close";
         confirmBtn.innerText = "Sync Now";
-        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md cursor-pointer";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -1410,17 +1411,48 @@
       }
     }
 
+    // PERBAIKAN FUNGSI SWITCH AUTH TAB AGAR BISA DIAKSES & KLIK DENGAN LANCAR
     function switchAuthTab(tab) {
+      const formLogin = document.getElementById("formLogin");
+      const formRegister = document.getElementById("formRegister");
+      const tabLoginBtn = document.getElementById("tabLoginBtn");
+      const tabRegisterBtn = document.getElementById("tabRegisterBtn");
+
+      if (!formLogin || !formRegister || !tabLoginBtn || !tabRegisterBtn) return;
+
       if (tab === 'login') {
-        document.getElementById("formLogin").classList.remove("hidden");
-        document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        formLogin.classList.remove("hidden");
+        formRegister.classList.add("hidden");
+        tabLoginBtn.className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center cursor-pointer";
+        tabRegisterBtn.className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center cursor-pointer";
       } else {
-        document.getElementById("formLogin").classList.add("hidden");
-        document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        formLogin.classList.add("hidden");
+        formRegister.classList.remove("hidden");
+        tabLoginBtn.className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center cursor-pointer";
+        tabRegisterBtn.className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center cursor-pointer";
+      }
+    }
+
+    // PERBAIKAN FUNGSI SWITCH APP TAB
+    function switchAppTab(tab) {
+      const tabWorkout = document.getElementById("tabWorkout");
+      const tabAnalytics = document.getElementById("tabAnalytics");
+      const tabWorkoutBtn = document.getElementById("tabWorkoutBtn");
+      const tabAnalyticsBtn = document.getElementById("tabAnalyticsBtn");
+
+      if (!tabWorkout || !tabAnalytics || !tabWorkoutBtn || !tabAnalyticsBtn) return;
+
+      if (tab === 'workout') {
+        tabWorkout.classList.remove("hidden");
+        tabAnalytics.classList.add("hidden");
+        tabWorkoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 cursor-pointer";
+        tabAnalyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 cursor-pointer";
+      } else {
+        tabWorkout.classList.add("hidden");
+        tabAnalytics.classList.remove("hidden");
+        tabWorkoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 cursor-pointer";
+        tabAnalyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 cursor-pointer";
+        renderAnalyticsDashboard();
       }
     }
 
@@ -1660,7 +1692,7 @@
           </td>
           <td class="px-4 py-3.5 text-right font-bold text-emerald-600 dark:text-emerald-400">${row.next_load} kg</td>
           <td class="px-4 py-3.5 text-center">
-            <button onclick="openActionPopover(event, ${idx})" class="p-2 themed-text-muted hover:text-blue-600 transition rounded-xl hover:bg-gray-200 dark:hover:bg-slate-800 focus:outline-none" title="Options / Actions">
+            <button type="button" onclick="openActionPopover(event, ${idx})" class="p-2 themed-text-muted hover:text-blue-600 transition rounded-xl hover:bg-gray-200 dark:hover:bg-slate-800 focus:outline-none cursor-pointer" title="Options / Actions">
               <i data-lucide="more-vertical" class="w-5 h-5"></i>
             </button>
           </td>
@@ -2177,6 +2209,7 @@
           }
         }
       });
+    }
   </script>
 </body>
 </html>
