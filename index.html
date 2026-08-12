@@ -122,10 +122,10 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
 
     <!-- AUTH SECTION -->
-    <div id="authSection" class="max-w-md mx-auto my-8 md:my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
       <div class="flex border-b border-slate-100 bg-slate-50">
         <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-500 hover:text-slate-700 transition">Register & Assessment</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
@@ -142,6 +142,7 @@
         </button>
       </form>
 
+      <!-- REGISTRASI DENGAN TES/UJI ANGKAT BEBAN SEDERHANA (BASELINE ASSESSMENT) -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">New Username</label>
@@ -151,8 +152,87 @@
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Create PIN</label>
           <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
+
+        <!-- TES BEBAN AWAL UNTUK PENGGUNA BARU -->
+        <div class="border-t border-slate-200 pt-4 mt-4">
+          <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100 mb-3">
+            <h4 class="font-bold text-indigo-900 text-xs sm:text-sm flex items-center gap-1.5">
+              <i data-lucide="clipboard-check" class="w-4 h-4 text-indigo-600"></i> Tes / Uji Beban Sederhana (Baseline Assessment)
+            </h4>
+            <p class="text-[11px] text-slate-600 mt-1">Uji kemampuan awal Anda sesuai latihan dasar di bawah untuk menentukan baseline progresi otomatis.</p>
+          </div>
+
+          <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
+            <!-- Benchmark 1: Barbell Bench Press -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-700">Barbell Bench Press</span>
+                <span class="text-slate-500 font-medium">Target: 6-8 Reps</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="62.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Reps</label>
+                  <input type="number" id="test_reps_bench" placeholder="6" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+              </div>
+            </div>
+
+            <!-- Benchmark 2: Barbell Squats -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-700">Barbell Squats</span>
+                <span class="text-slate-500 font-medium">Target: 6-8 Reps</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="62.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Reps</label>
+                  <input type="number" id="test_reps_squat" placeholder="6" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+              </div>
+            </div>
+
+            <!-- Benchmark 3: Dumbbell Lateral Raises - A -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-700">Dumbbell Lateral Raises</span>
+                <span class="text-slate-500 font-medium">Target: 8-10 Reps</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Beban (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="7.5" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">Reps</label>
+                  <input type="number" id="test_reps_lat" placeholder="8" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block">RPE (1-10)</label>
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="8.0" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-200 active:scale-[0.98]">
-          Create Account
+          Submit & Create Account
         </button>
       </form>
     </div>
@@ -284,7 +364,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes (Optional)</label>
+              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
@@ -301,7 +381,7 @@
             </div>
           </form>
 
-          <!-- WORKOUT LOG TABLE CONTAINER (WITH FADE MASK & STICKY HEADER) -->
+          <!-- WORKOUT LOG TABLE CONTAINER -->
           <div class="relative border border-slate-200 rounded-2xl shadow-sm bg-white overflow-hidden w-full max-w-full">
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
               <table class="w-full text-left text-sm text-slate-600 min-w-[640px] border-collapse">
@@ -331,7 +411,7 @@
         <!-- TAB ANALYTICS -->
         <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden w-full max-w-full">
           
-          <!-- DYNAMIC ALERT BANNERS (PLATEAU & OVERREACHING DETECTION) -->
+          <!-- DYNAMIC ALERT BANNERS -->
           <div id="analyticsAlerts" class="space-y-3"></div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
@@ -365,7 +445,7 @@
               <p class="text-[11px] text-slate-400 italic">*Compares total external work done (kg) against internal perceptual fatigue (sRPE 1-10).</p>
             </div>
 
-            <!-- MODUL 3: DISTRIBUTION RADAR CHART (SETS PER MUSCLE GROUP) -->
+            <!-- MODUL 3: DISTRIBUTION RADAR CHART -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 w-full">
               <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
                 <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i> Module 3: Weekly Effective Sets / Muscle
@@ -445,12 +525,12 @@
 
   </main>
 
-  <!-- SHORTCUT SCROLLER (BOTTOM TO TOP) BUTTON -->
+  <!-- SHORTCUT SCROLLER BUTTON -->
   <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
     <i data-lucide="arrow-up" class="w-5 h-5"></i>
   </button>
 
-  <!-- MODERN UI LOADING SPINNER OVERLAY -->
+  <!-- LOADING SPINNER OVERLAY -->
   <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
     <div class="bg-white p-6 rounded-2xl shadow-2xl border border-slate-100 flex flex-col items-center gap-3">
       <div class="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -458,7 +538,7 @@
     </div>
   </div>
 
-  <!-- MODERN UI POP-UP MODAL (ALERT & CONFIRM) -->
+  <!-- MODERN UI POP-UP MODAL -->
   <div id="modalOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
     <div class="bg-white max-w-sm w-full rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
       <div class="flex items-start gap-3">
@@ -482,7 +562,7 @@
 
     let currentUser = null;
     let isAdmin = false;
-    let currentProject = ""; // Landing state: blank before selection
+    let currentProject = ""; 
     let workoutRows = [];
     let editIndex = -1;
     let myChart = null;
@@ -497,32 +577,32 @@
     let lastBodyWeight = "";
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms" },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms" },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain" },
-      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves" }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
-    const initialBenchmarkLoads = {
+    let initialBenchmarkLoads = {
       "Barbell Bench Press": 62.5,
       "Chest Supported Dumbbell Row": 22.5,
       "Bodyweight Pull-Ups": 0.0,
@@ -566,7 +646,6 @@
       });
     }
 
-    // MODERN UI SPINNER HELPER
     function showSpinner(msg = "Processing Request...") {
       document.getElementById("loadingMessage").innerText = msg;
       const overlay = document.getElementById("loadingOverlay");
@@ -580,7 +659,6 @@
       setTimeout(() => overlay.classList.add("hidden"), 200);
     }
 
-    // MODERN UI POP-UP MODAL HELPERS (Alert & Confirm Replacement)
     function showModernAlert(message, title = "System Notification", iconName = "info") {
       return new Promise((resolve) => {
         const overlay = document.getElementById("modalOverlay");
@@ -759,7 +837,11 @@
     }
 
     function get4WeeksHistoryLoad(exerciseName, currentProj) {
-      if (!currentProj) return initialBenchmarkLoads[exerciseName] ?? 20;
+      // Prioritaskan baseline jika diset oleh tes/uji angkat beban awal
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
+      const defaultLoad = savedBenchmarks[exerciseName] ?? (initialBenchmarkLoads[exerciseName] ?? 20);
+
+      if (!currentProj) return defaultLoad;
       
       const match = currentProj.match(/Week\s*(\d+)/i);
       let currentWeekNum = match ? parseInt(match[1], 10) : 1;
@@ -782,7 +864,7 @@
       let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
       if (currentMatch) return currentMatch.working_load;
 
-      return initialBenchmarkLoads[exerciseName] ?? 20;
+      return defaultLoad;
     }
 
     function calculateLoadDetails() {
@@ -886,45 +968,122 @@
       }
     }
 
-    function calculateNextWeekLoadQB13(targetRepsStr, pu13, repsArr, pn13, pg13, pw13_pz13) {
-      if (!targetRepsStr || !targetRepsStr.includes("-")) return pu13;
+    /* ==========================================================================
+       ALGORITMA PENYESUAIAN BEBAN OTOMATIS BERBASIS COMPOUND VS ISOLATION
+       ========================================================================== */
+    function calculate_next_load(exercise_type, current_load, min_reps, max_reps, reps_performed, rpe_output) {
+      let new_load = current_load;
+      let status = "";
+
+      // 1. LOGIKA GERAKAN COMPOUND
+      if (exercise_type === "COMPOUND") {
+        if (reps_performed >= max_reps) {
+          if (rpe_output <= 7.0) {
+            new_load = current_load * 1.05;  // Naik 5% (Beban terlalu ringan)
+            status = "INCREASE_LOAD_HIGH";
+          } else if (rpe_output >= 7.5 && rpe_output <= 8.5) {
+            new_load = current_load * 1.025; // Naik 2.5% (Ideal)
+            status = "INCREASE_LOAD_MODERATE";
+          } else { // RPE 9.0 - 10
+            new_load = current_load;
+            status = "MAINTAIN_LOAD";
+          }
+        } else {
+          if (rpe_output >= 9.5) {
+            new_load = current_load * 0.95;  // Turun 5% (Terlalu berat / Failure)
+            status = "DECREASE_LOAD";
+          } else {
+            new_load = current_load;
+            status = "MAINTAIN_LOAD_CHECK_FORM";
+          }
+        }
+      }
+      // 2. LOGIKA GERAKAN ISOLATION (DOUBLE PROGRESSION)
+      else if (exercise_type === "ISOLATION") {
+        if (reps_performed >= max_reps) {
+          if (rpe_output <= 7.5) {
+            new_load = current_load + 2.0; // Increment 2 kg
+            status = "INCREASE_LOAD_RESET_REPS";
+          } else {
+            new_load = current_load;
+            status = "MAINTAIN_LOAD_HOLD_MAX_REPS";
+          }
+        } else {
+          if (rpe_output >= 9.5 && reps_performed < min_reps) {
+            new_load = current_load - 2.0;  // Turun 1 step terkecil
+            status = "DECREASE_LOAD";
+          } else {
+            new_load = current_load;
+            status = "MAINTAIN_LOAD_ADD_REPS";
+          }
+        }
+      }
+
+      // 3. PARAMETER PENGAMAN (SAFETY SAFEGUARDS)
+      // Safeguard: Cap Limit Kenaikan Beban Maksimum 10%
+      if (new_load > current_load * 1.10) {
+        new_load = current_load * 1.10;
+      }
+
+      return {
+        next_load: Math.round(new_load * 10) / 10,
+        status: status
+      };
+    }
+
+    function calculateNextWeekLoadQB13(exerciseName, targetRepsStr, currentLoad, repsArr, catatan) {
+      if (!targetRepsStr || !targetRepsStr.includes("-")) return currentLoad;
+      
       const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
-      const minTarget = parts[0];
-      const maxTarget = parts[1];
+      const minReps = parts[0];
+      const maxReps = parts[1];
 
       const validReps = repsArr.filter(r => r > 0);
-      const countReps = validReps.length;
-      const minReps = countReps > 0 ? Math.min(...validReps) : 0;
+      if (validReps.length === 0) return currentLoad;
 
-      if (countReps > 0 && minReps < minTarget) {
-        if (pu13 < pn13) {
-          return mround2_5(pu13 * 0.80);
-        } else {
-          return mround2_5(pu13 * 0.85);
+      const minRepsPerformed = Math.min(...validReps);
+      const maxRepsPerformed = Math.max(...validReps);
+
+      // Parsing RPE dari Catatan/Notes
+      const rpeOutput = parseSRPEFromNotes(catatan);
+      const exType = exercisePresets[exerciseName]?.type || "COMPOUND";
+
+      // Memanggil Algoritma Utama Penyesuaian Beban
+      let result = calculate_next_load(exType, currentLoad, minReps, maxReps, maxRepsPerformed, rpeOutput);
+      let nextLoad = result.next_load;
+
+      // Safeguard: Aturan Deload Otomatis (3 sesi DECREASE_LOAD berturut-turut)
+      const isDecrease = (result.status === "DECREASE_LOAD" || minRepsPerformed < minReps);
+      if (checkConsecutiveDecrease(exerciseName, isDecrease)) {
+        nextLoad = Math.round((currentLoad * 0.85) * 10) / 10; // Deload -15%
+        showModernAlert(`Auto-Deload triggered for ${exerciseName} due to 3 consecutive high-fatigue sessions. Load reduced by 15%.`, "Deload Triggered", "alert-triangle");
+      }
+
+      return mround2_5(nextLoad);
+    }
+
+    function checkConsecutiveDecrease(exerciseName, currentSessionDecreased) {
+      if (!currentSessionDecreased) return false;
+
+      const match = currentProject ? currentProject.match(/Week\s*(\d+)/i) : null;
+      let currentWkNum = match ? parseInt(match[1], 10) : 1;
+      let count = 1;
+
+      for (let i = 1; i <= 2; i++) {
+        let prevWk = currentWkNum - i;
+        if (prevWk < 1) break;
+
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_Week ${prevWk}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let exRow = rows.find(r => r.exercise === exerciseName);
+          if (exRow && exRow.next_load < exRow.working_load) {
+            count++;
+          }
         }
       }
 
-      if (pn13 < pg13 && pu13 < pg13 && pu13 > 0 && countReps === 4 && minReps >= maxTarget) {
-        return pg13;
-      }
-
-      if (pg13 === pn13 && pn13 === pu13 && pu13 > 0 && countReps > 0 && minReps < minTarget) {
-        if (pu13 < pn13) {
-          return mround2_5(pu13 * 0.80);
-        } else {
-          return mround2_5(pu13 * 0.85);
-        }
-      }
-
-      if (pu13 < pn13 && pn13 === pg13) {
-        return mround2_5(pn13 * 0.925);
-      }
-
-      if (countReps === 4 && minReps >= maxTarget) {
-        return pu13 + 2.5;
-      }
-
-      return pu13;
+      return count >= 3;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -938,7 +1097,6 @@
       updateOnlineStatus();
     });
 
-    // PERMINTAAN 1: Navigasi Enter & Opsi Opsional pada Execution Notes
     function setupEnterNavigation() {
       const inputs = document.querySelectorAll('.enter-nav');
       inputs.forEach(input => {
@@ -1061,13 +1219,47 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      showSpinner("Registering new user...");
-      const res = await callApi({ action: "register", username, pin });
+      // Memproses Baseline Assessment / Tes Uji Beban
+      let userBenchmarks = {};
+
+      const benchLoad = parseFloat(document.getElementById("test_load_bench").value);
+      const benchReps = parseInt(document.getElementById("test_reps_bench").value, 10);
+      const benchRpe = parseFloat(document.getElementById("test_rpe_bench").value);
+
+      if (!isNaN(benchLoad) && !isNaN(benchReps)) {
+        let res = calculate_next_load("COMPOUND", benchLoad, 6, 8, benchReps, benchRpe || 8.0);
+        userBenchmarks["Barbell Bench Press"] = res.next_load;
+      }
+
+      const squatLoad = parseFloat(document.getElementById("test_load_squat").value);
+      const squatReps = parseInt(document.getElementById("test_reps_squat").value, 10);
+      const squatRpe = parseFloat(document.getElementById("test_rpe_squat").value);
+
+      if (!isNaN(squatLoad) && !isNaN(squatReps)) {
+        let res = calculate_next_load("COMPOUND", squatLoad, 6, 8, squatReps, squatRpe || 8.0);
+        userBenchmarks["Barbell Squats"] = res.next_load;
+      }
+
+      const latLoad = parseFloat(document.getElementById("test_load_lat").value);
+      const latReps = parseInt(document.getElementById("test_reps_lat").value, 10);
+      const latRpe = parseFloat(document.getElementById("test_rpe_lat").value);
+
+      if (!isNaN(latLoad) && !isNaN(latReps)) {
+        let res = calculate_next_load("ISOLATION", latLoad, 8, 10, latReps, latRpe || 8.0);
+        userBenchmarks["Dumbbell Lateral Raises - A"] = res.next_load;
+        userBenchmarks["Dumbbell Lateral Raises - B"] = res.next_load;
+      }
+
+      showSpinner("Registering user & setting up initial load baseline...");
+      const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
       hideSpinner();
 
-      await showModernAlert(res.message, res.status === "success" ? "Registration Submitted" : "Registration Failed", res.status === "success" ? "check-circle" : "alert-circle");
       if (res.status === "success") {
+        localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+        await showModernAlert(res.message + " Initial exercise load baseline saved successfully!", "Registration Completed", "check-circle");
         switchAuthTab('login');
+      } else {
+        await showModernAlert(res.message, "Registration Failed", "alert-circle");
       }
     }
 
@@ -1198,10 +1390,7 @@
 
       const repsArr = [set1_reps, set2_reps, set3_reps, set4_reps];
       
-      const pn13 = get4WeeksHistoryLoad(exercise, currentProject); 
-      const pg13 = pn13; 
-
-      const next_load = calculateNextWeekLoadQB13(target_reps, working_load, repsArr, pn13, pg13, repsArr);
+      const next_load = calculateNextWeekLoadQB13(exercise, target_reps, working_load, repsArr, catatan);
 
       const rowObj = {
         day_session, exercise, body_weight, target_reps, working_load,
@@ -1394,7 +1583,7 @@
     }
 
     /* ==========================================================================
-       PERFORMANCE ANALYTICS IMPLEMENTATION (EVIDENCE-BASED FRAMEWORK)
+       PERFORMANCE ANALYTICS IMPLEMENTATION
        ========================================================================== */
 
     function parseSRPEFromNotes(catatan) {
@@ -1408,11 +1597,9 @@
       const rEff = repsCompleted + rir;
 
       if (sessionType.includes("Upper A") || sessionType.includes("Lower A")) {
-        // Brzycki Equation
         const denom = 1.0278 - (0.0278 * rEff);
         return denom > 0 ? load / denom : load;
       } else {
-        // Wathan Equation
         const denom = 48.8 + (53.8 * Math.exp(-0.075 * rEff));
         return (100 * load) / denom;
       }
@@ -1536,7 +1723,7 @@
         }
       });
 
-      // 3. MODUL 3: Radar Chart (Sets per Muscle Group)
+      // 3. MODUL 3: Radar Chart
       let muscleSets = { "Chest": 0, "Back": 0, "Deltoids": 0, "Arms": 0, "Quads": 0, "Posterior Chain": 0, "Calves": 0 };
       workoutRows.forEach(r => {
         let preset = exercisePresets[r.exercise];
