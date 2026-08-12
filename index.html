@@ -320,63 +320,70 @@
         </div>
 
         <!-- TAB ANALYTICS -->
-        <div id="tabAnalytics" class="p-3 sm:p-4 md:p-6 space-y-6 hidden">
+        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden">
           
-          <!-- SMART ALERT BANNERS CONTAINER -->
-          <div id="analyticsAlertsContainer" class="space-y-3">
-            <!-- Dynamic alerts for Plateau and ACWR Danger Zone will be injected here -->
-          </div>
+          <!-- DYNAMIC ALERT BANNERS (PLATEAU & OVERREACHING DETECTION) -->
+          <div id="analyticsAlerts" class="space-y-3"></div>
 
-          <!-- ANALYTICS DASHBOARD GRID -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- MODUL 1: LONGITUDINAL e1RM TREND LINE -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                  <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Modul 1: Trend e1RM (3-Wk SMA)
+              <div class="flex justify-between items-center flex-wrap gap-2">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
+                  <i data-lucide="trending-up" class="w-5 h-5 text-indigo-600"></i> Modul 1: Dynamic e1RM Progression
                 </h3>
-                <select id="analyticsExerciseFilter" onchange="renderAnalyticsChart()" class="w-full sm:w-auto px-3 py-1.5 bg-white rounded-xl border border-slate-300 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                  <!-- Exercise options injected dynamically -->
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="Barbell Bench Press">Barbell Bench Press</option>
+                  <option value="Barbell Squats">Barbell Squats</option>
+                  <option value="Conventional Deadlift">Conventional Deadlift</option>
+                  <option value="Barbell Overhead Press">Barbell Overhead Press</option>
                 </select>
               </div>
-              <div class="h-64 sm:h-72 w-full">
-                <canvas id="e1rmChart"></canvas>
+              <div class="h-64 w-full">
+                <canvas id="chartE1RM"></canvas>
               </div>
+              <p class="text-[11px] text-slate-400 italic">*e1RM calculated using Brzycki (Sesi A) and Wathan (Sesi B) with effective reps RIR adjustment.</p>
             </div>
 
-            <!-- MODUL 2: DUAL-AXIS VOLUME LOAD VS SESSION RPE -->
+            <!-- MODUL 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Modul 2: Volume Load vs. Session RPE
+              <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i> Modul 2: Volume Load vs. Session RPE (sRPE)
               </h3>
-              <div class="h-64 sm:h-72 w-full">
-                <canvas id="volumeRpeChart"></canvas>
+              <div class="h-64 w-full">
+                <canvas id="chartVolumeRpe"></canvas>
               </div>
+              <p class="text-[11px] text-slate-400 italic">*Compares total external work done (kg) against internal perceptual fatigue (sRPE 1-10).</p>
             </div>
 
-            <!-- MODUL 3: DISTRIBUTION HEATMAP / RADAR (EFFECTIVE SETS) -->
+            <!-- MODUL 3: DISTRIBUTION RADAR CHART (SETS PER MUSCLE GROUP) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="target" class="w-5 h-5 text-indigo-600"></i> Modul 3: Distro Set Efektif (Target 10-20 Set)
+              <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
+                <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i> Modul 3: Weekly Effective Sets / Muscle
               </h3>
-              <div class="h-64 sm:h-72 w-full flex items-center justify-center">
-                <canvas id="muscleDistributionChart"></canvas>
+              <div class="h-64 w-full flex justify-center">
+                <canvas id="chartMuscleDistribution"></canvas>
               </div>
+              <p class="text-[11px] text-slate-400 italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week (Evidence-Based).</p>
             </div>
 
             <!-- MODUL 4: FATIGUE & READINESS TRACKER (ACWR) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Modul 4: ACWR Fatigue Tracker
+              <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base">
+                <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i> Modul 4: ACWR Fatigue & Readiness Tracker
               </h3>
-              <div class="h-64 sm:h-72 w-full">
-                <canvas id="acwrChart"></canvas>
+              <div class="h-64 w-full">
+                <canvas id="chartACWR"></canvas>
               </div>
+              <p class="text-[11px] text-slate-400 italic">*Acute (1-Wk) to Chronic (4-Wk Avg) Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
             </div>
-
           </div>
+
         </div>
+
+      </div>
+
+    </div>
 
     <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6">
@@ -472,33 +479,38 @@
     let myChart = null;
     let originalBaseLoad = 0;
 
+    let chartInstanceE1RM = null;
+    let chartInstanceVolumeRpe = null;
+    let chartInstanceMuscleDist = null;
+    let chartInstanceACWR = null;
+
     let lastSelectedSession = "";
     let lastBodyWeight = "";
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms" },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false },
-      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves" },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves" }
     };
 
     const initialBenchmarkLoads = {
@@ -1107,7 +1119,6 @@
         tbody.appendChild(tr);
       });
       lucide.createIcons();
-      renderAnalyticsChart();
     }
 
     function addOrUpdateWorkout(e) {
@@ -1259,38 +1270,275 @@
       }
     }
 
-    function renderAnalyticsChart() {
-      const ctx = document.getElementById("volumeChart").getContext("2d");
+    /* ==========================================================================
+       PERFORMANCE ANALYTICS IMPLEMENTATION (EVIDENCE-BASED FRAMEWORK)
+       ========================================================================== */
+
+    function parseSRPEFromNotes(catatan) {
+      if (!catatan) return 8.0; 
+      const match = catatan.match(/RPE\s*(\d+(\.\d+)?)/i);
+      return match ? parseFloat(match[1]) : 8.0;
+    }
+
+    function computeE1RM(load, repsCompleted, rir, sessionType) {
+      if (load <= 0 || repsCompleted <= 0) return 0;
+      const rEff = repsCompleted + rir;
+
+      if (sessionType.includes("Upper A") || sessionType.includes("Lower A")) {
+        // Brzycki Equation
+        const denom = 1.0278 - (0.0278 * rEff);
+        return denom > 0 ? load / denom : load;
+      } else {
+        // Wathan Equation
+        const denom = 48.8 + (53.8 * Math.exp(-0.075 * rEff));
+        return (100 * load) / denom;
+      }
+    }
+
+    function getMultiWeekUserData() {
+      const match = currentProject.match(/Week\s*(\d+)/i);
+      let currentWkNum = match ? parseInt(match[1], 10) : 1;
       
-      const sessionVolume = {};
-      workoutRows.forEach(r => {
-        const totalReps = r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps;
-        const vol = totalReps * r.working_load;
-        sessionVolume[r.day_session] = (sessionVolume[r.day_session] || 0) + vol;
+      let startWk = Math.max(1, currentWkNum - 3);
+      let weeks = [];
+      let historyMap = {};
+
+      for (let w = startWk; w <= currentWkNum; w++) {
+        let wkLabel = `Week ${w}`;
+        weeks.push(wkLabel);
+        let raw = localStorage.getItem(`workout_data_${currentUser}_${wkLabel}`);
+        historyMap[wkLabel] = raw ? JSON.parse(raw) : (w === currentWkNum ? workoutRows : []);
+      }
+      return { weeks, historyMap, currentWkLabel: `Week ${currentWkNum}` };
+    }
+
+    function renderAnalyticsDashboard() {
+      const { weeks, historyMap } = getMultiWeekUserData();
+      const selectedEx = document.getElementById("analyticsExerciseFilter").value;
+
+      // 1. MODUL 1: e1RM Trend
+      let e1rmData = [];
+      weeks.forEach(wk => {
+        let rows = historyMap[wk] || [];
+        let exRow = rows.find(r => r.exercise === selectedEx);
+        if (exRow) {
+          let topReps = Math.max(exRow.set1_reps, exRow.set2_reps, exRow.set3_reps, exRow.set4_reps);
+          let val = computeE1RM(exRow.working_load, topReps, 1, exRow.day_session);
+          e1rmData.push(Math.round(val * 10) / 10);
+        } else {
+          e1rmData.push(null);
+        }
       });
 
-      const labels = Object.keys(sessionVolume);
-      const data = Object.values(sessionVolume);
-
-      if (myChart) myChart.destroy();
-
-      myChart = new Chart(ctx, {
-        type: 'bar',
+      let ctx1 = document.getElementById("chartE1RM").getContext("2d");
+      if (chartInstanceE1RM) chartInstanceE1RM.destroy();
+      chartInstanceE1RM = new Chart(ctx1, {
+        type: 'line',
         data: {
-          labels: labels,
+          labels: weeks,
           datasets: [{
-            label: 'Total Volume (kg)',
-            data: data,
-            backgroundColor: 'rgba(79, 70, 229, 0.8)',
-            borderRadius: 8
+            label: `e1RM (kg) - ${selectedEx}`,
+            data: e1rmData,
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+            pointHoverRadius: 7
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          scales: { y: { beginAtZero: false } }
         }
       });
+
+      // 2. MODUL 2: Dual-Axis Volume Load vs sRPE (Per Session Current Week)
+      const sessions = ["Mon - Upper A", "Tue - Lower A", "Thu - Upper B", "Fri - Lower B"];
+      let volData = [0, 0, 0, 0];
+      let rpeData = [0, 0, 0, 0];
+
+      sessions.forEach((s, i) => {
+        let sessionRows = workoutRows.filter(r => r.day_session === s);
+        let sVol = 0;
+        let sRpeSum = 0;
+        let count = 0;
+
+        sessionRows.forEach(r => {
+          let reps = r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps;
+          sVol += (reps * r.working_load);
+          sRpeSum += parseSRPEFromNotes(r.catatan);
+          count++;
+        });
+
+        volData[i] = sVol;
+        rpeData[i] = count > 0 ? Math.round((sRpeSum / count) * 10) / 10 : 8.0;
+      });
+
+      let ctx2 = document.getElementById("chartVolumeRpe").getContext("2d");
+      if (chartInstanceVolumeRpe) chartInstanceVolumeRpe.destroy();
+      chartInstanceVolumeRpe = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ["Upper A", "Lower A", "Upper B", "Lower B"],
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Volume Load (kg)',
+              data: volData,
+              backgroundColor: 'rgba(99, 102, 241, 0.85)',
+              borderRadius: 6,
+              yAxisID: 'y'
+            },
+            {
+              type: 'line',
+              label: 'Session RPE (sRPE)',
+              data: rpeData,
+              borderColor: '#ef4444',
+              backgroundColor: '#ef4444',
+              borderWidth: 3,
+              pointRadius: 4,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { type: 'linear', position: 'left', title: { display: true, text: 'Volume Load (kg)' } },
+            y1: { type: 'linear', position: 'right', min: 1, max: 10, grid: { drawOnChartArea: false }, title: { display: true, text: 'sRPE (1-10)' } }
+          }
+        }
+      });
+
+      // 3. MODUL 3: Radar Chart (Sets per Muscle Group)
+      let muscleSets = { "Chest": 0, "Back": 0, "Deltoids": 0, "Arms": 0, "Quads": 0, "Posterior Chain": 0, "Calves": 0 };
+      workoutRows.forEach(r => {
+        let preset = exercisePresets[r.exercise];
+        let mg = preset ? preset.muscleGroup : "Other";
+        if (muscleSets[mg] !== undefined) {
+          let validSets = 0;
+          if (r.set1_reps > 0) validSets++;
+          if (r.set2_reps > 0) validSets++;
+          if (r.set3_reps > 0) validSets++;
+          if (r.set4_reps > 0) validSets++;
+          muscleSets[mg] += validSets;
+        }
+      });
+
+      let ctx3 = document.getElementById("chartMuscleDistribution").getContext("2d");
+      if (chartInstanceMuscleDist) chartInstanceMuscleDist.destroy();
+      chartInstanceMuscleDist = new Chart(ctx3, {
+        type: 'radar',
+        data: {
+          labels: Object.keys(muscleSets),
+          datasets: [{
+            label: 'Effective Sets / Week',
+            data: Object.values(muscleSets),
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: '#10b981',
+            pointBackgroundColor: '#10b981'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: { min: 0, suggestedMax: 20, ticks: { stepSize: 5 } }
+          }
+        }
+      });
+
+      // 4. MODUL 4: ACWR Tracker
+      let acwrData = [];
+      let weeklyWorkloads = [];
+
+      weeks.forEach(wk => {
+        let rows = historyMap[wk] || [];
+        let totalWkVol = 0;
+        rows.forEach(r => {
+          totalWkVol += ((r.set1_reps + r.set2_reps + r.set3_reps + r.set4_reps) * r.working_load);
+        });
+        weeklyWorkloads.push(totalWkVol);
+      });
+
+      weeklyWorkloads.forEach((wAkut, idx) => {
+        let sub = weeklyWorkloads.slice(0, idx + 1);
+        let avgKronis = sub.reduce((a, b) => a + b, 0) / sub.length;
+        let ratio = avgKronis > 0 ? (wAkut / avgKronis) : 1.0;
+        acwrData.push(Math.round(ratio * 100) / 100);
+      });
+
+      let ctx4 = document.getElementById("chartACWR").getContext("2d");
+      if (chartInstanceACWR) chartInstanceACWR.destroy();
+      chartInstanceACWR = new Chart(ctx4, {
+        type: 'line',
+        data: {
+          labels: weeks,
+          datasets: [{
+            label: 'ACWR Index',
+            data: acwrData,
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            fill: true,
+            borderWidth: 2,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { min: 0.5, max: 2.0 } }
+        }
+      });
+
+      // 5. SMART RULE ALERT BANNER LOGIC
+      checkAnalyticsRuleAlerts(e1rmData, acwrData, selectedEx);
+    }
+
+    function checkAnalyticsRuleAlerts(e1rmData, acwrData, exerciseName) {
+      const container = document.getElementById("analyticsAlerts");
+      container.innerHTML = "";
+
+      // Alert 1: Plateau Detection (3-Wk Rolling e1RM Progress <= 0.5%)
+      if (e1rmData.length >= 3) {
+        let first = e1rmData[e1rmData.length - 3];
+        let latest = e1rmData[e1rmData.length - 1];
+        if (first && latest && first > 0) {
+          let pctDiff = ((latest - first) / first) * 100;
+          if (pctDiff <= 0.5) {
+            let div = document.createElement("div");
+            div.className = "bg-amber-50 border border-amber-200 text-amber-900 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
+            div.innerHTML = `
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold block">⚠️ Stagnansi Terdeteksi pada ${exerciseName}:</span>
+                Progress e1RM rolling 3-minggu (${pctDiff.toFixed(2)}%) berada di bawah threshold 0.5% pada intensitas tinggi. Pertimbangkan variasi beban atau deload.
+              </div>
+            `;
+            container.appendChild(div);
+          }
+        }
+      }
+
+      // Alert 2: ACWR Danger Zone (ACWR > 1.50)
+      let currentACWR = acwrData[acwrData.length - 1] || 1.0;
+      if (currentACWR > 1.50) {
+        let div = document.createElement("div");
+        div.className = "bg-red-50 border border-red-200 text-red-900 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
+        div.innerHTML = `
+          <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 shrink-0 mt-0.5"></i>
+          <div>
+            <span class="font-bold block">🚨 Peringatan Kelelahan Akseleratif (ACWR: ${currentACWR}):</span>
+            Beban kerja akut melebihi ambang batas aman (> 1.50). Risiko cedera dan overreaching non-fungsional tinggi. Direkomendasikan menerapkan <b>Deload Phase</b> (potong volume 40-50%).
+          </div>
+        `;
+        container.appendChild(div);
+      }
+
+      lucide.createIcons();
     }
 
     function switchAppTab(tab) {
@@ -1304,7 +1552,7 @@
         document.getElementById("tabAnalytics").classList.remove("hidden");
         document.getElementById("tabWorkoutBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-500 hover:text-slate-700 flex items-center gap-2";
         document.getElementById("tabAnalyticsBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2";
-        renderAnalyticsChart();
+        renderAnalyticsDashboard();
       }
     }
 
