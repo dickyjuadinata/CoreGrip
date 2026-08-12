@@ -6,7 +6,7 @@
   <title>Resistance Training Log & Auto-Progression System</title>
   
   <!-- PWA Meta Tags & Manifest -->
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#1e293b">
   <meta name="description" content="Enterprise-grade resistance training log and auto-progression tracking application.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -51,6 +51,68 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    /* Professional Masculine Industrial Theme Engine (Light/Dark System Adaptive) */
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-header: #0f172a;
+      --bg-card: #ffffff;
+      --bg-subcard: #f8fafc;
+      --bg-input: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #cbd5e1;
+      --border-strong: #94a3b8;
+      --accent-slate: #334155;
+      --accent-steel: #0284c7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #090d16;
+        --bg-header: #0f172a;
+        --bg-card: #131c2e;
+        --bg-subcard: #0b1320;
+        --bg-input: #0b1320;
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border-color: #1e2d42;
+        --border-strong: #334155;
+        --accent-slate: #38bdf8;
+        --accent-steel: #0284c7;
+      }
+    }
+
+    /* Override dynamic elements to respect Industrial Dark/Light theme */
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .themed-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
+    }
+
+    .themed-subcard {
+      background-color: var(--bg-subcard);
+      border-color: var(--border-color);
+    }
+
+    .themed-input {
+      background-color: var(--bg-input) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-main) !important;
+    }
+
+    .themed-input:focus {
+      border-color: var(--accent-steel) !important;
+    }
+
+    .themed-text-muted {
+      color: var(--text-muted);
+    }
+
     /* Prevent Horizontal Overflow on Mobile */
     html, body {
       overflow-x: hidden;
@@ -62,20 +124,20 @@
       scroll-behavior: smooth;
     }
 
-    /* Custom Scrollbar Styling (Aesthetic & Thin) */
+    /* Custom Scrollbar Styling (Aesthetic & Industrial Thin) */
     .custom-scrollbar {
       scroll-behavior: smooth;
     }
     .custom-scrollbar::-webkit-scrollbar { 
-      width: 4px; 
-      height: 4px; 
+      width: 5px; 
+      height: 5px; 
     }
     .custom-scrollbar::-webkit-scrollbar-track { 
       background: transparent; 
     }
     .custom-scrollbar::-webkit-scrollbar-thumb { 
       background: rgba(148, 163, 184, 0.4); 
-      border-radius: 9999px; 
+      border-radius: 4px; 
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
       background: rgba(100, 116, 139, 0.7); 
@@ -89,17 +151,17 @@
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-slate-700 selection:text-white relative overflow-x-hidden w-full">
+<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-slate-700 selection:text-white relative overflow-x-hidden w-full">
 
   <!-- TOP NAVBAR -->
-  <header class="bg-slate-950 border-b border-slate-800 text-white shadow-md sticky top-0 z-40 w-full">
+  <header class="bg-slate-950 border-b border-slate-800 text-white shadow-lg sticky top-0 z-40 w-full">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center w-full">
       <div class="flex items-center space-x-3">
-        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 shrink-0">
-          <i data-lucide="dumbbell" class="w-6 h-6 text-slate-200"></i>
+        <div class="bg-slate-800/80 p-2 rounded-lg border border-slate-700 shrink-0">
+          <i data-lucide="dumbbell" class="w-6 h-6 text-sky-400"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base md:text-lg leading-tight text-slate-100">Resistance Training & Auto-Progression</h1>
+          <h1 class="font-extrabold tracking-wide text-base md:text-lg leading-tight text-slate-100 uppercase">Resistance Training & Auto-Progression</h1>
           <p class="text-xs text-slate-400 flex items-center gap-1.5" id="syncStatus">
             <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
             <span id="statusText">Online - Connected</span>
@@ -108,10 +170,10 @@
       </div>
       
       <div id="userHeaderInfo" class="hidden flex items-center space-x-2 md:space-x-4">
-        <span class="text-xs md:text-sm font-medium bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-200" id="displayUsername">
+        <span class="text-xs md:text-sm font-semibold bg-slate-800 px-3 py-1.5 rounded-md border border-slate-700 text-slate-200" id="displayUsername">
           User
         </span>
-        <button onclick="handleLogout()" class="text-xs bg-red-900/80 hover:bg-red-800 text-red-100 border border-red-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1 active:scale-95">
+        <button onclick="handleLogout()" class="text-xs bg-red-950 hover:bg-red-900 text-red-200 border border-red-800 px-3 py-1.5 rounded-md transition flex items-center gap-1 active:scale-95 font-semibold">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -122,22 +184,22 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
 
     <!-- AUTH SECTION -->
-    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
-      <div class="flex border-b border-slate-700 bg-slate-900/50">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-semibold text-slate-200 border-b-2 border-slate-400 transition">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-semibold text-slate-400 hover:text-slate-200 transition">Register & Assessment</button>
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-xl shadow-2xl border overflow-hidden">
+      <div class="flex border-b border-slate-700/50 bg-slate-900/40">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-bold text-sky-400 border-b-2 border-sky-400 transition uppercase tracking-wider text-sm">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-bold themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm">Register & Assessment</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Username</label>
-          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="loginPin">
+          <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Username</label>
+          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-lg themed-input border focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="loginPin">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">PIN</label>
-          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="btnLoginSubmit">
+          <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">PIN</label>
+          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-lg themed-input border focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
-        <button type="submit" id="btnLoginSubmit" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-bold py-3 rounded-xl transition shadow-lg active:scale-[0.98]">
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-sky-700 hover:bg-sky-600 border border-sky-600 text-white font-bold py-3 rounded-lg transition shadow-lg active:scale-[0.98] uppercase tracking-wider text-sm">
           Sign In to Portal
         </button>
       </form>
@@ -145,90 +207,90 @@
       <!-- REGISTRATION WITH BASELINE ASSESSMENT -->
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">New Username</label>
-          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="regPin">
+          <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">New Username</label>
+          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-lg themed-input border focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="regPin">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Create PIN</label>
-          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="test_load_bench">
+          <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Create PIN</label>
+          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-lg themed-input border focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="test_load_bench">
         </div>
 
         <!-- FIRST-SET ASSESSMENT FOR NEW USERS -->
-        <div class="border-t border-slate-700 pt-4 mt-4">
-          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700 mb-3">
-            <h4 class="font-bold text-slate-200 text-xs sm:text-sm flex items-center gap-1.5">
-              <i data-lucide="clipboard-check" class="w-4 h-4 text-slate-400"></i> Baseline Load Assessment
+        <div class="border-t border-slate-700/50 pt-4 mt-4">
+          <div class="themed-subcard p-3 rounded-lg border mb-3">
+            <h4 class="font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="clipboard-check" class="w-4 h-4 text-sky-400"></i> Baseline Load Assessment
             </h4>
-            <p class="text-[11px] text-slate-400 mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
+            <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
           </div>
 
           <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
             <!-- Benchmark 1: Barbell Bench Press -->
-            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700 space-y-2">
+            <div class="themed-subcard p-3 rounded-lg border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-300">Barbell Bench Press</span>
+                <span class="font-bold">Barbell Bench Press</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_reps_bench">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_reps_bench">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_rpe_bench">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
+                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_rpe_bench">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_load_squat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_load_squat">
                 </div>
               </div>
             </div>
 
             <!-- Benchmark 2: Barbell Squats -->
-            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700 space-y-2">
+            <div class="themed-subcard p-3 rounded-lg border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-300">Barbell Squats</span>
+                <span class="font-bold">Barbell Squats</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_reps_squat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_reps_squat">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_rpe_squat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
+                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_rpe_squat">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_load_lat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_load_lat">
                 </div>
               </div>
             </div>
 
             <!-- Benchmark 3: Dumbbell Lateral Raises - A -->
-            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700 space-y-2">
+            <div class="themed-subcard p-3 rounded-lg border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-300">Dumbbell Lateral Raises</span>
+                <span class="font-bold">Dumbbell Lateral Raises</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Load (kg)</label>
-                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_reps_lat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_reps_lat">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">Reps</label>
-                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="test_rpe_lat">
+                  <label class="text-[10px] themed-text-muted block font-semibold">Reps</label>
+                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="test_rpe_lat">
                 </div>
                 <div>
-                  <label class="text-[10px] text-slate-400 block">RPE</label>
-                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded-lg text-xs font-bold text-slate-100 enter-nav" data-next="btnRegisterSubmit">
+                  <label class="text-[10px] themed-text-muted block font-semibold">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded text-xs font-bold enter-nav" data-next="btnRegisterSubmit">
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <button type="submit" id="btnRegisterSubmit" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-bold py-3 rounded-xl transition shadow-lg active:scale-[0.98]">
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-sky-700 hover:bg-sky-600 border border-sky-600 text-white font-bold py-3 rounded-lg transition shadow-lg active:scale-[0.98] uppercase tracking-wider text-sm">
           Submit & Create Account
         </button>
       </form>
@@ -238,12 +300,12 @@
     <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
 
       <!-- MAIN CONTENT TABS -->
-      <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 overflow-hidden w-full">
-        <div class="flex border-b border-slate-700 bg-slate-900/60">
-          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-200 border-b-2 border-slate-400 flex items-center gap-2">
+      <div class="themed-card rounded-xl shadow-xl border overflow-hidden w-full">
+        <div class="flex border-b border-slate-700/50 bg-slate-900/40">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base text-sky-400 border-b-2 border-sky-400 flex items-center gap-2 uppercase tracking-wider">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
           </button>
-          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-400 hover:text-slate-200 flex items-center gap-2">
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2 uppercase tracking-wider">
             <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
           </button>
         </div>
@@ -252,27 +314,27 @@
         <div id="tabWorkout" class="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-6 w-full max-w-full">
           
           <!-- INPUT FORM -->
-          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="bg-slate-900/60 p-3 sm:p-4 md:p-6 rounded-2xl border border-slate-700 space-y-4 transition-all w-full">
+          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-3 sm:p-4 md:p-6 rounded-xl border space-y-4 transition-all w-full">
             <div class="flex justify-between items-center flex-wrap gap-2">
-              <h3 class="font-bold text-slate-200 text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="plus-circle" class="w-5 h-5 text-slate-400"></i> Log / Edit Exercise Record
+              <h3 class="font-extrabold uppercase tracking-wider text-xs sm:text-sm flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-sky-400"></i> Log / Edit Exercise Record
               </h3>
-              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-900/50 text-emerald-300 border border-emerald-700 flex items-center gap-1">
+              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-700/80 flex items-center gap-1">
                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
               </span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Week Number</label>
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Week Number</label>
                 <div class="flex items-center">
-                  <span class="bg-slate-800 text-slate-300 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-700">Week</span>
-                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-slate-800 rounded-r-xl border border-slate-700 text-sm font-semibold text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <span class="bg-slate-800 text-slate-200 px-3 py-2 rounded-l-lg text-sm font-bold border border-r-0 border-slate-700">Week</span>
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-lg border text-sm font-semibold focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Training Session</label>
-                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-sm text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputExercise">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Training Session</label>
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-lg border text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputExercise">
                   <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
                   <option value="Tue - Lower A">Tue - Lower A</option>
@@ -281,97 +343,97 @@
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Exercise Name</label>
-                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-sm text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Exercise Name</label>
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-lg border text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputBodyWeight">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-sm text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputSet1">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Body Weight (kg)</label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-lg border text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Target Rep Range</label>
-                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-sm font-semibold text-slate-400 focus:outline-none cursor-not-allowed">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Target Rep Range</label>
+                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-lg border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Rest Interval Target</label>
-                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-sm font-medium text-slate-400 focus:outline-none cursor-not-allowed">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Rest Interval Target</label>
+                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-lg border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
             </div>
 
             <!-- Working Load & Warm-up -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
               <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">
+                <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">
                   Primary Working Load (kg)
-                  <span class="text-[10px] text-slate-400 font-normal block">*Auto-calculated from history & assessment</span>
+                  <span class="text-[10px] font-normal block opacity-80">*Auto-calculated from history & assessment</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-sm font-bold text-slate-200 focus:outline-none cursor-not-allowed">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-lg border text-sm font-extrabold focus:outline-none cursor-not-allowed">
               </div>
 
               <!-- Side Load Display -->
-              <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-xs space-y-1">
-                <span class="font-bold text-slate-300 block mb-1">Side Load Calculation:</span>
-                <div class="text-slate-100 font-semibold text-sm" id="sideLoadDisplay">
+              <div class="themed-subcard p-3 rounded-lg border text-xs space-y-1">
+                <span class="font-bold block mb-1 uppercase tracking-wider text-[11px] text-sky-400">Side Load Calculation:</span>
+                <div class="font-extrabold text-sm" id="sideLoadDisplay">
                   - kg / side
                 </div>
-                <span class="text-[10px] text-slate-500 block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
+                <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
               </div>
 
               <!-- Warmup Sets Preview Box -->
-              <div id="warmupContainer" class="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-xs space-y-1 sm:col-span-2 md:col-span-1">
-                <span class="font-bold text-slate-300 block mb-1">Warm-up Sets (Auto FLOOR 2.5):</span>
-                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium text-slate-300" id="warmupPreview">
-                  <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 1: -</div>
-                  <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 2: -</div>
-                  <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 3: -</div>
-                  <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 4: -</div>
+              <div id="warmupContainer" class="themed-subcard p-3 rounded-lg border text-xs space-y-1 sm:col-span-2 md:col-span-1">
+                <span class="font-bold block mb-1 uppercase tracking-wider text-[11px] text-sky-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
+                  <div class="themed-input p-1 rounded border">Set 1: -</div>
+                  <div class="themed-input p-1 rounded border">Set 2: -</div>
+                  <div class="themed-input p-1 rounded border">Set 3: -</div>
+                  <div class="themed-input p-1 rounded border">Set 4: -</div>
                 </div>
               </div>
             </div>
 
             <!-- Auto-Regulation Notice Banner -->
-            <div id="autoRegNotice" class="hidden bg-amber-950/60 border border-amber-800 text-amber-200 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2">
+            <div id="autoRegNotice" class="hidden bg-amber-950/80 border border-amber-700 text-amber-200 px-4 py-2.5 rounded-lg text-xs font-medium flex items-center gap-2">
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
             <!-- Actual Reps Achieved -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 mb-2">Actual Reps Completed Per Set:</label>
+              <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
-                  <span class="text-xs text-slate-400 block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-center text-sm font-bold text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputSet2">
+                  <span class="text-xs font-semibold themed-text-muted block mb-1">Set 1</span>
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-lg border text-center text-sm font-bold focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
-                  <span class="text-xs text-slate-400 block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-center text-sm font-bold text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputSet3">
+                  <span class="text-xs font-semibold themed-text-muted block mb-1">Set 2</span>
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-lg border text-center text-sm font-bold focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
-                  <span class="text-xs text-slate-400 block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-center text-sm font-bold text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputSet4">
+                  <span class="text-xs font-semibold themed-text-muted block mb-1">Set 3</span>
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-lg border text-center text-sm font-bold focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
-                  <span class="text-xs text-slate-400 block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-center text-sm font-bold text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <span class="text-xs font-semibold themed-text-muted block mb-1">Set 4</span>
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-lg border text-center text-sm font-bold focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-400 mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
-              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 text-sm text-slate-100 focus:ring-2 focus:ring-slate-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
+              <label class="block text-xs font-extrabold uppercase tracking-wider themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-lg border text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
             <div class="flex justify-between items-center gap-2 pt-2 flex-wrap">
-              <button type="button" onclick="deleteEntireSession()" class="px-3 py-2 text-xs text-red-300 hover:text-red-200 bg-red-950/50 hover:bg-red-900/60 border border-red-800 rounded-xl font-bold transition flex items-center gap-1 active:scale-95">
+              <button type="button" onclick="deleteEntireSession()" class="px-3 py-2 text-xs text-red-300 hover:text-red-200 bg-red-950 border border-red-800 rounded-lg font-bold transition flex items-center gap-1 active:scale-95 uppercase tracking-wider">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Session
               </button>
               <div class="flex items-center gap-2 ml-auto">
-                <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 font-medium active:scale-95">Reset</button>
-                <button type="submit" id="btnSaveWorkout" class="bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-md active:scale-95">
+                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-extrabold uppercase tracking-wider themed-text-muted hover:text-sky-400 transition active:scale-95">Reset</button>
+                <button type="submit" id="btnSaveWorkout" class="bg-sky-700 hover:bg-sky-600 border border-sky-600 text-white px-6 py-2.5 rounded-lg text-xs font-extrabold transition shadow-md active:scale-95 uppercase tracking-wider">
                   Save Exercise Record
                 </button>
               </div>
@@ -379,11 +441,11 @@
           </form>
 
           <!-- WORKOUT LOG TABLE CONTAINER -->
-          <div class="relative border border-slate-700 rounded-2xl shadow-xl bg-slate-900 overflow-hidden w-full max-w-full">
+          <div class="relative themed-card border rounded-xl shadow-xl overflow-hidden w-full max-w-full">
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
-              <table class="w-full text-left text-sm text-slate-300 min-w-[640px] border-collapse">
+              <table class="w-full text-left text-sm min-w-[640px] border-collapse">
                 <!-- Sticky Header -->
-                <thead class="bg-slate-950 text-slate-300 text-xs uppercase sticky top-0 z-10 shadow-sm border-b border-slate-800">
+                <thead class="bg-slate-950 text-slate-200 text-xs font-extrabold uppercase tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-800">
                   <tr>
                     <th class="px-4 py-3">Day / Session</th>
                     <th class="px-4 py-3">Exercise</th>
@@ -394,13 +456,13 @@
                     <th class="px-4 py-3 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="workoutTableBody" class="divide-y divide-slate-800 bg-slate-900">
+                <tbody id="workoutTableBody" class="divide-y divide-slate-800/40">
                 </tbody>
               </table>
             </div>
 
             <!-- Gradient Fade Mask Overlay at the bottom of the table -->
-            <div class="pointer-events-none sticky bottom-0 h-8 w-full bg-gradient-to-t from-slate-900/90 to-transparent z-10 -mt-8"></div>
+            <div class="pointer-events-none sticky bottom-0 h-8 w-full bg-gradient-to-t from-slate-900/40 to-transparent z-10 -mt-8"></div>
           </div>
 
         </div>
@@ -413,12 +475,12 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
             <!-- MODULE 1: LONGITUDINAL e1RM TREND LINE -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 space-y-3 w-full">
+            <div class="themed-subcard p-4 rounded-xl border space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
-                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-sm sm:text-base">
-                  <i data-lucide="trending-up" class="w-5 h-5 text-slate-400"></i> Module 1: Dynamic e1RM Progression
+                <h3 class="font-extrabold uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-sky-400"></i> Module 1: Dynamic e1RM Progression
                 </h3>
-                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 font-semibold text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500">
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-md px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
                   <option value="Barbell Squats">Barbell Squats</option>
                   <option value="Conventional Deadlift">Conventional Deadlift</option>
@@ -428,40 +490,40 @@
               <div class="h-64 w-full">
                 <canvas id="chartE1RM"></canvas>
               </div>
-              <p class="text-[11px] text-slate-500 italic">*e1RM calculated using Brzycki (Session A) and Wathan (Session B) with effective reps RIR adjustment.</p>
+              <p class="text-[11px] themed-text-muted italic">*e1RM calculated using Brzycki (Session A) and Wathan (Session B) with effective reps RIR adjustment.</p>
             </div>
 
             <!-- MODULE 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 space-y-3 w-full">
-              <h3 class="font-bold text-slate-200 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="bar-chart-2" class="w-5 h-5 text-slate-400"></i> Module 2: Volume Load vs. Session RPE (sRPE)
+            <div class="themed-subcard p-4 rounded-xl border space-y-3 w-full">
+              <h3 class="font-extrabold uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+                <i data-lucide="bar-chart-2" class="w-4 h-4 text-sky-400"></i> Module 2: Volume Load vs. Session RPE (sRPE)
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartVolumeRpe"></canvas>
               </div>
-              <p class="text-[11px] text-slate-500 italic">*Compares total external work done (kg) against internal perceptual fatigue (sRPE 1-10).</p>
+              <p class="text-[11px] themed-text-muted italic">*Compares total external work done (kg) against internal perceptual fatigue (sRPE 1-10).</p>
             </div>
 
             <!-- MODULE 3: DISTRIBUTION RADAR CHART -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 space-y-3 w-full">
-              <h3 class="font-bold text-slate-200 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="pie-chart" class="w-5 h-5 text-slate-400"></i> Module 3: Weekly Effective Sets / Muscle
+            <div class="themed-subcard p-4 rounded-xl border space-y-3 w-full">
+              <h3 class="font-extrabold uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+                <i data-lucide="pie-chart" class="w-4 h-4 text-sky-400"></i> Module 3: Weekly Effective Sets / Muscle
               </h3>
               <div class="h-64 w-full flex justify-center">
                 <canvas id="chartMuscleDistribution"></canvas>
               </div>
-              <p class="text-[11px] text-slate-500 italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week (Evidence-Based).</p>
+              <p class="text-[11px] themed-text-muted italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week (Evidence-Based).</p>
             </div>
 
             <!-- MODULE 4: FATIGUE & READINESS TRACKER (ACWR) -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 space-y-3 w-full">
-              <h3 class="font-bold text-slate-200 flex items-center gap-2 text-sm sm:text-base">
-                <i data-lucide="activity" class="w-5 h-5 text-slate-400"></i> Module 4: ACWR Fatigue & Readiness Tracker
+            <div class="themed-subcard p-4 rounded-xl border space-y-3 w-full">
+              <h3 class="font-extrabold uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+                <i data-lucide="activity" class="w-4 h-4 text-sky-400"></i> Module 4: ACWR Fatigue & Readiness Tracker
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartACWR"></canvas>
               </div>
-              <p class="text-[11px] text-slate-500 italic">*Acute (1-Wk) to Chronic (4-Wk Avg) Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
+              <p class="text-[11px] themed-text-muted italic">*Acute (1-Wk) to Chronic (4-Wk Avg) Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
             </div>
           </div>
 
@@ -473,46 +535,46 @@
 
     <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
-      <div class="bg-slate-950 text-white p-6 rounded-2xl border border-slate-800 shadow-xl flex justify-between items-center flex-wrap gap-4">
+      <div class="bg-slate-950 text-white p-6 rounded-xl border border-slate-800 shadow-xl flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 class="text-xl font-bold">Admin Management Console</h2>
+          <h2 class="text-xl font-extrabold uppercase tracking-wider">Admin Management Console</h2>
           <p class="text-xs text-slate-400">Manage system users, access approvals, and audit activity logs.</p>
         </div>
-        <button onclick="loadAdminData()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-sm font-bold transition">
+        <button onclick="loadAdminData()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider transition">
           Refresh Console
         </button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4 w-full">
-          <h3 class="font-bold text-slate-200">User Management</h3>
+        <div class="themed-card p-6 rounded-xl border shadow-xl space-y-4 w-full">
+          <h3 class="font-extrabold uppercase tracking-wider text-sm">User Management</h3>
           <div class="overflow-x-auto w-full">
-            <table class="w-full text-sm text-left text-slate-300">
-              <thead class="bg-slate-900 text-xs font-bold uppercase text-slate-400">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-slate-950 text-slate-200 text-xs font-extrabold uppercase tracking-wider">
                 <tr>
                   <th class="p-3">User</th>
                   <th class="p-3">Status</th>
                   <th class="p-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody id="adminUsersTable" class="divide-y divide-slate-700">
+              <tbody id="adminUsersTable" class="divide-y divide-slate-700/50">
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4 w-full">
-          <h3 class="font-bold text-slate-200">System Activity Audit Logs</h3>
+        <div class="themed-card p-6 rounded-xl border shadow-xl space-y-4 w-full">
+          <h3 class="font-extrabold uppercase tracking-wider text-sm">System Activity Audit Logs</h3>
           <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
-            <table class="w-full text-xs text-left text-slate-300">
-              <thead class="bg-slate-900 text-slate-400 uppercase sticky top-0">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-950 text-slate-200 uppercase sticky top-0 font-extrabold">
                 <tr>
                   <th class="p-2">Timestamp</th>
                   <th class="p-2">User</th>
                   <th class="p-2">Activity Description</th>
                 </tr>
               </thead>
-              <tbody id="adminLogsTable" class="divide-y divide-slate-700">
+              <tbody id="adminLogsTable" class="divide-y divide-slate-700/50">
               </tbody>
             </table>
           </div>
@@ -523,33 +585,33 @@
   </main>
 
   <!-- SHORTCUT SCROLLER BUTTON -->
-  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
+  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
     <i data-lucide="arrow-up" class="w-5 h-5"></i>
   </button>
 
   <!-- LOADING SPINNER OVERLAY -->
   <div id="loadingOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
-    <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700 flex flex-col items-center gap-3">
-      <div class="w-10 h-10 border-4 border-slate-600 border-t-slate-200 rounded-full animate-spin"></div>
-      <p id="loadingMessage" class="text-xs font-semibold text-slate-300">Processing Request...</p>
+    <div class="bg-slate-900 p-6 rounded-xl shadow-2xl border border-slate-700 flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-slate-700 border-t-sky-400 rounded-full animate-spin"></div>
+      <p id="loadingMessage" class="text-xs font-extrabold uppercase tracking-wider text-slate-300">Processing Request...</p>
     </div>
   </div>
 
   <!-- MODERN UI POP-UP MODAL -->
   <div id="modalOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
-    <div class="bg-slate-800 max-w-sm w-full rounded-2xl shadow-2xl border border-slate-700 p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
+    <div class="bg-slate-900 max-w-sm w-full rounded-xl shadow-2xl border border-slate-700 p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
       <div class="flex items-start gap-3">
-        <div id="modalIconContainer" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-700 shrink-0">
+        <div id="modalIconContainer" class="p-2 rounded-lg bg-slate-800 text-sky-400 border border-slate-700 shrink-0">
           <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 id="modalTitle" class="text-base font-bold text-slate-100">System Notification</h3>
+          <h3 id="modalTitle" class="text-base font-extrabold uppercase tracking-wider text-slate-100">System Notification</h3>
           <p id="modalMessage" class="text-xs text-slate-300 mt-1 leading-relaxed"></p>
         </div>
       </div>
       <div id="modalFooter" class="flex justify-end gap-2 pt-2">
-        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-slate-700 rounded-xl transition hidden">Cancel</button>
-        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-bold text-white bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl transition shadow-md">OK</button>
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 rounded-lg transition uppercase tracking-wider hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-extrabold text-white bg-sky-700 hover:bg-sky-600 border border-sky-600 rounded-lg transition shadow-md uppercase tracking-wider">OK</button>
       </div>
     </div>
   </div>
@@ -673,7 +735,7 @@
 
         cancelBtn.classList.add("hidden");
         confirmBtn.innerText = "OK";
-        confirmBtn.className = "px-4 py-2 text-xs font-bold text-white bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl transition shadow-md";
+        confirmBtn.className = "px-4 py-2 text-xs font-extrabold text-white bg-sky-700 hover:bg-sky-600 border border-sky-600 rounded-lg transition shadow-md uppercase tracking-wider";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -710,7 +772,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Cancel";
         confirmBtn.innerText = "Confirm";
-        confirmBtn.className = "px-4 py-2 text-xs font-bold text-white bg-red-800 hover:bg-red-700 border border-red-600 rounded-xl transition shadow-md";
+        confirmBtn.className = "px-4 py-2 text-xs font-extrabold text-white bg-red-800 hover:bg-red-700 border border-red-600 rounded-lg transition shadow-md uppercase tracking-wider";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -818,6 +880,16 @@
           }
         }
 
+        // Penyesuaian Alur Enter Navigation untuk Set 3 sesuai konfigurasi jumlah set
+        const set3Input = document.getElementById("inputSet3");
+        if (set3Input) {
+          if (totalSets >= 4) {
+            set3Input.setAttribute("data-next", "inputSet4");
+          } else {
+            set3Input.setAttribute("data-next", "inputCatatan");
+          }
+        }
+
         const warmupContainer = document.getElementById("warmupContainer");
         if (preset.isFirst) {
           warmupContainer.classList.remove("hidden");
@@ -903,10 +975,10 @@
       const previewEl = document.getElementById("warmupPreview");
       if (!exercise) {
         previewEl.innerHTML = `
-          <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 1: -</div>
-          <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 2: -</div>
-          <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 3: -</div>
-          <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 4: -</div>
+          <div class="themed-input p-1 rounded border">Set 1: -</div>
+          <div class="themed-input p-1 rounded border">Set 2: -</div>
+          <div class="themed-input p-1 rounded border">Set 3: -</div>
+          <div class="themed-input p-1 rounded border">Set 4: -</div>
         `;
         return;
       }
@@ -922,10 +994,10 @@
       const s4 = calculateSideWeight(exercise, w4);
 
       previewEl.innerHTML = `
-        <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 1: <b>${w1}k</b> (${s1.toFixed(2)})</div>
-        <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 2: <b>${w2}k</b> (${s2.toFixed(2)})</div>
-        <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 3: <b>${w3}k</b> (${s3.toFixed(2)})</div>
-        <div class="bg-slate-800 p-1 rounded border border-slate-700">Set 4: <b>${w4}k</b> (${s4.toFixed(2)})</div>
+        <div class="themed-input p-1 rounded border">Set 1: <b>${w1}k</b> (${s1.toFixed(2)})</div>
+        <div class="themed-input p-1 rounded border">Set 2: <b>${w2}k</b> (${s2.toFixed(2)})</div>
+        <div class="themed-input p-1 rounded border">Set 3: <b>${w3}k</b> (${s3.toFixed(2)})</div>
+        <div class="themed-input p-1 rounded border">Set 4: <b>${w4}k</b> (${s4.toFixed(2)})</div>
       `;
     }
 
@@ -1097,7 +1169,16 @@
               return;
             }
 
-            const nextId = this.getAttribute('data-next');
+            let nextId = this.getAttribute('data-next');
+            
+            // Dynamic Routing untuk Set 3 apabila Set 4 tersembunyi
+            if (this.id === "inputSet3") {
+              const container4 = document.getElementById("containerSet4");
+              if (container4 && container4.classList.contains("hidden")) {
+                nextId = "inputCatatan";
+              }
+            }
+
             if (nextId) {
               const nextEl = document.getElementById(nextId);
               if (nextEl) {
@@ -1156,13 +1237,13 @@
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
         document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-semibold text-slate-200 border-b-2 border-slate-400 transition";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-semibold text-slate-400 hover:text-slate-200 transition";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold text-sky-400 border-b-2 border-sky-400 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm";
       } else {
         document.getElementById("formLogin").classList.add("hidden");
         document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-semibold text-slate-400 hover:text-slate-200 transition";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-semibold text-slate-200 border-b-2 border-slate-400 transition";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold text-sky-400 border-b-2 border-sky-400 transition uppercase tracking-wider text-sm";
       }
     }
 
@@ -1319,16 +1400,16 @@
           bwInput.value = firstBw.body_weight;
           lastBodyWeight = firstBw.body_weight;
           bwInput.readOnly = true;
-          bwInput.classList.add("bg-slate-900", "cursor-not-allowed");
+          bwInput.classList.add("opacity-75", "cursor-not-allowed");
         }
       } else {
         bwInput.value = "";
         bwInput.readOnly = false;
-        bwInput.classList.remove("bg-slate-900", "cursor-not-allowed");
+        bwInput.classList.remove("opacity-75", "cursor-not-allowed");
       }
 
       if (workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500">${currentProject ? 'No exercise logs recorded for this week program.' : 'Please select or enter a Week Number to display workout data.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 themed-text-muted font-medium">${currentProject ? 'No exercise logs recorded for this week program.' : 'Please select or enter a Week Number to display workout data.'}</td></tr>`;
         return;
       }
 
@@ -1338,27 +1419,27 @@
         let isPullUp = exLower.includes("pull-up") || exLower.includes("pull up");
 
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-slate-800/60 transition border-b border-slate-800";
+        tr.className = "hover:bg-slate-800/30 transition border-b border-slate-700/40";
         tr.innerHTML = `
-          <td class="px-4 py-3 font-semibold text-slate-300">${row.day_session}</td>
-          <td class="px-4 py-3 font-bold text-slate-100">${row.exercise}</td>
-          <td class="px-4 py-3 text-center bg-slate-950/40 font-medium text-slate-300">${row.target_reps}</td>
-          <td class="px-4 py-3 text-right font-bold text-slate-200">
-            <span class="text-slate-300">${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/side'}</span> 
-            <span class="text-xs text-slate-500 block">(${row.working_load} kg Total Load)</span>
+          <td class="px-4 py-3 font-semibold">${row.day_session}</td>
+          <td class="px-4 py-3 font-extrabold text-sky-400">${row.exercise}</td>
+          <td class="px-4 py-3 text-center bg-slate-950/20 font-semibold">${row.target_reps}</td>
+          <td class="px-4 py-3 text-right font-bold">
+            <span>${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/side'}</span> 
+            <span class="text-xs themed-text-muted block">(${row.working_load} kg Total Load)</span>
           </td>
           <td class="px-4 py-3 text-center">
             <span class="inline-flex gap-1 font-mono text-xs">
-              <span class="bg-slate-800 border border-slate-700 text-slate-200 px-1.5 py-0.5 rounded">${row.set1_reps}</span>
-              <span class="bg-slate-800 border border-slate-700 text-slate-200 px-1.5 py-0.5 rounded">${row.set2_reps}</span>
-              <span class="bg-slate-800 border border-slate-700 text-slate-200 px-1.5 py-0.5 rounded">${row.set3_reps}</span>
-              <span class="bg-slate-800 border border-slate-700 text-slate-200 px-1.5 py-0.5 rounded">${row.set4_reps}</span>
+              <span class="themed-input border px-1.5 py-0.5 rounded font-bold">${row.set1_reps}</span>
+              <span class="themed-input border px-1.5 py-0.5 rounded font-bold">${row.set2_reps}</span>
+              <span class="themed-input border px-1.5 py-0.5 rounded font-bold">${row.set3_reps}</span>
+              <span class="themed-input border px-1.5 py-0.5 rounded font-bold">${row.set4_reps}</span>
             </span>
           </td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-400 bg-emerald-950/20">${row.next_load} kg</td>
+          <td class="px-4 py-3 text-right font-extrabold text-emerald-400 bg-emerald-950/20">${row.next_load} kg</td>
           <td class="px-4 py-3 text-center space-x-1">
-            <button onclick="editWorkout(${idx})" class="p-1 text-slate-400 hover:text-slate-200" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-            <button onclick="deleteWorkout(${idx})" class="p-1 text-slate-400 hover:text-red-400" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="editWorkout(${idx})" class="p-1 themed-text-muted hover:text-sky-400 transition" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            <button onclick="deleteWorkout(${idx})" class="p-1 themed-text-muted hover:text-red-400 transition" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1402,7 +1483,7 @@
         lastBodyWeight = body_weight;
         const bwInput = document.getElementById("inputBodyWeight");
         bwInput.readOnly = true;
-        bwInput.classList.add("bg-slate-900", "cursor-not-allowed");
+        bwInput.classList.add("opacity-75", "cursor-not-allowed");
       }
 
       renderWorkoutTable();
@@ -1520,7 +1601,7 @@
         document.getElementById("inputBodyWeight").value = keepBW;
         if (bwReadOnly) {
           document.getElementById("inputBodyWeight").readOnly = true;
-          document.getElementById("inputBodyWeight").classList.add("bg-slate-900", "cursor-not-allowed");
+          document.getElementById("inputBodyWeight").classList.add("opacity-75", "cursor-not-allowed");
         }
       } else {
         document.getElementById("inputBodyWeight").value = "";
@@ -1642,8 +1723,8 @@
           datasets: [{
             label: `e1RM (kg) - ${selectedEx}`,
             data: e1rmData,
-            borderColor: '#94a3b8',
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            borderColor: '#0284c7',
+            backgroundColor: 'rgba(2, 132, 199, 0.1)',
             fill: true,
             tension: 0.3,
             pointRadius: 5,
@@ -1690,7 +1771,7 @@
               type: 'bar',
               label: 'Volume Load (kg)',
               data: volData,
-              backgroundColor: 'rgba(100, 116, 139, 0.85)',
+              backgroundColor: 'rgba(51, 65, 85, 0.85)',
               borderRadius: 6,
               yAxisID: 'y'
             },
@@ -1698,8 +1779,8 @@
               type: 'line',
               label: 'Session RPE (sRPE)',
               data: rpeData,
-              borderColor: '#f87171',
-              backgroundColor: '#f87171',
+              borderColor: '#ef4444',
+              backgroundColor: '#ef4444',
               borderWidth: 3,
               pointRadius: 4,
               yAxisID: 'y1'
@@ -1740,9 +1821,9 @@
           datasets: [{
             label: 'Effective Sets / Week',
             data: Object.values(muscleSets),
-            backgroundColor: 'rgba(52, 211, 153, 0.2)',
-            borderColor: '#34d399',
-            pointBackgroundColor: '#34d399'
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: '#10b981',
+            pointBackgroundColor: '#10b981'
           }]
         },
         options: {
@@ -1783,8 +1864,8 @@
           datasets: [{
             label: 'ACWR Index',
             data: acwrData,
-            borderColor: '#fbbf24',
-            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
             fill: true,
             borderWidth: 2,
             pointRadius: 5
@@ -1811,7 +1892,7 @@
           let pctDiff = ((latest - first) / first) * 100;
           if (pctDiff <= 0.5) {
             let div = document.createElement("div");
-            div.className = "bg-amber-950/60 border border-amber-800 text-amber-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
+            div.className = "bg-amber-950/80 border border-amber-700 text-amber-200 p-3.5 rounded-lg text-xs flex items-start gap-2.5 shadow-sm";
             div.innerHTML = `
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
               <div>
@@ -1827,7 +1908,7 @@
       let currentACWR = acwrData[acwrData.length - 1] || 1.0;
       if (currentACWR > 1.50) {
         let div = document.createElement("div");
-        div.className = "bg-red-950/60 border border-red-800 text-red-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
+        div.className = "bg-red-950/80 border border-red-700 text-red-200 p-3.5 rounded-lg text-xs flex items-start gap-2.5 shadow-sm";
         div.innerHTML = `
           <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 shrink-0 mt-0.5"></i>
           <div>
@@ -1845,13 +1926,13 @@
       if (tab === 'workout') {
         document.getElementById("tabWorkout").classList.remove("hidden");
         document.getElementById("tabAnalytics").classList.add("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-200 border-b-2 border-slate-400 flex items-center gap-2";
-        document.getElementById("tabAnalyticsBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-400 hover:text-slate-200 flex items-center gap-2";
+        document.getElementById("tabWorkoutBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base text-sky-400 border-b-2 border-sky-400 flex items-center gap-2 uppercase tracking-wider";
+        document.getElementById("tabAnalyticsBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2 uppercase tracking-wider";
       } else {
         document.getElementById("tabWorkout").classList.add("hidden");
         document.getElementById("tabAnalytics").classList.remove("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-400 hover:text-slate-200 flex items-center gap-2";
-        document.getElementById("tabAnalyticsBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-bold text-sm sm:text-base text-slate-200 border-b-2 border-slate-400 flex items-center gap-2";
+        document.getElementById("tabWorkoutBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2 uppercase tracking-wider";
+        document.getElementById("tabAnalyticsBtn").className = "px-4 sm:px-6 py-3.5 sm:py-4 font-extrabold text-sm sm:text-base text-sky-400 border-b-2 border-sky-400 flex items-center gap-2 uppercase tracking-wider";
         renderAnalyticsDashboard();
       }
     }
@@ -1867,11 +1948,11 @@
         (res.usersMeta || []).forEach(u => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td class="p-3 font-semibold text-slate-200">${u.user}</td>
+            <td class="p-3 font-semibold">${u.user}</td>
             <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${u.status === 'ACTIVE' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-amber-950 text-amber-300 border border-amber-800'}">${u.status}</span></td>
             <td class="p-3 text-center space-x-2">
-              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-slate-700 text-white px-2 py-1 rounded text-xs font-bold hover:bg-slate-600 transition">Approve</button>` : ''}
-              <button onclick="deleteUser('${u.user}')" class="bg-red-900/80 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-800 transition">Delete</button>
+              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-sky-700 text-white px-2 py-1 rounded text-xs font-bold hover:bg-sky-600 transition uppercase tracking-wider">Approve</button>` : ''}
+              <button onclick="deleteUser('${u.user}')" class="bg-red-900 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-800 transition uppercase tracking-wider">Delete</button>
             </td>
           `;
           userTbody.appendChild(tr);
@@ -1882,9 +1963,9 @@
         (res.activityLogs || []).reverse().forEach(l => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td class="p-2 text-slate-500">${new Date(l.time).toLocaleTimeString()}</td>
-            <td class="p-2 font-bold text-slate-300">${l.user}</td>
-            <td class="p-2 text-slate-300">${l.activity}</td>
+            <td class="p-2 themed-text-muted">${new Date(l.time).toLocaleTimeString()}</td>
+            <td class="p-2 font-bold">${l.user}</td>
+            <td class="p-2">${l.activity}</td>
           `;
           logTbody.appendChild(tr);
         });
