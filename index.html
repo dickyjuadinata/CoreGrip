@@ -6,11 +6,11 @@
   <title>Resistance Training Log & Auto-Progression System</title>
   
   <!-- PWA Meta Tags & Manifest -->
-  <meta name="theme-color" content="#090d16">
+  <meta name="theme-color" content="#2563eb">
   <meta name="description" content="Enterprise-grade resistance training log and auto-progression tracking application.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Workout Log">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2548/2548537.png">
   
@@ -22,8 +22,8 @@
       "short_name": "WorkoutLog",
       "start_url": "./",
       "display": "standalone",
-      "background_color": "#090d16",
-      "theme_color": "#090d16",
+      "background_color": "#f8fafc",
+      "theme_color": "#2563eb",
       "description": "Enterprise-grade resistance training log and auto-progression tracking application.",
       "icons": [
         {
@@ -51,57 +51,86 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Ultra-Modern Dark Glassmorphism Theme Engine */
+    /* Vibrant / Bright Palette Auto Light and Dark System */
     :root {
-      --bg-page: #090d16;
-      --bg-header: rgba(15, 23, 42, 0.85);
-      --bg-card: #111827;
-      --bg-subcard: #1f293d;
-      --bg-input: #0f172a;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #1e293b;
-      --border-strong: #334155;
-      --accent-slate: #38bdf8;
-      --accent-steel: #06b6d4;
+      --bg-page: #f8fafc;
+      --bg-header: #2563eb;
+      --text-header: #ffffff;
+      --bg-card: #ffffff;
+      --bg-subcard: #f1f5f9;
+      --bg-input: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --shadow-color: rgba(37, 99, 235, 0.1);
+      --table-header-bg: #eff6ff;
+      --table-header-text: #1e40af;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-header: #1e293b;
+        --text-header: #f8fafc;
+        --bg-card: #1e293b;
+        --bg-subcard: #334155;
+        --bg-input: #0f172a;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
+        --border-strong: #475569;
+        --accent-primary: #3b82f6;
+        --accent-hover: #60a5fa;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --table-header-bg: #0f172a;
+        --table-header-text: #60a5fa;
+      }
     }
 
     body {
       background-color: var(--bg-page);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
-      background-attachment: fixed;
       color: var(--text-main);
-      transition: background-color 0.2s ease, color 0.2s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .themed-header {
+      background-color: var(--bg-header);
+      color: var(--text-header);
     }
 
     .themed-card {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px -5px var(--shadow-color);
     }
 
     .themed-subcard {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border-color);
     }
 
     .themed-input {
       background-color: var(--bg-input) !important;
-      border-color: rgba(255, 255, 255, 0.1) !important;
+      border-color: var(--border-strong) !important;
       color: var(--text-main) !important;
       transition: all 0.2s ease;
     }
 
     .themed-input:focus {
-      border-color: #38bdf8 !important;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+      border-color: var(--accent-primary) !important;
+      box-shadow: 0 0 0 3px var(--shadow-color) !important;
     }
 
     .themed-text-muted {
       color: var(--text-muted);
+    }
+
+    .themed-table-header {
+      background-color: var(--table-header-bg);
+      color: var(--table-header-text);
     }
 
     html, body {
@@ -117,18 +146,18 @@
       scroll-behavior: smooth;
     }
     .custom-scrollbar::-webkit-scrollbar { 
-      width: 5px; 
-      height: 5px; 
+      width: 6px; 
+      height: 6px; 
     }
     .custom-scrollbar::-webkit-scrollbar-track { 
       background: transparent; 
     }
     .custom-scrollbar::-webkit-scrollbar-thumb { 
-      background: rgba(148, 163, 184, 0.3); 
+      background: var(--border-strong); 
       border-radius: 4px; 
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
-      background: rgba(56, 189, 248, 0.5); 
+      background: var(--accent-primary); 
     }
     
     @media (max-width: 640px) {
@@ -138,18 +167,18 @@
     }
   </style>
 </head>
-<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white relative overflow-x-hidden w-full">
+<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative overflow-x-hidden w-full">
 
   <!-- TOP NAVBAR -->
-  <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 text-white shadow-2xl sticky top-0 z-40 w-full">
+  <header class="themed-header border-b border-blue-400/20 shadow-md sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center w-full">
       <div class="flex items-center space-x-3">
-        <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-2 rounded-xl shadow-lg shadow-cyan-500/20 shrink-0">
+        <div class="bg-white/20 p-2 rounded-xl shadow-inner shrink-0 backdrop-blur-sm">
           <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
         </div>
         <div>
-          <h1 class="font-black tracking-wider text-base md:text-lg leading-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent uppercase">Resistance Training & Auto-Progression</h1>
-          <p class="text-xs text-slate-400 flex items-center gap-1.5" id="syncStatus">
+          <h1 class="font-black tracking-wider text-base md:text-lg leading-tight uppercase">Resistance Training & Auto-Progression</h1>
+          <p class="text-xs opacity-90 flex items-center gap-1.5" id="syncStatus">
             <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
             <span id="statusText">Online - Connected</span>
           </p>
@@ -157,10 +186,10 @@
       </div>
       
       <div id="userHeaderInfo" class="hidden flex items-center space-x-2 md:space-x-4">
-        <span class="text-xs md:text-sm font-semibold bg-slate-800/80 px-3.5 py-1.5 rounded-lg border border-slate-700/80 text-cyan-300 shadow-inner" id="displayUsername">
+        <span class="text-xs md:text-sm font-semibold bg-white/20 px-3.5 py-1.5 rounded-lg border border-white/30 shadow-inner" id="displayUsername">
           User
         </span>
-        <button onclick="handleLogout()" class="text-xs bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-800/60 px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 active:scale-95 font-bold shadow-sm">
+        <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 active:scale-95 font-bold shadow-sm">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -171,22 +200,22 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
 
     <!-- AUTH SECTION -->
-    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-2xl border border-slate-800 overflow-hidden">
-      <div class="flex border-b border-slate-800 bg-slate-950/50">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-black text-cyan-400 border-b-2 border-cyan-400 transition uppercase tracking-wider text-sm">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-black themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm">Register & Assessment</button>
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
+      <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm">Register & Assessment</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Username</label>
-          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="loginPin">
+          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="loginPin">
         </div>
         <div>
           <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">PIN</label>
-          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="btnLoginSubmit">
+          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
-        <button type="submit" id="btnLoginSubmit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/30 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-cyan-500/20 active:scale-[0.98] uppercase tracking-wider text-sm">
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] uppercase tracking-wider text-sm">
           Sign In to Portal
         </button>
       </form>
@@ -195,18 +224,18 @@
       <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">New Username</label>
-          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="regPin">
+          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="regPin">
         </div>
         <div>
           <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Create PIN</label>
-          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="test_load_bench">
+          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="test_load_bench">
         </div>
 
         <!-- FIRST-SET ASSESSMENT FOR NEW USERS -->
-        <div class="border-t border-slate-800 pt-4 mt-4">
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
           <div class="themed-subcard p-3.5 rounded-xl border mb-3">
-            <h4 class="font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 text-cyan-400">
-              <i data-lucide="clipboard-check" class="w-4 h-4 text-cyan-400"></i> Baseline Load Assessment
+            <h4 class="font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <i data-lucide="clipboard-check" class="w-4 h-4"></i> Baseline Load Assessment
             </h4>
             <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
           </div>
@@ -215,7 +244,7 @@
             <!-- Benchmark 1: Barbell Bench Press -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-200">Barbell Bench Press</span>
+                <span class="font-bold">Barbell Bench Press</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
@@ -236,7 +265,7 @@
             <!-- Benchmark 2: Barbell Squats -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-200">Barbell Squats</span>
+                <span class="font-bold">Barbell Squats</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
@@ -257,7 +286,7 @@
             <!-- Benchmark 3: Dumbbell Lateral Raises - A -->
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-slate-200">Dumbbell Lateral Raises</span>
+                <span class="font-bold">Dumbbell Lateral Raises</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <div>
@@ -277,7 +306,7 @@
           </div>
         </div>
 
-        <button type="submit" id="btnRegisterSubmit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/30 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-cyan-500/20 active:scale-[0.98] uppercase tracking-wider text-sm">
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] uppercase tracking-wider text-sm">
           Submit & Create Account
         </button>
       </form>
@@ -287,12 +316,12 @@
     <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
 
       <!-- MAIN CONTENT TABS -->
-      <div class="themed-card rounded-2xl shadow-2xl border border-slate-800 overflow-hidden w-full">
-        <div class="flex border-b border-slate-800 bg-slate-950/60">
-          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-cyan-400 border-b-2 border-cyan-400 flex items-center gap-2.5 uppercase tracking-wider">
+      <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
+        <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
           </button>
-          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2.5 uppercase tracking-wider">
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider">
             <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
           </button>
         </div>
@@ -303,10 +332,10 @@
           <!-- INPUT FORM -->
           <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-5 md:p-6 rounded-2xl border space-y-4 transition-all w-full">
             <div class="flex justify-between items-center flex-wrap gap-2">
-              <h3 class="font-black uppercase tracking-wider text-xs sm:text-sm flex items-center gap-2 text-cyan-400">
-                <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i> Log / Edit Exercise Record
+              <h3 class="font-black uppercase tracking-wider text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Log / Edit Exercise Record
               </h3>
-              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <span id="todayBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
               </span>
             </div>
@@ -315,13 +344,13 @@
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
-                  <span class="bg-slate-800/80 text-slate-300 px-3 py-2 rounded-l-xl text-sm font-bold border border-r-0 border-slate-700">Week</span>
-                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-bold focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-bold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Training Session</label>
-                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputExercise">
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
                   <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
                   <option value="Tue - Lower A">Tue - Lower A</option>
@@ -331,13 +360,13 @@
               </div>
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Exercise Name</label>
-                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">Target Rep Range</label>
@@ -354,15 +383,15 @@
               <div>
                 <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1.5">
                   Primary Working Load (kg)
-                  <span class="text-[10px] font-semibold text-cyan-400 block">*Auto-calculated / Custom load editable</span>
+                  <span class="text-[10px] font-semibold text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-black focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-black focus:ring-2 focus:outline-none">
               </div>
 
               <!-- Side Load Display -->
               <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-cyan-400">Side Load Calculation:</span>
-                <div class="font-black text-sm text-slate-100" id="sideLoadDisplay">
+                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
+                <div class="font-black text-sm" id="sideLoadDisplay">
                   - kg / side
                 </div>
                 <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
@@ -370,7 +399,7 @@
 
               <!-- Warmup Sets Preview Box -->
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1 sm:col-span-2 md:col-span-1">
-                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-cyan-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <span class="font-extrabold block mb-1 uppercase tracking-wider text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
                   <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
                   <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
@@ -381,8 +410,8 @@
             </div>
 
             <!-- Auto-Regulation Notice Banner -->
-            <div id="autoRegNotice" class="hidden bg-amber-950/80 border border-amber-600/60 text-amber-200 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 shadow-lg">
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+            <div id="autoRegNotice" class="hidden bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/80 dark:border-amber-600/60 dark:text-amber-200 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 shadow-sm">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0"></i>
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
@@ -392,35 +421,35 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-bold themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs font-bold themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs font-bold themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs font-bold themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-black focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-black uppercase tracking-wider themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
-              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
             <div class="flex justify-between items-center gap-2 pt-2 flex-wrap">
-              <button type="button" onclick="deleteEntireSession()" class="px-3.5 py-2 text-xs text-red-300 hover:text-white bg-red-950/70 hover:bg-red-900 border border-red-800/80 rounded-xl font-bold transition flex items-center gap-1.5 active:scale-95 uppercase tracking-wider shadow-sm">
+              <button type="button" onclick="deleteEntireSession()" class="px-3.5 py-2 text-xs text-red-600 hover:text-red-700 dark:text-red-300 bg-red-100 hover:bg-red-200 dark:bg-red-950/70 border border-red-300 dark:border-red-800/80 rounded-xl font-bold transition flex items-center gap-1.5 active:scale-95 uppercase tracking-wider shadow-sm">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Session
               </button>
               <div class="flex items-center gap-2 ml-auto">
-                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-black uppercase tracking-wider themed-text-muted hover:text-cyan-400 transition active:scale-95">Reset</button>
-                <button type="submit" id="btnSaveWorkout" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/30 text-white px-6 py-2.5 rounded-xl text-xs font-black transition shadow-lg shadow-cyan-500/20 active:scale-95 uppercase tracking-wider">
+                <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-black uppercase tracking-wider themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+                <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-black transition shadow-lg shadow-blue-500/30 active:scale-95 uppercase tracking-wider">
                   Save Exercise Record
                 </button>
               </div>
@@ -428,28 +457,25 @@
           </form>
 
           <!-- WORKOUT LOG TABLE CONTAINER -->
-          <div class="relative themed-card border border-slate-800 rounded-2xl shadow-2xl overflow-hidden w-full max-w-full">
+          <div class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
               <table class="w-full text-left text-sm min-w-[640px] border-collapse">
                 <!-- Sticky Header -->
-                <thead class="bg-slate-950 text-slate-300 text-xs font-black uppercase tracking-wider sticky top-0 z-10 shadow-md border-b border-slate-800">
+                <thead class="themed-table-header text-xs font-black uppercase tracking-wider sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
                   <tr>
                     <th class="px-4 py-3.5">Day / Session</th>
                     <th class="px-4 py-3.5">Exercise</th>
                     <th class="px-4 py-3.5 text-center">Target</th>
                     <th class="px-4 py-3.5 text-right">Load (Side / Total)</th>
                     <th class="px-4 py-3.5 text-center">Reps (Set 1-4)</th>
-                    <th class="px-4 py-3.5 text-right text-emerald-400">Next Load (kg)</th>
+                    <th class="px-4 py-3.5 text-right text-emerald-600 dark:text-emerald-400">Next Load (kg)</th>
                     <th class="px-4 py-3.5 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="workoutTableBody" class="divide-y divide-slate-800/60">
+                <tbody id="workoutTableBody" class="divide-y divide-gray-200 dark:divide-slate-800/60">
                 </tbody>
               </table>
             </div>
-
-            <!-- Gradient Fade Mask Overlay at the bottom of the table -->
-            <div class="pointer-events-none sticky bottom-0 h-8 w-full bg-gradient-to-t from-slate-950/60 to-transparent z-10 -mt-8"></div>
           </div>
 
         </div>
@@ -464,10 +490,10 @@
             <!-- MODULE 1: LONGITUDINAL e1RM TREND LINE -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
-                <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-cyan-400">
-                  <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i> Module 1: Dynamic e1RM Progression
+                <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i> Module 1: Dynamic e1RM Progression
                 </h3>
-                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
                   <option value="Barbell Squats">Barbell Squats</option>
                   <option value="Conventional Deadlift">Conventional Deadlift</option>
@@ -482,8 +508,8 @@
 
             <!-- MODULE 2: DUAL-AXIS VOLUME LOAD VS sRPE -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-cyan-400">
-                <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyan-400"></i> Module 2: Volume Load vs. Session RPE (sRPE)
+              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartVolumeRpe"></canvas>
@@ -493,8 +519,8 @@
 
             <!-- MODULE 3: DISTRIBUTION RADAR CHART -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-cyan-400">
-                <i data-lucide="pie-chart" class="w-4 h-4 text-cyan-400"></i> Module 3: Weekly Effective Sets / Muscle
+              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
               </h3>
               <div class="h-64 w-full flex justify-center">
                 <canvas id="chartMuscleDistribution"></canvas>
@@ -504,8 +530,8 @@
 
             <!-- MODULE 4: FATIGUE & READINESS TRACKER (ACWR) -->
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-cyan-400">
-                <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i> Module 4: ACWR Fatigue & Readiness Tracker
+              <h3 class="font-black uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartACWR"></canvas>
@@ -522,49 +548,72 @@
 
     <!-- ADMIN SECTION -->
     <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
-      <div class="bg-slate-950 text-white p-6 rounded-2xl border border-slate-800 shadow-2xl flex justify-between items-center flex-wrap gap-4">
+      <div class="themed-header p-6 rounded-2xl shadow-xl flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 class="text-xl font-black uppercase tracking-wider text-cyan-400">Admin Management Console</h2>
-          <p class="text-xs text-slate-400">Manage system users, access approvals, and audit activity logs.</p>
+          <h2 class="text-xl font-black uppercase tracking-wider text-white">Admin Management Console</h2>
+          <p class="text-xs opacity-90">Manage system users, access approvals, view user profiles & statistics.</p>
         </div>
-        <button onclick="loadAdminData()" class="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm">
+        <button onclick="loadAdminData()" class="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm">
           Refresh Console
         </button>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        <div class="themed-card p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-4 w-full">
-          <h3 class="font-black uppercase tracking-wider text-sm text-slate-200">User Management</h3>
-          <div class="overflow-x-auto w-full">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-slate-950 text-slate-300 text-xs font-black uppercase tracking-wider">
-                <tr>
-                  <th class="p-3">User</th>
-                  <th class="p-3">Status</th>
-                  <th class="p-3 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="adminUsersTable" class="divide-y divide-slate-800">
-              </tbody>
-            </table>
+      <!-- User Management Table -->
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i> User Management & Profiles
+        </h3>
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left">
+            <thead class="themed-table-header text-xs font-black uppercase tracking-wider">
+              <tr>
+                <th class="p-3">User</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- User Profile & Stats Modal / Container -->
+      <div id="adminUserDetailContainer" class="hidden themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full border-2 border-blue-500/30">
+        <div class="flex justify-between items-center">
+          <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
+            <i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats
+          </h3>
+          <button onclick="closeUserDetail()" class="text-xs font-bold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="userStatsOverview">
+          <!-- Summary Cards Injected dynamically -->
+        </div>
+        <div>
+          <h4 class="font-extrabold text-xs uppercase tracking-wider themed-text-muted mb-2">Baseline Lift Benchmarks (kg)</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="userBenchmarksList">
+            <!-- Benchmarks injected dynamically -->
           </div>
         </div>
+      </div>
 
-        <div class="themed-card p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-4 w-full">
-          <h3 class="font-black uppercase tracking-wider text-sm text-slate-200">System Activity Audit Logs</h3>
-          <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
-            <table class="w-full text-xs text-left">
-              <thead class="bg-slate-950 text-slate-300 uppercase sticky top-0 font-black">
-                <tr>
-                  <th class="p-2.5">Timestamp</th>
-                  <th class="p-2.5">User</th>
-                  <th class="p-2.5">Activity Description</th>
-                </tr>
-              </thead>
-              <tbody id="adminLogsTable" class="divide-y divide-slate-800">
-              </tbody>
-            </table>
-          </div>
+      <!-- Audit Logs Table -->
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-black uppercase tracking-wider text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4"></i> System Activity Audit Logs
+        </h3>
+        <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
+          <table class="w-full text-xs text-left">
+            <thead class="themed-table-header uppercase sticky top-0 font-black">
+              <tr>
+                <th class="p-2.5">Timestamp</th>
+                <th class="p-2.5">User</th>
+                <th class="p-2.5">Activity Description</th>
+              </tr>
+            </thead>
+            <tbody id="adminLogsTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -572,33 +621,33 @@
   </main>
 
   <!-- SHORTCUT SCROLLER BUTTON -->
-  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white rounded-full shadow-2xl shadow-cyan-500/40 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
+  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-blue-600 hover:bg-blue-700 border border-blue-400 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
     <i data-lucide="arrow-up" class="w-5 h-5"></i>
   </button>
 
   <!-- LOADING SPINNER OVERLAY -->
-  <div id="loadingOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
-    <div class="bg-slate-900/90 p-6 rounded-2xl shadow-2xl border border-slate-800 flex flex-col items-center gap-3">
-      <div class="w-10 h-10 border-4 border-slate-700 border-t-cyan-400 rounded-full animate-spin"></div>
-      <p id="loadingMessage" class="text-xs font-black uppercase tracking-wider text-slate-300">Processing Request...</p>
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+    <div class="themed-card p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-gray-300 dark:border-slate-600 border-t-blue-600 rounded-full animate-spin"></div>
+      <p id="loadingMessage" class="text-xs font-black uppercase tracking-wider">Processing Request...</p>
     </div>
   </div>
 
   <!-- MODERN UI POP-UP MODAL -->
-  <div id="modalOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
-    <div class="bg-slate-900 max-w-sm w-full rounded-2xl shadow-2xl border border-slate-800 p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+    <div class="themed-card max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
       <div class="flex items-start gap-3">
-        <div id="modalIconContainer" class="p-2.5 rounded-xl bg-slate-800 text-cyan-400 border border-slate-700 shrink-0">
+        <div id="modalIconContainer" class="p-2.5 rounded-xl bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-blue-400 shrink-0">
           <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 id="modalTitle" class="text-base font-black uppercase tracking-wider text-slate-100">System Notification</h3>
-          <p id="modalMessage" class="text-xs text-slate-300 mt-1 leading-relaxed"></p>
+          <h3 id="modalTitle" class="text-base font-black uppercase tracking-wider">System Notification</h3>
+          <p id="modalMessage" class="text-xs themed-text-muted mt-1 leading-relaxed"></p>
         </div>
       </div>
       <div id="modalFooter" class="flex justify-end gap-2 pt-2">
-        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 rounded-xl transition uppercase tracking-wider hidden">Cancel</button>
-        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-black text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/30 rounded-xl transition shadow-md uppercase tracking-wider">OK</button>
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-bold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition uppercase tracking-wider hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md uppercase tracking-wider">OK</button>
       </div>
     </div>
   </div>
@@ -722,7 +771,7 @@
 
         cancelBtn.classList.add("hidden");
         confirmBtn.innerText = "OK";
-        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/30 rounded-xl transition shadow-md uppercase tracking-wider";
+        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md uppercase tracking-wider";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -759,7 +808,7 @@
         cancelBtn.classList.remove("hidden");
         cancelBtn.innerText = "Cancel";
         confirmBtn.innerText = "Confirm";
-        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-red-800 hover:bg-red-700 border border-red-600 rounded-xl transition shadow-md uppercase tracking-wider";
+        confirmBtn.className = "px-4 py-2 text-xs font-black text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md uppercase tracking-wider";
 
         overlay.classList.remove("hidden");
         setTimeout(() => {
@@ -839,10 +888,10 @@
 
       if (todaySession && todaySession === sessionVal) {
         badge.classList.remove("hidden");
-        document.getElementById("formWorkout").classList.add("ring-2", "ring-emerald-500/80", "bg-emerald-950/20");
+        document.getElementById("formWorkout").classList.add("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
       } else {
         badge.classList.add("hidden");
-        document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500/80", "bg-emerald-950/20");
+        document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
       }
     }
 
@@ -1213,13 +1262,13 @@
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
         document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black text-cyan-400 border-b-2 border-cyan-400 transition uppercase tracking-wider text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm";
       } else {
         document.getElementById("formLogin").classList.add("hidden");
         document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-slate-300 transition uppercase tracking-wider text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black text-cyan-400 border-b-2 border-cyan-400 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-black themed-text-muted hover:text-blue-500 transition uppercase tracking-wider text-sm";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-black text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition uppercase tracking-wider text-sm";
       }
     }
 
@@ -1254,10 +1303,18 @@
       }
     }
 
+    // MANAJEMEN USER: TOLAK PENDAFTARAN BILA NAMA SAMA
     async function submitRegister(e) {
       e.preventDefault();
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
+
+      // Cek ketersediaan Username lokal & terdaftar
+      const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
+        await showModernAlert(`Username "${username}" sudah digunakan. Silakan gunakan nama lain.`, "Pendaftaran Ditolak", "user-x");
+        return;
+      }
 
       let userBenchmarks = {};
 
@@ -1305,11 +1362,13 @@
       hideSpinner();
 
       if (res.status === "success") {
+        existingUserList.push(username);
+        localStorage.setItem("registered_users_list", JSON.stringify(existingUserList));
         localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
         await showModernAlert((res.message || "Registration successful!") + " Initial exercise load baseline saved successfully!", "Registration Completed", "check-circle");
         switchAuthTab('login');
       } else {
-        await showModernAlert(res.message || "Unable to complete registration.", "Registration Failed", "alert-circle");
+        await showModernAlert(res.message || "Unable to complete registration. User may already exist.", "Registration Failed", "alert-circle");
       }
     }
 
@@ -1331,7 +1390,8 @@
     }
 
     function handleLogout() {
-      localStorage.clear();
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
       location.reload();
     }
 
@@ -1395,27 +1455,27 @@
         let isPullUp = exLower.includes("pull-up") || exLower.includes("pull up");
 
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/60";
+        tr.className = "hover:bg-gray-100 dark:hover:bg-slate-800/40 transition border-b border-gray-200 dark:border-slate-800/60";
         tr.innerHTML = `
           <td class="px-4 py-3.5 font-bold">${row.day_session}</td>
-          <td class="px-4 py-3.5 font-black text-cyan-400">${row.exercise}</td>
-          <td class="px-4 py-3.5 text-center bg-slate-950/30 font-bold">${row.target_reps}</td>
+          <td class="px-4 py-3.5 font-black text-blue-600 dark:text-blue-400">${row.exercise}</td>
+          <td class="px-4 py-3.5 text-center font-bold">${row.target_reps}</td>
           <td class="px-4 py-3.5 text-right font-extrabold">
             <span>${sideWeight.toFixed(2)} kg${isPullUp ? ' Total' : '/side'}</span> 
             <span class="text-xs themed-text-muted block">(${row.working_load} kg Total Load)</span>
           </td>
           <td class="px-4 py-3.5 text-center">
             <span class="inline-flex gap-1.5 font-mono text-xs">
-              <span class="themed-input border border-slate-700 px-2 py-1 rounded-lg font-black">${row.set1_reps}</span>
-              <span class="themed-input border border-slate-700 px-2 py-1 rounded-lg font-black">${row.set2_reps}</span>
-              <span class="themed-input border border-slate-700 px-2 py-1 rounded-lg font-black">${row.set3_reps}</span>
-              <span class="themed-input border border-slate-700 px-2 py-1 rounded-lg font-black">${row.set4_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set1_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set2_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set3_reps}</span>
+              <span class="themed-input border px-2 py-1 rounded-lg font-black">${row.set4_reps}</span>
             </span>
           </td>
-          <td class="px-4 py-3.5 text-right font-black text-emerald-400 bg-emerald-950/30">${row.next_load} kg</td>
+          <td class="px-4 py-3.5 text-right font-black text-emerald-600 dark:text-emerald-400">${row.next_load} kg</td>
           <td class="px-4 py-3.5 text-center space-x-1">
-            <button onclick="editWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-cyan-400 transition rounded-lg hover:bg-slate-800" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-            <button onclick="deleteWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-red-400 transition rounded-lg hover:bg-slate-800" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="editWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-blue-600 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Edit Entry"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            <button onclick="deleteWorkout(${idx})" class="p-1.5 themed-text-muted hover:text-red-500 transition rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800" title="Delete Entry"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1699,8 +1759,8 @@
           datasets: [{
             label: `e1RM (kg) - ${selectedEx}`,
             data: e1rmData,
-            borderColor: '#06b6d4',
-            backgroundColor: 'rgba(6, 182, 212, 0.15)',
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.15)',
             fill: true,
             tension: 0.3,
             pointRadius: 5,
@@ -1711,8 +1771,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: { 
-            y: { beginAtZero: false, grid: { color: 'rgba(255,255,255,0.05)' } },
-            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+            y: { beginAtZero: false },
+            x: {}
           }
         }
       });
@@ -1750,7 +1810,7 @@
               type: 'bar',
               label: 'Volume Load (kg)',
               data: volData,
-              backgroundColor: 'rgba(56, 189, 248, 0.75)',
+              backgroundColor: 'rgba(37, 99, 235, 0.75)',
               borderRadius: 8,
               yAxisID: 'y'
             },
@@ -1758,8 +1818,8 @@
               type: 'line',
               label: 'Session RPE (sRPE)',
               data: rpeData,
-              borderColor: '#f43f5e',
-              backgroundColor: '#f43f5e',
+              borderColor: '#e11d48',
+              backgroundColor: '#e11d48',
               borderWidth: 3,
               pointRadius: 4,
               yAxisID: 'y1'
@@ -1770,9 +1830,9 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { type: 'linear', position: 'left', title: { display: true, text: 'Volume Load (kg)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { type: 'linear', position: 'left', title: { display: true, text: 'Volume Load (kg)' } },
             y1: { type: 'linear', position: 'right', min: 1, max: 10, grid: { drawOnChartArea: false }, title: { display: true, text: 'sRPE (1-10)' } },
-            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+            x: {}
           }
         }
       });
@@ -1813,9 +1873,7 @@
             r: { 
               min: 0, 
               suggestedMax: 20, 
-              ticks: { stepSize: 5, backdropColor: 'transparent', color: '#94a3b8' },
-              grid: { color: 'rgba(255,255,255,0.1)' },
-              angleLines: { color: 'rgba(255,255,255,0.1)' }
+              ticks: { stepSize: 5 }
             }
           }
         }
@@ -1861,8 +1919,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: { 
-            y: { min: 0.5, max: 2.0, grid: { color: 'rgba(255,255,255,0.05)' } },
-            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+            y: { min: 0.5, max: 2.0 },
+            x: {}
           }
         }
       });
@@ -1881,9 +1939,9 @@
           let pctDiff = ((latest - first) / first) * 100;
           if (pctDiff <= 0.5) {
             let div = document.createElement("div");
-            div.className = "bg-amber-950/80 border border-amber-600/60 text-amber-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-lg";
+            div.className = "bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/80 dark:border-amber-600/60 dark:text-amber-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
             div.innerHTML = `
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
               <div>
                 <span class="font-black block">⚠️ Stagnation Detected on ${exerciseName}:</span>
                 3-week rolling e1RM progression (${pctDiff.toFixed(2)}%) is below the 0.5% high-intensity threshold. Consider adjusting load variables or scheduling a deload week.
@@ -1897,9 +1955,9 @@
       let currentACWR = acwrData[acwrData.length - 1] || 1.0;
       if (currentACWR > 1.50) {
         let div = document.createElement("div");
-        div.className = "bg-red-950/80 border border-red-600/60 text-red-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-lg";
+        div.className = "bg-red-100 border border-red-300 text-red-800 dark:bg-red-950/80 dark:border-red-600/60 dark:text-red-200 p-3.5 rounded-xl text-xs flex items-start gap-2.5 shadow-sm";
         div.innerHTML = `
-          <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 shrink-0 mt-0.5"></i>
+          <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5"></i>
           <div>
             <span class="font-black block">🚨 Accelerative Fatigue Warning (ACWR: ${currentACWR}):</span>
             Acute workload exceeds safe limits (> 1.50), increasing injury risk and non-functional overreaching. A <b>Deload Phase</b> (40-50% volume reduction) is highly recommended.
@@ -1915,50 +1973,126 @@
       if (tab === 'workout') {
         document.getElementById("tabWorkout").classList.remove("hidden");
         document.getElementById("tabAnalytics").classList.add("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-cyan-400 border-b-2 border-cyan-400 flex items-center gap-2.5 uppercase tracking-wider";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider";
       } else {
         document.getElementById("tabWorkout").classList.add("hidden");
         document.getElementById("tabAnalytics").classList.remove("hidden");
-        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-slate-300 flex items-center gap-2.5 uppercase tracking-wider";
-        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-cyan-400 border-b-2 border-cyan-400 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabWorkoutBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5 uppercase tracking-wider";
+        document.getElementById("tabAnalyticsBtn").className = "px-5 sm:px-8 py-4 font-black text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5 uppercase tracking-wider";
         renderAnalyticsDashboard();
       }
     }
 
+    /* DASHBOARD ADMIN: LOAD PROFIL & STATISTIK USER */
     async function loadAdminData() {
       showSpinner("Fetching administration data...");
       const res = await callApi({ action: "getAdminData", username: currentUser });
       hideSpinner();
 
-      if (res.status === "success") {
-        const userTbody = document.getElementById("adminUsersTable");
-        userTbody.innerHTML = "";
-        (res.usersMeta || []).forEach(u => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="p-3 font-bold">${u.user}</td>
-            <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-black ${u.status === 'ACTIVE' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-amber-950 text-amber-300 border border-amber-800'}">${u.status}</span></td>
-            <td class="p-3 text-center space-x-2">
-              ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:from-cyan-500 hover:to-blue-500 transition uppercase tracking-wider shadow-sm">Approve</button>` : ''}
-              <button onclick="deleteUser('${u.user}')" class="bg-red-900/80 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:bg-red-800 transition uppercase tracking-wider shadow-sm">Delete</button>
-            </td>
-          `;
-          userTbody.appendChild(tr);
-        });
+      let userList = res.usersMeta || [];
 
-        const logTbody = document.getElementById("adminLogsTable");
-        logTbody.innerHTML = "";
-        (res.activityLogs || []).reverse().forEach(l => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="p-2.5 themed-text-muted">${new Date(l.time).toLocaleTimeString()}</td>
-            <td class="p-2.5 font-bold">${l.user}</td>
-            <td class="p-2.5">${l.activity}</td>
-          `;
-          logTbody.appendChild(tr);
-        });
+      // Gabungkan pengguna lokal
+      const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      localUsers.forEach(u => {
+        if (!userList.some(item => item.user === u)) {
+          userList.push({ user: u, status: 'ACTIVE' });
+        }
+      });
+
+      const userTbody = document.getElementById("adminUsersTable");
+      userTbody.innerHTML = "";
+      userList.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-3 font-bold">${u.user}</td>
+          <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-black ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800'}">${u.status}</span></td>
+          <td class="p-3 text-center space-x-2">
+            <button onclick="viewUserProfile('${u.user}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-xs font-black transition uppercase tracking-wider shadow-sm">Profil & Stats</button>
+            ${u.status !== 'ACTIVE' ? `<button onclick="approveUser('${u.user}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:bg-emerald-700 transition uppercase tracking-wider shadow-sm">Approve</button>` : ''}
+            <button onclick="deleteUser('${u.user}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-black hover:bg-red-700 transition uppercase tracking-wider shadow-sm">Delete</button>
+          </td>
+        `;
+        userTbody.appendChild(tr);
+      });
+
+      const logTbody = document.getElementById("adminLogsTable");
+      logTbody.innerHTML = "";
+      (res.activityLogs || []).reverse().forEach(l => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2.5 themed-text-muted">${new Date(l.time).toLocaleTimeString()}</td>
+          <td class="p-2.5 font-bold">${l.user}</td>
+          <td class="p-2.5">${l.activity}</td>
+        `;
+        logTbody.appendChild(tr);
+      });
+    }
+
+    // DASHBOARD ADMIN: LIHAT PROFIL & STATISTIK USER DETIL
+    function viewUserProfile(targetUser) {
+      const container = document.getElementById("adminUserDetailContainer");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${targetUser}</b>`;
+      
+      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${targetUser}`) || "{}");
+      
+      let totalLogs = 0;
+      let totalVolume = 0;
+      let lastActive = "No logs yet";
+
+      // Hitung statistik dari LocalStorage
+      for (let key in localStorage) {
+        if (key.startsWith(`workout_data_${targetUser}_`)) {
+          const logs = JSON.parse(localStorage.getItem(key) || "[]");
+          totalLogs += logs.length;
+          logs.forEach(r => {
+            const reps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+            totalVolume += (reps * (r.working_load || 0));
+            if (r.updated_at) {
+              lastActive = new Date(r.updated_at).toLocaleDateString();
+            }
+          });
+        }
       }
+
+      // Summary Overview
+      document.getElementById("userStatsOverview").innerHTML = `
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-bold">Total Exercises Logged</span>
+          <span class="text-xl font-black text-blue-600 dark:text-blue-400">${totalLogs} Logs</span>
+        </div>
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-bold">Total Volume Load</span>
+          <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">${totalVolume.toLocaleString()} kg</span>
+        </div>
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-bold">Last Activity</span>
+          <span class="text-base font-bold">${lastActive}</span>
+        </div>
+      `;
+
+      // Benchmarks list
+      const benchContainer = document.getElementById("userBenchmarksList");
+      benchContainer.innerHTML = "";
+      if (Object.keys(benchmarks).length > 0) {
+        for (let ex in benchmarks) {
+          benchContainer.innerHTML += `
+            <div class="themed-subcard p-2 rounded-lg border text-xs">
+              <span class="themed-text-muted block text-[10px] truncate">${ex}</span>
+              <span class="font-black text-blue-600 dark:text-blue-400">${benchmarks[ex]} kg</span>
+            </div>
+          `;
+        }
+      } else {
+        benchContainer.innerHTML = `<p class="text-xs themed-text-muted italic col-span-4">No baseline benchmark records found.</p>`;
+      }
+
+      container.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
 
     async function approveUser(targetUser) {
@@ -1973,9 +2107,17 @@
       const confirmed = await showModernConfirm(`Permanently delete user '${targetUser}' and purge all stored workout logs?`, "Confirm User Deletion", "alert-triangle");
       if (confirmed) {
         showSpinner("Deleting user account...");
+        
+        // Hapus dari daftar user lokal
+        let localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+        localUsers = localUsers.filter(u => u !== targetUser);
+        localStorage.setItem("registered_users_list", JSON.stringify(localUsers));
+        localStorage.removeItem(`workout_benchmarks_${targetUser}`);
+
         const res = await callApi({ action: "deleteUser", adminUser: currentUser, targetUser });
         hideSpinner();
         await showModernAlert(res.message || "User deleted successfully.", "Account Purged", "check-circle");
+        closeUserDetail();
         loadAdminData();
       }
     }
