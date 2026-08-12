@@ -185,7 +185,7 @@
               </span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Week Number</label>
                 <div class="flex items-center">
@@ -216,6 +216,11 @@
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Target Rep Range</label>
                 <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 focus:outline-none cursor-not-allowed">
+              </div>
+              <!-- REPEAT PERMINTAAN 1: Kolom Rest Interval Target Dipindahkan ke Sini -->
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">Rest Interval Target</label>
+                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-medium text-slate-600 focus:outline-none cursor-not-allowed">
               </div>
             </div>
 
@@ -279,15 +284,9 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Rest Interval Target</label>
-                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-medium text-slate-600 focus:outline-none cursor-not-allowed">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes</label>
-                <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-              </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-1">Execution Notes</label>
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
@@ -1171,7 +1170,9 @@
 
       renderWorkoutTable();
       saveToLocalStorage();
-      resetForm();
+      
+      // REPEAT PERMINTAAN 2: Menggulir Otomatis ke Exercise Berikutnya
+      resetFormWithNextExercise(day_session, exercise);
     }
 
     function editWorkout(idx) {
@@ -1212,18 +1213,22 @@
       }
     }
 
+    // Fungsi reset standar saat tombol "Reset" ditekan secara manual
     function resetForm() {
-      const keepSession = lastSelectedSession || document.getElementById("inputDaySession").value;
+      resetFormWithNextExercise("", "");
+    }
+
+    // REPEAT PERMINTAAN 2: Fungsi Auto-Advance ke Exercise Berikutnya
+    function resetFormWithNextExercise(currentSession, currentExercise) {
+      const keepSession = currentSession || lastSelectedSession || document.getElementById("inputDaySession").value;
       const keepBW = lastBodyWeight || document.getElementById("inputBodyWeight").value;
       const bwReadOnly = document.getElementById("inputBodyWeight").readOnly;
 
-      // Preserve active week number before resetting form
       const match = currentProject.match(/Week\s*(\d+)/i);
       const activeWeekNum = match ? match[1] : "";
 
       document.getElementById("formWorkout").reset();
       
-      // Restore active week number so it doesn't fall back to Week 1
       if (activeWeekNum) {
         document.getElementById("inputProject").value = activeWeekNum;
       }
@@ -1235,7 +1240,20 @@
       if (keepSession) {
         document.getElementById("inputDaySession").value = keepSession;
         onSessionChange(keepSession);
+
+        // Cari Latihan Selanjutnya dalam Sesi yang Sama
+        if (currentExercise) {
+          const exercisesInSession = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === keepSession);
+          const currentIndex = exercisesInSession.indexOf(currentExercise);
+          
+          if (currentIndex !== -1 && currentIndex < exercisesInSession.length - 1) {
+            const nextExercise = exercisesInSession[currentIndex + 1];
+            document.getElementById("inputExercise").value = nextExercise;
+            onExerciseSelect(nextExercise);
+          }
+        }
       }
+
       if (keepBW) {
         document.getElementById("inputBodyWeight").value = keepBW;
         if (bwReadOnly) {
@@ -1244,13 +1262,15 @@
         }
       }
 
-      for (let i = 1; i <= 4; i++) {
-        const container = document.getElementById(`containerSet${i}`);
-        const input = document.getElementById(`inputSet${i}`);
-        container.classList.remove("hidden");
-        input.disabled = false;
+      if (!document.getElementById("inputExercise").value) {
+        for (let i = 1; i <= 4; i++) {
+          const container = document.getElementById(`containerSet${i}`);
+          const input = document.getElementById(`inputSet${i}`);
+          container.classList.remove("hidden");
+          input.disabled = false;
+        }
+        document.getElementById("warmupContainer").classList.remove("hidden");
       }
-      document.getElementById("warmupContainer").classList.remove("hidden");
 
       calculateLoadDetails();
     }
