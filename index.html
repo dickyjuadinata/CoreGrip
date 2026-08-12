@@ -190,7 +190,7 @@
                 <label class="block text-xs font-bold text-slate-500 mb-1">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-slate-200 text-slate-600 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-slate-300">Week</span>
-                  <input type="number" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputDaySession">
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 0" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 bg-white rounded-r-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputDaySession">
                 </div>
               </div>
               <div>
@@ -211,7 +211,7 @@
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Body Weight (kg)</label>
-                <input type="number" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 66" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 0" oninput="calculateLoadDetails()" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">Target Rep Range</label>
@@ -230,7 +230,7 @@
                   Primary Working Load (kg)
                   <span class="text-[10px] text-indigo-600 font-normal block">*Auto-calculated from 4-week history</span>
                 </label>
-                <input type="number" step="0.1" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" readonly oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 bg-slate-100 rounded-xl border border-slate-300 text-sm font-bold text-indigo-700 focus:outline-none cursor-not-allowed">
               </div>
 
               <!-- Side Load Display -->
@@ -266,19 +266,19 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs text-slate-400 block mb-1">Set 1</span>
-                  <input type="number" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs text-slate-400 block mb-1">Set 2</span>
-                  <input type="number" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs text-slate-400 block mb-1">Set 3</span>
-                  <input type="number" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs text-slate-400 block mb-1">Set 4</span>
-                  <input type="number" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-center text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
@@ -1227,6 +1227,12 @@
       renderWorkoutTable();
       saveToLocalStorage();
       resetFormWithNextExercise(day_session, exercise);
+
+      // PERMINTAAN 1: Setelah save berhasil, kursor otomatis pindah ke Actual Reps Completed Per Set: set 1
+      const set1Input = document.getElementById("inputSet1");
+      if (set1Input) {
+        set1Input.focus();
+      }
     }
 
     function editWorkout(idx) {
@@ -1267,7 +1273,6 @@
       }
     }
 
-    // PERMINTAAN 3: Opsi Hapus 1 Sesi Sekaligus
     async function deleteEntireSession() {
       const activeSession = document.getElementById("inputDaySession").value;
       if (!activeSession) {
@@ -1619,7 +1624,6 @@
       checkAnalyticsRuleAlerts(e1rmData, acwrData, selectedEx);
     }
 
-    // PERMINTAAN 4: Penyesuaian Pesan Alert ke US English
     function checkAnalyticsRuleAlerts(e1rmData, acwrData, exerciseName) {
       const container = document.getElementById("analyticsAlerts");
       container.innerHTML = "";
