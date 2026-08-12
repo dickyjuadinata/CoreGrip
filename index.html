@@ -181,27 +181,24 @@
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative overflow-x-hidden w-full">
 
   <!-- TOP NAVBAR -->
-  <header class="themed-header border-b border-blue-400/20 shadow-md sticky top-0 z-40 w-full transition-colors duration-300">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center w-full">
-      <div class="flex items-center space-x-3">
-        <div class="bg-white/20 p-2 rounded-xl shadow-inner shrink-0 backdrop-blur-sm">
-          <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+  <header class="themed-header border-b border-blue-400/20 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-3 py-2 flex justify-between items-center w-full">
+      <div class="flex items-center space-x-2">
+        <div class="bg-white/20 p-1.5 rounded-lg shadow-inner shrink-0 backdrop-blur-sm">
+          <i data-lucide="dumbbell" class="w-5 h-5 text-white"></i>
         </div>
         <div>
-          <h1 class="font-black tracking-wider text-base md:text-lg leading-tight uppercase">CoreGrip</h1>
-          <!-- Status Indikator di Header Interaktif (Disembunyikan di Halaman Login) -->
-          <p class="text-xs opacity-90 flex items-center gap-1.5 hidden cursor-pointer hover:underline transition" id="syncStatus" onclick="showSyncDetailModal()">
-            <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
-            <span id="statusText">Online · Synced</span>
-          </p>
+          <h1 class="font-black tracking-wider text-sm md:text-base leading-tight uppercase">CoreGrip</h1>
         </div>
       </div>
       
-      <div id="userHeaderInfo" class="hidden flex items-center space-x-2 md:space-x-4">
-        <span class="text-xs md:text-sm font-semibold bg-white/20 px-3.5 py-1.5 rounded-lg border border-white/30 shadow-inner" id="displayUsername">
-          User
-        </span>
-        <button onclick="handleLogout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 active:scale-95 font-semibold shadow-sm">
+      <!-- POSISI INFORMASI KONEKSI INTERNET PINDAH KE KANAN ATAS -->
+      <div class="flex items-center space-x-2">
+        <p class="text-[11px] md:text-xs opacity-90 flex items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
+          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
+          <span id="statusText">Online · Synced</span>
+        </p>
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
@@ -217,8 +214,9 @@
     <!-- AUTH SECTION -->
     <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm">Register & Assessment</button>
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
+        <!-- PERBAIKAN TULISAN REGISTER & ASSESSMENT AGAR PROPOSIONAL -->
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
       </div>
 
       <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
@@ -1416,13 +1414,13 @@
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
         document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
       } else {
         document.getElementById("formLogin").classList.add("hidden");
         document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-4 font-bold themed-text-muted hover:text-blue-500 transition text-sm";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-4 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-sm";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
       }
     }
 
@@ -1434,10 +1432,6 @@
         currentUser = savedUser;
         isAdmin = (savedRole === "true");
         showAppUI();
-      } else {
-        // Halaman Login Aktif: Sembunyikan Indikator Status di Header
-        const syncStatusEl = document.getElementById("syncStatus");
-        if (syncStatusEl) syncStatusEl.classList.add("hidden");
       }
     }
 
@@ -1458,7 +1452,6 @@
     async function submitLogin(e) {
       e.preventDefault();
 
-      // Penanganan Percobaan Login Tanpa Jaringan
       if (!navigator.onLine) {
         showToast("Cannot sign in: Internet connection is offline.", "error", 3500);
         await showModernAlert("Sign in requires an active internet connection. Please check your network and try again.", "Network Offline", "wifi-off");
@@ -1483,7 +1476,6 @@
       }
     }
 
-    // MANAJEMEN USER: TOLAK PENDAFTARAN BILA NAMA SAMA
     async function submitRegister(e) {
       e.preventDefault();
 
@@ -1496,7 +1488,6 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      // Cek ketersediaan Username lokal & terdaftar
       const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
         await showModernAlert(`Username "${username}" sudah digunakan. Silakan gunakan nama lain.`, "Pendaftaran Ditolak", "user-x");
@@ -1561,12 +1552,11 @@
 
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("userHeaderInfo").classList.remove("hidden");
-      document.getElementById("displayUsername").innerText = currentUser + (isAdmin ? " (Admin)" : "");
+      
+      // Tampilkan Tombol Sign Out di Header (menggantikan posisi user info lama)
+      document.getElementById("signOutBtnHeader").classList.remove("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("flex");
 
-      // Tampilkan Indikator Status di Top Navigation Bar Setelah Pengguna Login
-      const syncStatusEl = document.getElementById("syncStatus");
-      if (syncStatusEl) syncStatusEl.classList.remove("hidden");
       updateOnlineStatus();
 
       if (isAdmin) {
@@ -1675,10 +1665,6 @@
       });
       lucide.createIcons();
     }
-
-    /* ==========================================================================
-       GROUPED ACTIONS POPOVER & BOTTOM SHEET IMPLEMENTATION
-       ========================================================================== */
 
     function openActionPopover(event, idx) {
       event.stopPropagation();
@@ -2003,7 +1989,6 @@
       const { weeks, historyMap } = getMultiWeekUserData();
       const selectedEx = document.getElementById("analyticsExerciseFilter").value;
 
-      // 1. MODULE 1: e1RM Trend
       let e1rmData = [];
       weeks.forEach(wk => {
         let rows = historyMap[wk] || [];
@@ -2044,7 +2029,6 @@
         }
       });
 
-      // 2. MODULE 2: Dual-Axis Volume Load vs sRPE
       const sessions = ["Mon - Upper A", "Tue - Lower A", "Thu - Upper B", "Fri - Lower B"];
       let volData = [0, 0, 0, 0];
       let rpeData = [0, 0, 0, 0];
@@ -2104,7 +2088,6 @@
         }
       });
 
-      // 3. MODULE 3: Radar Chart
       let muscleSets = { "Chest": 0, "Back": 0, "Deltoids": 0, "Arms": 0, "Quads": 0, "Posterior Chain": 0, "Calves": 0 };
       workoutRows.forEach(r => {
         let preset = exercisePresets[r.exercise];
@@ -2146,7 +2129,6 @@
         }
       });
 
-      // 4. MODULE 4: ACWR Tracker
       let acwrData = [];
       let weeklyWorkloads = [];
 
@@ -2301,24 +2283,6 @@
       if (res.status === "success") {
         document.getElementById("adminUserDetailContainer").classList.remove("hidden");
         document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: ${username}`;
-        
-        const overview = document.getElementById("userStatsOverview");
-        overview.innerHTML = `
-          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Total Sessions Logged</span><span class="text-lg font-bold">${res.totalSessions || 0}</span></div>
-          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Total Exercises Logged</span><span class="text-lg font-bold">${res.totalExercises || 0}</span></div>
-          <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Current Program Week</span><span class="text-lg font-bold">${res.currentWeek || 'N/A'}</span></div>
-        `;
-
-        const benchmarksList = document.getElementById("userBenchmarksList");
-        benchmarksList.innerHTML = "";
-        const bm = res.benchmarks || {};
-        Object.keys(bm).forEach(key => {
-          const div = document.createElement("div");
-          div.className = "themed-subcard p-2 rounded-lg border text-xs";
-          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${key}</span><span class="font-bold">${bm[key]} kg</span>`;
-          benchmarksList.appendChild(div);
-        });
-        lucide.createIcons();
       }
     }
 
