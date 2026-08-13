@@ -5,90 +5,3713 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CoreGrip</title>
   
-  <!-- PWA & Favicon -->
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="CoreGrip - Enterprise-grade resistance training log and auto-progression tracking application.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CoreGrip">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
   
-  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS v4 & Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const manifestData = {
+      "name": "CoreGrip",
+      "short_name": "CoreGrip",
+      "start_url": "./",
+      "display": "standalone",
+      "background_color": "#f8fafc",
+      "theme_color": "#2563eb",
+      "description": "CoreGrip - Enterprise-grade resistance training log and auto-progression tracking application.",
+      "icons": [
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    const stringManifest = JSON.stringify(manifestData);
+    const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blobManifest);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* 1. Global Font */
-    body { font-family: 'Inter', system-ui, sans-serif; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
 
-    /* 2. System Light & Dark Mode Auto Theme Variables (Integrated from Opti) */
     :root {
-      --bg-body: #f9fafb;
+      --bg-page: #f8fafc;
+      --bg-header: #2563eb;
+      --text-header: #ffffff;
       --bg-card: #ffffff;
-      --bg-card-sub: #f9fafb;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
-      --border-color: #f3f4f6;
-      --border-strong: #e5e7eb;
-      --input-bg: rgba(249, 250, 251, 0.5);
-      --dropdown-bg: #ffffff;
-      --accent: #0066FF;
+      --bg-subcard: #f1f5f9;
+      --bg-input: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --shadow-color: rgba(37, 99, 235, 0.1);
+      --table-header-bg: #eff6ff;
+      --table-header-text: #1e40af;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-body: #0f172a;
+        --bg-page: #0f172a;
+        --bg-header: #1e293b;
+        --text-header: #f8fafc;
         --bg-card: #1e293b;
-        --bg-card-sub: #0f172a;
+        --bg-subcard: #334155;
+        --bg-input: #0f172a;
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
         --border-color: #334155;
         --border-strong: #475569;
-        --input-bg: #0f172a;
-        --dropdown-bg: #1e293b;
+        --accent-primary: #3b82f6;
+        --accent-hover: #60a5fa;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --table-header-bg: #0f172a;
+        --table-header-text: #60a5fa;
       }
-      body { background-color: var(--bg-body) !important; color: var(--text-main) !important; }
-      .bg-white { background-color: var(--bg-card) !important; color: var(--text-main) !important; }
-      input, textarea, select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border-color: var(--border-strong) !important; }
     }
 
-    /* 3. Custom Searchable Dropdown Styling */
-    .searchable-dropdown-container { position: relative; width: 100%; }
-    .searchable-dropdown-list {
-      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-      background-color: var(--dropdown-bg); border: 1px solid var(--border-strong);
-      border-radius: 0.75rem; margin-top: 0.25rem; max-height: 220px;
-      overflow-y: auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: none;
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .searchable-dropdown-item { padding: 0.75rem 1rem; cursor: pointer; font-size: 0.875rem; }
-    .searchable-dropdown-item:hover { background-color: #eff6ff; color: #0066FF; }
 
-    /* 4. Loading Spinner Animation */
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
-      border-top: 4px solid var(--accent); width: 50px; height: 50px;
-      animation: spin 1s linear infinite;
+    .themed-header {
+      background-color: var(--bg-header);
+      color: var(--text-header);
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .themed-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px -5px var(--shadow-color);
+    }
+
+    .themed-subcard {
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+    }
+
+    .themed-input {
+      background-color: var(--bg-input) !important;
+      border-color: var(--border-strong) !important;
+      color: var(--text-main) !important;
+      transition: all 0.2s ease;
+    }
+
+    .themed-input:focus {
+      border-color: var(--accent-primary) !important;
+      box-shadow: 0 0 0 3px var(--shadow-color) !important;
+    }
+
+    .themed-text-muted {
+      color: var(--text-muted);
+    }
+
+    .themed-table-header {
+      background-color: var(--table-header-bg);
+      color: var(--table-header-text);
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar { 
+      width: 6px; 
+      height: 6px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-track { 
+      background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb { 
+      background: var(--border-strong); 
+      border-radius: 4px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+      background: var(--accent-primary); 
+    }
+    
+    @media (max-width: 640px) {
+      input, select, button {
+        min-height: 44px;
+        font-size: 16px !important;
+      }
+    }
   </style>
 </head>
-<body class="antialiased selection:bg-blue-100">
+<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative overflow-x-hidden w-full">
 
-    <!-- Toast Notification -->
-    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
-        <div id="toastContent" class="flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold text-white bg-amber-600">
-            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-            <span id="toastMessage">Status message here.</span>
+  <header class="themed-header border-b border-blue-400/20 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-3 py-2 flex justify-between items-center w-full">
+      <div class="flex items-center space-x-2">
+        <div class="bg-white/20 p-1.5 rounded-lg shadow-inner shrink-0 backdrop-blur-sm">
+          <i data-lucide="dumbbell" class="w-5 h-5 text-white"></i>
         </div>
+        <div>
+          <h1 class="font-black tracking-wider text-sm md:text-base leading-tight uppercase">CoreGrip</h1>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <p class="hidden text-[11px] md:text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
+          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
+          <span id="statusText">Online · Synced</span>
+        </p>
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
+
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
+      <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
+      </div>
+
+      <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Username</label>
+          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="loginPin">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">PIN</label>
+          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
+        </div>
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+          Sign In to Portal
+        </button>
+      </form>
+
+      <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">New Username</label>
+          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="regPin">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Create PIN</label>
+          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="test_load_bench">
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+          <div class="themed-subcard p-3.5 rounded-xl border mb-3">
+            <h4 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <i data-lucide="clipboard-check" class="w-4 h-4"></i> Baseline Load Assessment
+            </h4>
+            <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
+          </div>
+
+          <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Barbell Bench Press</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_bench">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
+                </div>
+              </div>
+            </div>
+
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Barbell Squats</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_squat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_lat">
+                </div>
+              </div>
+            </div>
+
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Dumbbell Lateral Raises</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_lat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="btnRegisterSubmit">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+          Submit & Create Account
+        </button>
+      </form>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-gray-900/40 backdrop-blur-xs z-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-2xl flex flex-col items-center gap-3">
-            <div class="spinner"></div>
-            <p class="text-sm font-semibold">Processing...</p>
+    <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
+      <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
+        <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5">
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
+          </button>
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5">
+            <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
+          </button>
         </div>
+
+        <div id="tabWorkout" class="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-6 w-full max-w-full">
+          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-5 md:p-6 rounded-2xl border space-y-4 transition-all w-full">
+            <div class="flex justify-between items-center flex-wrap gap-2">
+              <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Log / Edit Exercise Record
+              </h3>
+              <span id="todayBadge" class="hidden text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm uppercase">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
+              </span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
+                <div class="flex items-center">
+                  <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
+                  <option value="">-- Select Session --</option>
+                  <option value="Mon - Upper A">Mon - Upper A</option>
+                  <option value="Tue - Lower A">Tue - Lower A</option>
+                  <option value="Thu - Upper B">Thu - Upper B</option>
+                  <option value="Fri - Lower B">Fri - Lower B</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
+                  <option value="">-- Select Session First --</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
+                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Rest Interval Target</label>
+                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">
+                  Primary Working Load (kg)
+                  <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
+                </label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none">
+              </div>
+
+              <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
+                <div class="font-bold text-sm" id="sideLoadDisplay">- kg / side</div>
+                <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
+              </div>
+
+              <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1 sm:col-span-2 md:col-span-1">
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
+                  <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 3: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 4: -</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="autoRegNotice" class="hidden bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/80 dark:border-amber-600/60 dark:text-amber-200 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 shadow-sm">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0"></i>
+              <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                <div id="containerSet1">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                </div>
+                <div id="containerSet2">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                </div>
+                <div id="containerSet3">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                </div>
+                <div id="containerSet4">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
+            </div>
+
+            <div class="flex justify-end items-center gap-2 pt-2">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+              <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
+                Save Exercise Record
+              </button>
+            </div>
+          </form>
+
+          <div class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
+            <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
+              <table class="w-full text-left text-sm min-w-[640px] border-collapse">
+                <thead class="themed-table-header text-xs font-semibold sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
+                  <tr>
+                    <th class="px-4 py-3.5">Day / Session</th>
+                    <th class="px-4 py-3.5">Exercise</th>
+                    <th class="px-4 py-3.5 text-center">Target</th>
+                    <th class="px-4 py-3.5 text-right">Load (Side / Total)</th>
+                    <th class="px-4 py-3.5 text-center">Reps (Set 1-4)</th>
+                    <th class="px-4 py-3.5 text-right text-emerald-600 dark:text-emerald-400">Next Load (kg)</th>
+                    <th class="px-4 py-3.5 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="workoutTableBody" class="divide-y divide-gray-200 dark:divide-slate-800/60">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden w-full max-w-full">
+          <div id="analyticsAlerts" class="space-y-3"></div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <div class="flex justify-between items-center flex-wrap gap-2">
+                <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i> Module 1: Dynamic e1RM Progression
+                </h3>
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2">
+                  <option value="Barbell Bench Press">Barbell Bench Press</option>
+                  <option value="Barbell Squats">Barbell Squats</option>
+                  <option value="Conventional Deadlift">Conventional Deadlift</option>
+                  <option value="Barbell Overhead Press">Barbell Overhead Press</option>
+                </select>
+              </div>
+              <div class="h-64 w-full">
+                <canvas id="chartE1RM"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*e1RM calculated using Brzycki and Wathan formulas.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
+              </h3>
+              <div class="h-64 w-full">
+                <canvas id="chartVolumeRpe"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*Compares total external work done (kg) against internal fatigue.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
+              </h3>
+              <div class="h-64 w-full flex justify-center">
+                <canvas id="chartMuscleDistribution"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
+              </h3>
+              <div class="h-64 w-full">
+                <canvas id="chartACWR"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*Acute to Chronic Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
+      <div class="themed-header p-6 rounded-2xl shadow-xl flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-white">Admin Management Console</h2>
+          <p class="text-xs opacity-90">Manage system users, access approvals, view user profiles & statistics.</p>
+        </div>
+        <button onclick="loadAdminData()" class="bg-white/25 hover:bg-white/35 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
+          Refresh Console
+        </button>
+      </div>
+
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i> User Management & Profiles
+        </h3>
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left">
+            <thead class="themed-table-header text-xs font-semibold">
+              <tr>
+                <th class="p-3">User</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="adminUserDetailContainer" class="hidden themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full border-2 border-blue-500/30">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
+            <i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats
+          </h3>
+          <button onclick="closeUserDetail()" class="text-xs font-semibold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="userStatsOverview"></div>
+        <div>
+          <h4 class="font-semibold text-xs themed-text-muted mb-2">Baseline Lift Benchmarks (kg)</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="userBenchmarksList"></div>
+        </div>
+      </div>
+
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4"></i> System Activity Audit Logs
+        </h3>
+        <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
+          <table class="w-full text-xs text-left">
+            <thead class="themed-table-header sticky top-0 font-semibold">
+              <tr>
+                <th class="p-2.5">Timestamp</th>
+                <th class="p-2.5">User</th>
+                <th class="p-2.5">Activity Description</th>
+              </tr>
+            </thead>
+            <tbody id="adminLogsTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="w-full py-4 text-center text-xs themed-text-muted border-t border-gray-200 dark:border-slate-800 mt-auto">
+    <p>&copy; 2026 Dicky Juadinata. All Rights Reserved.</p>
+  </footer>
+
+  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-blue-600 hover:bg-blue-700 border border-blue-400 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+    <div class="themed-card p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-gray-300 dark:border-slate-600 border-t-blue-600 rounded-full animate-spin"></div>
+      <p id="loadingMessage" class="text-xs font-semibold">Processing Request...</p>
+    </div>
+  </div>
+
+  <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
+    <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
+      <div class="p-1 space-y-1 text-xs font-semibold">
+        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">✏️</span> Edit Exercise
+        </button>
+        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">🗑️</span> Delete Exercise
+        </button>
+      </div>
+      <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
+      <div class="p-1">
+        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
+          <span class="text-base">🚨</span> Delete Entire Session
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+    <div class="themed-card max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
+      <div class="flex items-start gap-3">
+        <div id="modalIconContainer" class="p-2.5 rounded-xl bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-blue-400 shrink-0">
+          <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold">System Notification</h3>
+          <p id="modalMessage" class="text-xs themed-text-muted mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+      <div id="modalFooter" class="flex justify-end gap-2 pt-2">
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CoreGrip</title>
+  
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="CoreGrip - Enterprise-grade resistance training log and auto-progression tracking application.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CoreGrip">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    const manifestData = {
+      "name": "CoreGrip",
+      "short_name": "CoreGrip",
+      "start_url": "./",
+      "display": "standalone",
+      "background_color": "#f8fafc",
+      "theme_color": "#2563eb",
+      "description": "CoreGrip - Enterprise-grade resistance training log and auto-progression tracking application.",
+      "icons": [
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    const stringManifest = JSON.stringify(manifestData);
+    const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blobManifest);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    :root {
+      --bg-page: #f8fafc;
+      --bg-header: #2563eb;
+      --text-header: #ffffff;
+      --bg-card: #ffffff;
+      --bg-subcard: #f1f5f9;
+      --bg-input: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --shadow-color: rgba(37, 99, 235, 0.1);
+      --table-header-bg: #eff6ff;
+      --table-header-text: #1e40af;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-header: #1e293b;
+        --text-header: #f8fafc;
+        --bg-card: #1e293b;
+        --bg-subcard: #334155;
+        --bg-input: #0f172a;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
+        --border-strong: #475569;
+        --accent-primary: #3b82f6;
+        --accent-hover: #60a5fa;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --table-header-bg: #0f172a;
+        --table-header-text: #60a5fa;
+      }
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .themed-header {
+      background-color: var(--bg-header);
+      color: var(--text-header);
+    }
+
+    .themed-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px -5px var(--shadow-color);
+    }
+
+    .themed-subcard {
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+    }
+
+    .themed-input {
+      background-color: var(--bg-input) !important;
+      border-color: var(--border-strong) !important;
+      color: var(--text-main) !important;
+      transition: all 0.2s ease;
+    }
+
+    .themed-input:focus {
+      border-color: var(--accent-primary) !important;
+      box-shadow: 0 0 0 3px var(--shadow-color) !important;
+    }
+
+    .themed-text-muted {
+      color: var(--text-muted);
+    }
+
+    .themed-table-header {
+      background-color: var(--table-header-bg);
+      color: var(--table-header-text);
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar { 
+      width: 6px; 
+      height: 6px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-track { 
+      background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb { 
+      background: var(--border-strong); 
+      border-radius: 4px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+      background: var(--accent-primary); 
+    }
+    
+    @media (max-width: 640px) {
+      input, select, button {
+        min-height: 44px;
+        font-size: 16px !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative overflow-x-hidden w-full">
+
+  <header class="themed-header border-b border-blue-400/20 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-3 py-2 flex justify-between items-center w-full">
+      <div class="flex items-center space-x-2">
+        <div class="bg-white/20 p-1.5 rounded-lg shadow-inner shrink-0 backdrop-blur-sm">
+          <i data-lucide="dumbbell" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="font-black tracking-wider text-sm md:text-base leading-tight uppercase">CoreGrip</h1>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <p class="hidden text-[11px] md:text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20" id="syncStatus" onclick="showSyncDetailModal()">
+          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
+          <span id="statusText">Online · Synced</span>
+        </p>
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg transition items-center gap-1 active:scale-95 font-semibold shadow-sm">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
+
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
+      <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
+      </div>
+
+      <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Username</label>
+          <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="loginPin">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">PIN</label>
+          <input type="password" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
+        </div>
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+          Sign In to Portal
+        </button>
+      </form>
+
+      <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">New Username</label>
+          <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="regPin">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold themed-text-muted mb-1.5">Create PIN</label>
+          <input type="password" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="test_load_bench">
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+          <div class="themed-subcard p-3.5 rounded-xl border mb-3">
+            <h4 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <i data-lucide="clipboard-check" class="w-4 h-4"></i> Baseline Load Assessment
+            </h4>
+            <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
+          </div>
+
+          <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Barbell Bench Press</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_bench">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
+                </div>
+              </div>
+            </div>
+
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Barbell Squats</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_squat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_lat">
+                </div>
+              </div>
+            </div>
+
+            <div class="themed-subcard p-3 rounded-xl border space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold">Dumbbell Lateral Raises</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
+                  <input type="number" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
+                  <input type="number" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_lat">
+                </div>
+                <div>
+                  <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
+                  <input type="number" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="btnRegisterSubmit">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnRegisterSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
+          Submit & Create Account
+        </button>
+      </form>
+    </div>
+
+    <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
+      <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
+        <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+          <button id="tabWorkoutBtn" onclick="switchAppTab('workout')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5">
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
+          </button>
+          <button id="tabAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5">
+            <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
+          </button>
+        </div>
+
+        <div id="tabWorkout" class="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-6 w-full max-w-full">
+          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-5 md:p-6 rounded-2xl border space-y-4 transition-all w-full">
+            <div class="flex justify-between items-center flex-wrap gap-2">
+              <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Log / Edit Exercise Record
+              </h3>
+              <span id="todayBadge" class="hidden text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm uppercase">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
+              </span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
+                <div class="flex items-center">
+                  <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
+                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
+                  <option value="">-- Select Session --</option>
+                  <option value="Mon - Upper A">Mon - Upper A</option>
+                  <option value="Tue - Lower A">Tue - Lower A</option>
+                  <option value="Thu - Upper B">Thu - Upper B</option>
+                  <option value="Fri - Lower B">Fri - Lower B</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
+                  <option value="">-- Select Session First --</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
+                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Rest Interval Target</label>
+                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">
+                  Primary Working Load (kg)
+                  <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
+                </label>
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="calculateLoadDetails()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none">
+              </div>
+
+              <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
+                <div class="font-bold text-sm" id="sideLoadDisplay">- kg / side</div>
+                <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
+              </div>
+
+              <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1 sm:col-span-2 md:col-span-1">
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
+                  <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 3: -</div>
+                  <div class="themed-input p-1.5 rounded-lg border">Set 4: -</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="autoRegNotice" class="hidden bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/80 dark:border-amber-600/60 dark:text-amber-200 px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 shadow-sm">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0"></i>
+              <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                <div id="containerSet1">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
+                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                </div>
+                <div id="containerSet2">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
+                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                </div>
+                <div id="containerSet3">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
+                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                </div>
+                <div id="containerSet4">
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
+                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
+              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
+            </div>
+
+            <div class="flex justify-end items-center gap-2 pt-2">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+              <button type="submit" id="btnSaveWorkout" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
+                Save Exercise Record
+              </button>
+            </div>
+          </form>
+
+          <div class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
+            <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
+              <table class="w-full text-left text-sm min-w-[640px] border-collapse">
+                <thead class="themed-table-header text-xs font-semibold sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
+                  <tr>
+                    <th class="px-4 py-3.5">Day / Session</th>
+                    <th class="px-4 py-3.5">Exercise</th>
+                    <th class="px-4 py-3.5 text-center">Target</th>
+                    <th class="px-4 py-3.5 text-right">Load (Side / Total)</th>
+                    <th class="px-4 py-3.5 text-center">Reps (Set 1-4)</th>
+                    <th class="px-4 py-3.5 text-right text-emerald-600 dark:text-emerald-400">Next Load (kg)</th>
+                    <th class="px-4 py-3.5 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="workoutTableBody" class="divide-y divide-gray-200 dark:divide-slate-800/60">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden w-full max-w-full">
+          <div id="analyticsAlerts" class="space-y-3"></div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <div class="flex justify-between items-center flex-wrap gap-2">
+                <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i> Module 1: Dynamic e1RM Progression
+                </h3>
+                <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2">
+                  <option value="Barbell Bench Press">Barbell Bench Press</option>
+                  <option value="Barbell Squats">Barbell Squats</option>
+                  <option value="Conventional Deadlift">Conventional Deadlift</option>
+                  <option value="Barbell Overhead Press">Barbell Overhead Press</option>
+                </select>
+              </div>
+              <div class="h-64 w-full">
+                <canvas id="chartE1RM"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*e1RM calculated using Brzycki and Wathan formulas.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
+              </h3>
+              <div class="h-64 w-full">
+                <canvas id="chartVolumeRpe"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*Compares total external work done (kg) against internal fatigue.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
+              </h3>
+              <div class="h-64 w-full flex justify-center">
+                <canvas id="chartMuscleDistribution"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week.</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
+              </h3>
+              <div class="h-64 w-full">
+                <canvas id="chartACWR"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*Acute to Chronic Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
+      <div class="themed-header p-6 rounded-2xl shadow-xl flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-white">Admin Management Console</h2>
+          <p class="text-xs opacity-90">Manage system users, access approvals, view user profiles & statistics.</p>
+        </div>
+        <button onclick="loadAdminData()" class="bg-white/25 hover:bg-white/35 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
+          Refresh Console
+        </button>
+      </div>
+
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i> User Management & Profiles
+        </h3>
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left">
+            <thead class="themed-table-header text-xs font-semibold">
+              <tr>
+                <th class="p-3">User</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="adminUserDetailContainer" class="hidden themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full border-2 border-blue-500/30">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2" id="userDetailTitle">
+            <i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats
+          </h3>
+          <button onclick="closeUserDetail()" class="text-xs font-semibold px-3 py-1 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 rounded-lg">Close</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="userStatsOverview"></div>
+        <div>
+          <h4 class="font-semibold text-xs themed-text-muted mb-2">Baseline Lift Benchmarks (kg)</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="userBenchmarksList"></div>
+        </div>
+      </div>
+
+      <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
+        <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4"></i> System Activity Audit Logs
+        </h3>
+        <div class="overflow-y-auto max-h-80 custom-scrollbar w-full">
+          <table class="w-full text-xs text-left">
+            <thead class="themed-table-header sticky top-0 font-semibold">
+              <tr>
+                <th class="p-2.5">Timestamp</th>
+                <th class="p-2.5">User</th>
+                <th class="p-2.5">Activity Description</th>
+              </tr>
+            </thead>
+            <tbody id="adminLogsTable" class="divide-y divide-gray-200 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="w-full py-4 text-center text-xs themed-text-muted border-t border-gray-200 dark:border-slate-800 mt-auto">
+    <p>&copy; 2026 Dicky Juadinata. All Rights Reserved.</p>
+  </footer>
+
+  <button id="scrollToTopBtn" onclick="scrollToTop()" title="Scroll to Top" class="fixed bottom-6 right-6 z-50 p-3.5 bg-blue-600 hover:bg-blue-700 border border-blue-400 text-white rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 active:scale-90 flex items-center justify-center">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+    <div class="themed-card p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-gray-300 dark:border-slate-600 border-t-blue-600 rounded-full animate-spin"></div>
+      <p id="loadingMessage" class="text-xs font-semibold">Processing Request...</p>
+    </div>
+  </div>
+
+  <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
+    <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
+      <div class="p-1 space-y-1 text-xs font-semibold">
+        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">✏️</span> Edit Exercise
+        </button>
+        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
+          <span class="text-base">🗑️</span> Delete Exercise
+        </button>
+      </div>
+      <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
+      <div class="p-1">
+        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
+          <span class="text-base">🚨</span> Delete Entire Session
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+    <div class="themed-card max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
+      <div class="flex items-start gap-3">
+        <div id="modalIconContainer" class="p-2.5 rounded-xl bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-blue-400 shrink-0">
+          <i data-lucide="info" id="modalIcon" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold">System Notification</h3>
+          <p id="modalMessage" class="text-xs themed-text-muted mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+      <div id="modalFooter" class="flex justify-end gap-2 pt-2">
+        <button id="modalCancelBtn" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition hidden">Cancel</button>
+        <button id="modalConfirmBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyHYgqWZCLn6hoIsp9gikqwNVn0OIZfLYXeomMuxAY_8PisMP2k63rF4UYgjYXieAk7/exec";
+
+    let currentUser = null;
+    let isAdmin = false;
+    let currentProject = ""; 
+    let workoutRows = [];
+    let editIndex = -1;
+    let originalBaseLoad = 0;
+
+    let lastSyncedTime = null;
+    let pendingQueueCount = 0;
+    let wasOnline = navigator.onLine;
+
+    let lastSelectedSession = "";
+    let lastBodyWeight = "";
+
+    const exercisePresets = {
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+    };
+
+    let initialBenchmarkLoads = {
+      "Barbell Bench Press": 20.0,
+      "Chest Supported Dumbbell Row": 20.0,
+      "Bodyweight Pull-Ups": 0.0,
+      "Barbell Overhead Press": 12.5,
+      "Dumbbell Lateral Raises - A": 5.0,
+      "Triceps Pressdowns (Cable)": 7.5,
+      "Dumbbell Hammer Curl": 7.5,
+      "Barbell Squats": 20.0,
+      "Romanian Deadlifts": 17.5,
+      "Standing Barbell Calf Raises - A": 12.5,
+      "Incline Dumbbell Press": 12.5,
+      "Bent-over Barbell Row": 20.0,
+      "Seated Dumbbell Press": 10.0,
+      "Face Pulls (Cable)": 10.0,
+      "Dumbbell Lateral Raises - B": 5.0,
+      "Barbell Curl": 7.5,
+      "Cable Overhead Triceps Extension": 7.5,
+      "Conventional Deadlift": 25.0,
+      "Dumbbell Bulgarian Split Squat": 7.5,
+      "Standing Barbell Calf Raises - B": 12.5
+    };
+
+    const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
+
+    function showToast(message, type = "info", duration = 3000) {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+
+      const toast = document.createElement("div");
+      let bgColor = "bg-slate-800 text-white";
+      let icon = "info";
+
+      if (type === "warning") {
+        bgColor = "bg-amber-600 text-white";
+        icon = "alert-triangle";
+      } else if (type === "success") {
+        bgColor = "bg-emerald-600 text-white";
+        icon = "check-circle";
+      } else if (type === "error") {
+        bgColor = "bg-red-600 text-white";
+        icon = "alert-circle";
+      }
+
+      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove("translate-y-4", "opacity-0");
+      });
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    window.addEventListener("scroll", () => {
+      const btn = document.getElementById("scrollToTopBtn");
+      if (window.scrollY > 300) {
+        btn.classList.remove("opacity-0", "pointer-events-none", "translate-y-4");
+        btn.classList.add("opacity-100", "translate-y-0");
+      } else {
+        btn.classList.add("opacity-0", "pointer-events-none", "translate-y-4");
+        btn.classList.remove("opacity-100", "translate-y-0");
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showSpinner(msg = "Processing Request...") {
+      document.getElementById("loadingMessage").innerText = msg;
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.remove("hidden");
+      setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+    }
+
+    function hideSpinner() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.add("opacity-0");
+      setTimeout(() => overlay.classList.add("hidden"), 200);
+    }
+
+    function showModernAlert(message, title = "System Notification", iconName = "info") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.add("hidden");
+        confirmBtn.innerText = "OK";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function showModernConfirm(message, title = "Confirm Action", iconName = "help-circle") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Cancel";
+        confirmBtn.innerText = "Confirm";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function mround2_5(val) {
+      return Math.round(val / 2.5) * 2.5;
+    }
+
+    function floor2_5(val) {
+      return Math.floor(val / 2.5) * 2.5;
+    }
+
+    function roundToQuarter(val) {
+      return Math.round(val * 4) / 4;
+    }
+
+    function calculateSideWeight(exercise, totalLoad) {
+      const exLower = exercise.toLowerCase();
+      if (exLower.includes("pull-up") || exLower.includes("pull up")) {
+        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
+        return roundToQuarter(bw + totalLoad);
+      }
+      
+      if (totalLoad <= 0) return 0;
+      let side = totalLoad;
+      if (exLower.includes("barbell")) {
+        side = Math.max(0, (totalLoad - 10) / 2);
+      } else if (exLower.includes("dumbbell")) {
+        side = Math.max(0, (totalLoad - 2.5) / 2);
+      }
+      return roundToQuarter(side);
+    }
+
+    function onSessionChange(sessionVal) {
+      lastSelectedSession = sessionVal;
+      const exerciseSelect = document.getElementById("inputExercise");
+      exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
+
+      if (!sessionVal) return;
+
+      Object.keys(exercisePresets).forEach(ex => {
+        if (exercisePresets[ex].session === sessionVal) {
+          const opt = document.createElement("option");
+          opt.value = ex;
+          opt.innerText = ex;
+          exerciseSelect.appendChild(opt);
+        }
+      });
+
+      const currentDay = new Date().getDay();
+      const todaySession = dayToSessionMap[currentDay];
+      const badge = document.getElementById("todayBadge");
+
+      if (todaySession && todaySession === sessionVal) {
+        badge.classList.remove("hidden");
+        document.getElementById("formWorkout").classList.add("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
+      } else {
+        badge.classList.add("hidden");
+        document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
+      }
+    }
+
+    function onExerciseSelect(exVal) {
+      if (!exVal) return;
+      const preset = exercisePresets[exVal];
+      if (preset) {
+        document.getElementById("inputTargetReps").value = preset.reps;
+        document.getElementById("inputRestTime").value = preset.rest;
+
+        const totalSets = preset.sets || 4;
+        for (let i = 1; i <= 4; i++) {
+          const container = document.getElementById(`containerSet${i}`);
+          const input = document.getElementById(`inputSet${i}`);
+          if (i <= totalSets) {
+            container.classList.remove("hidden");
+            input.disabled = false;
+          } else {
+            container.classList.add("hidden");
+            input.value = 0;
+            input.disabled = true;
+          }
+        }
+
+        const set3Input = document.getElementById("inputSet3");
+        if (set3Input) {
+          if (totalSets >= 4) {
+            set3Input.setAttribute("data-next", "inputSet4");
+          } else {
+            set3Input.setAttribute("data-next", "inputCatatan");
+          }
+        }
+
+        const warmupContainer = document.getElementById("warmupContainer");
+        if (preset.isFirst) {
+          warmupContainer.classList.remove("hidden");
+        } else {
+          warmupContainer.classList.add("hidden");
+        }
+
+        let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
+        originalBaseLoad = autoLoad;
+        document.getElementById("inputWorkingLoad").value = autoLoad;
+
+        calculateLoadDetails();
+      }
+    }
+
+    function get4WeeksHistoryLoad(exerciseName, currentProj) {
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
+      const defaultLoad = savedBenchmarks[exerciseName] ?? (initialBenchmarkLoads[exerciseName] ?? 20);
+
+      if (!currentProj) return defaultLoad;
+      
+      const match = currentProj.match(/Week\s*(\d+)/i);
+      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+
+      for (let i = 1; i <= 4; i++) {
+        let prevWeekNum = currentWeekNum - i;
+        if (prevWeekNum < 1) break;
+
+        let prevProjName = `Week ${prevWeekNum}`;
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let matchRow = rows.find(r => r.exercise === exerciseName);
+          if (matchRow && matchRow.next_load > 0) {
+            return matchRow.next_load;
+          }
+        }
+      }
+
+      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
+      if (currentMatch) return currentMatch.working_load;
+
+      return defaultLoad;
+    }
+
+    function calculateLoadDetails() {
+      const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const exercise = document.getElementById("inputExercise").value;
+      const sideDisplay = document.getElementById("sideLoadDisplay");
+      const notice = document.getElementById("sideLoadFormulaNotice");
+
+      const bwVal = document.getElementById("inputBodyWeight").value;
+      if (bwVal) lastBodyWeight = bwVal;
+
+      if (!exercise) {
+        sideDisplay.innerText = "- kg / side";
+        calculateWarmupPreview(0, exercise);
+        return;
+      }
+
+      let sideWeight = calculateSideWeight(exercise, load);
+      const exLower = exercise.toLowerCase();
+
+      if (exLower.includes("pull-up") || exLower.includes("pull up")) {
+        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
+        notice.innerText = `*Pull-Up Formula: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Load`;
+      } else if (exLower.includes("barbell")) {
+        notice.innerText = "*Barbell Formula: (Total Load - 10kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
+      } else if (exLower.includes("dumbbell")) {
+        notice.innerText = "*Dumbbell Formula: (Total Load - 2.5kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
+      } else {
+        notice.innerText = "*Total Stack Load (Cable / Machine)";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total`;
+      }
+
+      calculateWarmupPreview(load, exercise);
+    }
+
+    function calculateWarmupPreview(totalLoad, exercise) {
+      const previewEl = document.getElementById("warmupPreview");
+      if (!exercise) {
+        previewEl.innerHTML = `
+          <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 3: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 4: -</div>
+        `;
+        return;
+      }
+
+      const w1 = floor2_5(totalLoad * 0.40);
+      const w2 = floor2_5(totalLoad * 0.60);
+      const w3 = floor2_5(totalLoad * 0.80);
+      const w4 = floor2_5(totalLoad * 0.90);
+
+      const s1 = calculateSideWeight(exercise, w1);
+      const s2 = calculateSideWeight(exercise, w2);
+      const s3 = calculateSideWeight(exercise, w3);
+      const s4 = calculateSideWeight(exercise, w4);
+
+      previewEl.innerHTML = `
+        <div class="themed-input p-1.5 rounded-lg border">Set 1: <b>${w1}k</b> (${s1.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 2: <b>${w2}k</b> (${s2.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 3: <b>${w3}k</b> (${s3.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 4: <b>${w4}k</b> (${s4.toFixed(2)})</div>
+      `;
+    }
+
+    function checkAutoRegulation() {
+      const targetStr = document.getElementById("inputTargetReps").value;
+      if (!targetStr) return;
+      const parts = targetStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0] || 0;
+
+      const set1 = parseInt(document.getElementById("inputSet1").value, 10) || 0;
+      const set2 = parseInt(document.getElementById("inputSet2").value, 10) || 0;
+      const set3 = parseInt(document.getElementById("inputSet3").value, 10) || 0;
+      const set4 = parseInt(document.getElementById("inputSet4").value, 10) || 0;
+
+      const autoNotice = document.getElementById("autoRegNotice");
+      const autoText = document.getElementById("autoRegText");
+
+      let failedSet = 0;
+      if (set1 > 0 && set1 < minTarget) failedSet = 1;
+      else if (set2 > 0 && set2 < minTarget) failedSet = 2;
+      else if (set3 > 0 && set3 < minTarget) failedSet = 3;
+      else if (set4 > 0 && set4 < minTarget) failedSet = 4;
+
+      if (failedSet > 0 && minTarget > 0) {
+        let deloadLoad = mround2_5(originalBaseLoad * 0.925); 
+
+        document.getElementById("inputWorkingLoad").value = deloadLoad;
+        calculateLoadDetails();
+
+        autoNotice.classList.remove("hidden");
+        autoText.innerText = `Rep target failure (${minTarget} reps) on Set ${failedSet}! Working load adjusted from ${originalBaseLoad} kg to ${deloadLoad} kg.`;
+      } else {
+        document.getElementById("inputWorkingLoad").value = originalBaseLoad;
+        calculateLoadDetails();
+        autoNotice.classList.add("hidden");
+      }
+    }
+
+    function first_set_assessment(exercise_type, trial_load, reps_performed, rpe_output) {
+      let initial_baseline = trial_load;
+      
+      if (exercise_type === "COMPOUND") {
+        if (reps_performed >= 6 && reps_performed <= 8) {
+          if (rpe_output <= 6.5) initial_baseline = trial_load * 1.05;
+          else if (rpe_output >= 7.0 && rpe_output <= 8.5) initial_baseline = trial_load;
+          else if (rpe_output >= 9.0) initial_baseline = trial_load * 0.95;
+        } else if (reps_performed > 8) {
+          initial_baseline = trial_load * 1.075;
+        } else {
+          initial_baseline = trial_load * 0.90;
+        }
+      } else if (exercise_type === "ISOLATION") {
+        if (reps_performed >= 8 && reps_performed <= 10) {
+          if (rpe_output <= 7.0) initial_baseline = trial_load + 2.5;
+          else if (rpe_output >= 7.5 && rpe_output <= 8.5) initial_baseline = trial_load;
+          else initial_baseline = trial_load - 2.5;
+        } else if (reps_performed > 10) {
+          initial_baseline = trial_load + 2.5;
+        } else {
+          initial_baseline = Math.max(0, trial_load - 2.5);
+        }
+      }
+
+      return Math.round(mround2_5(initial_baseline) * 10) / 10;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      checkSession();
+      registerServiceWorker();
+      setupEnterNavigation();
+
+      window.addEventListener('online', handleNetworkChange);
+      window.addEventListener('offline', handleNetworkChange);
+      updateOnlineStatus();
+    });
+
+    function setupEnterNavigation() {
+      const inputs = document.querySelectorAll('.enter-nav');
+      inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const isOptional = this.getAttribute('data-optional') === 'true';
+            const val = this.value.trim();
+
+            if (!val && !isOptional) {
+              const fieldName = this.previousElementSibling ? this.previousElementSibling.innerText : "this field";
+              showModernAlert(`Please fill in ${fieldName} before proceeding!`, "Required Field", "alert-circle");
+              this.focus();
+              return;
+            }
+
+            let nextId = this.getAttribute('data-next');
+            if (this.id === "inputSet3") {
+              const container4 = document.getElementById("containerSet4");
+              if (container4 && container4.classList.contains("hidden")) {
+                nextId = "inputCatatan";
+              }
+            }
+
+            if (nextId) {
+              const nextEl = document.getElementById(nextId);
+              if (nextEl) {
+                if (nextEl.tagName === 'BUTTON') nextEl.click();
+                else nextEl.focus();
+              }
+            }
+          }
+        });
+      });
+    }
+
+    function handleNetworkChange() {
+      const isNowOnline = navigator.onLine;
+      if (wasOnline !== isNowOnline) {
+        wasOnline = isNowOnline;
+        if (isNowOnline) showToast("You are back online. Syncing data...", "success", 2500);
+        else showToast("You are now offline. Data will be saved locally.", "warning", 3000);
+      }
+      updateOnlineStatus();
+    }
+
+    function updateOnlineStatus() {
+      const ind = document.getElementById("statusIndicator");
+      const txt = document.getElementById("statusText");
+      if (!ind || !txt) return;
+
+      if (navigator.onLine) {
+        ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400";
+        txt.innerText = "Online · Synced";
+      } else {
+        ind.className = "w-2 h-2 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500";
+        txt.innerText = pendingQueueCount > 0 ? `Offline · [${pendingQueueCount}] pending` : "Offline · Saved locally";
+      }
+    }
+
+    function showSyncDetailModal() {
+      const timeStr = lastSyncedTime ? lastSyncedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not synced yet";
+      const statusStr = navigator.onLine ? "Online" : "Offline";
+      const queueStr = pendingQueueCount > 0 ? `${pendingQueueCount} items queued for sync` : "No pending queue";
+      const message = `Current Status: ${statusStr}\nLast synced at: ${timeStr}\nSync Queue: ${queueStr}`;
+
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = "Connection & Sync Details";
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", navigator.onLine ? "refresh-cw" : "wifi-off");
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Close";
+        confirmBtn.innerText = "Sync Now";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            if (navigator.onLine) showToast("Synced successfully.", "success", 2000);
+            else showToast("Cannot sync: Device is offline.", "error", 2500);
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'workout-log-cache-v1';
+          const urlsToCache = ['/'];
+          self.addEventListener('install', event => {
+            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+          });
+          self.addEventListener('fetch', event => {
+            event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed: ', err));
+      }
+    }
+
+    function switchAuthTab(tab) {
+      if (tab === 'login') {
+        document.getElementById("formLogin").classList.remove("hidden");
+        document.getElementById("formRegister").classList.add("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+      } else {
+        document.getElementById("formLogin").classList.add("hidden");
+        document.getElementById("formRegister").classList.remove("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+      }
+    }
+
+    function checkSession() {
+      const savedUser = localStorage.getItem("workout_user");
+      const savedRole = localStorage.getItem("workout_is_admin");
+
+      if (savedUser) {
+        currentUser = savedUser;
+        isAdmin = (savedRole === "true");
+        showAppUI();
+      }
+    }
+
+    async function callApi(payload) {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        console.error("API Call Error:", err);
+        return { status: "error", message: "Network connection error." };
+      }
+    }
+
+    async function submitLogin(e) {
+      e.preventDefault();
+      if (!navigator.onLine) {
+        showToast("Cannot sign in: Internet connection is offline.", "error", 3500);
+        await showModernAlert("Sign in requires an active internet connection.", "Network Offline", "wifi-off");
+        return;
+      }
+
+      const username = document.getElementById("loginUsername").value.trim();
+      const pin = document.getElementById("loginPin").value.trim();
+
+      showSpinner("Authenticating credentials...");
+      const res = await callApi({ action: "login", username, pin });
+      hideSpinner();
+
+      if (res.status === "success" || res.authenticated) {
+        currentUser = username;
+        isAdmin = res.isAdmin || false;
+        localStorage.setItem("workout_user", currentUser);
+        localStorage.setItem("workout_is_admin", isAdmin);
+        showAppUI();
+      } else {
+        await showModernAlert(res.message || "Invalid username or PIN.", "Authentication Failed", "alert-circle");
+      }
+    }
+
+    async function submitRegister(e) {
+      e.preventDefault();
+      if (!navigator.onLine) {
+        showToast("Cannot register: Internet connection is offline.", "error", 3500);
+        await showModernAlert("User registration requires an active internet connection.", "Network Offline", "wifi-off");
+        return;
+      }
+
+      const username = document.getElementById("regUsername").value.trim();
+      const pin = document.getElementById("regPin").value.trim();
+
+      const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
+        await showModernAlert(`Username "${username}" sudah digunakan.`, "Pendaftaran Ditolak", "user-x");
+        return;
+      }
+
+      let userBenchmarks = {};
+      const benchLoad = parseFloat(document.getElementById("test_load_bench").value) || 20;
+      const benchReps = parseInt(document.getElementById("test_reps_bench").value, 10) || 7;
+      const benchRpe = parseFloat(document.getElementById("test_rpe_bench").value) || 8.0;
+
+      let assessedBench = first_set_assessment("COMPOUND", benchLoad, benchReps, benchRpe);
+      userBenchmarks["Barbell Bench Press"] = assessedBench;
+
+      const squatLoad = parseFloat(document.getElementById("test_load_squat").value) || 20;
+      const squatReps = parseInt(document.getElementById("test_reps_squat").value, 10) || 7;
+      const squatRpe = parseFloat(document.getElementById("test_rpe_squat").value) || 8.0;
+
+      let assessedSquat = first_set_assessment("COMPOUND", squatLoad, squatReps, squatRpe);
+      userBenchmarks["Barbell Squats"] = assessedSquat;
+
+      const latLoad = parseFloat(document.getElementById("test_load_lat").value) || 5;
+      const latReps = parseInt(document.getElementById("test_reps_lat").value, 10) || 9;
+      const latRpe = parseFloat(document.getElementById("test_rpe_lat").value) || 8.0;
+
+      let assessedLat = first_set_assessment("ISOLATION", latLoad, latReps, latRpe);
+      userBenchmarks["Dumbbell Lateral Raises - A"] = assessedLat;
+      userBenchmarks["Dumbbell Lateral Raises - B"] = assessedLat;
+
+      userBenchmarks["Chest Supported Dumbbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Bodyweight Pull-Ups"] = 0.0;
+      userBenchmarks["Barbell Overhead Press"] = mround2_5(assessedBench * 0.625);
+      userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
+      userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
+      userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
+      userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Seated Dumbbell Press"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Face Pulls (Cable)"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Barbell Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Conventional Deadlift"] = mround2_5(assessedSquat * 1.25);
+      userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
+      userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
+
+      showSpinner("Registering user & setting up initial load baseline...");
+      const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
+      hideSpinner();
+
+      if (res.status === "success") {
+        existingUserList.push(username);
+        localStorage.setItem("registered_users_list", JSON.stringify(existingUserList));
+        localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+        await showModernAlert((res.message || "Registration successful!"), "Registration Completed", "check-circle");
+        switchAuthTab('login');
+      } else {
+        await showModernAlert(res.message || "Registration failed.", "Error", "alert-circle");
+      }
+    }
+
+    function showAppUI() {
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.add("flex");
+
+      if (isAdmin) {
+        document.getElementById("adminSection").classList.remove("hidden");
+        document.getElementById("appSection").classList.add("hidden");
+        loadAdminData();
+      } else {
+        document.getElementById("adminSection").classList.add("hidden");
+        document.getElementById("appSection").classList.remove("hidden");
+        currentProject = "Week 1";
+        document.getElementById("inputProject").value = 1;
+        loadWorkoutData();
+      }
+    }
+
+    async function loadWorkoutData() {
+      if (!currentUser) return;
+      showSpinner("Loading workout logs...");
+      const res = await callApi({ action: "getData", username: currentUser, project: currentProject });
+      hideSpinner();
+
+      if (res.status === "success") {
+        workoutRows = res.rows || [];
+        renderWorkoutTable();
+      } else {
+        workoutRows = [];
+        renderWorkoutTable();
+      }
+    }
+
+    function renderWorkoutTable() {
+      const tbody = document.getElementById("workoutTableBody");
+      tbody.innerHTML = "";
+
+      if (workoutRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-xs themed-text-muted">No records found for ${currentProject}. Start logging your workouts above!</td></tr>`;
+        return;
+      }
+
+      workoutRows.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        const sideVal = calculateSideWeight(r.exercise, r.working_load);
+        const exLower = (r.exercise || "").toLowerCase();
+
+        let loadDisplay = `${r.working_load} kg`;
+        if (exLower.includes("barbell") || exLower.includes("dumbbell")) {
+          loadDisplay = `${sideVal} kg / side <span class="text-[10px] themed-text-muted block">(${r.working_load} kg Total)</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-medium text-xs">${r.day_session}</td>
+          <td class="px-4 py-3 text-xs font-semibold">${r.exercise} <span class="block text-[10px] themed-text-muted font-normal">${r.catatan || ''}</span></td>
+          <td class="px-4 py-3 text-center text-xs font-medium">${r.target_reps}</td>
+          <td class="px-4 py-3 text-right text-xs font-bold">${loadDisplay}</td>
+          <td class="px-4 py-3 text-center text-xs font-mono">${r.set1_reps}, ${r.set2_reps}, ${r.set3_reps}, ${r.set4_reps}</td>
+          <td class="px-4 py-3 text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">${r.next_load} kg</td>
+          <td class="px-4 py-3 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="editWorkoutRow(${idx})" class="p-1 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 transition" title="Edit">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteWorkoutRow(${idx})" class="p-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 dark:bg-slate-700 dark:text-red-300 transition" title="Delete">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    async function addOrUpdateWorkout(e) {
+      e.preventDefault();
+      const projInput = document.getElementById("inputProject").value.trim();
+      currentProject = `Week ${projInput}`;
+
+      const newRow = {
+        day_session: document.getElementById("inputDaySession").value,
+        exercise: document.getElementById("inputExercise").value,
+        target_reps: document.getElementById("inputTargetReps").value,
+        sets_info: "4 Set",
+        working_load: parseFloat(document.getElementById("inputWorkingLoad").value) || 0,
+        set1_reps: parseInt(document.getElementById("inputSet1").value, 10) || 0,
+        set2_reps: parseInt(document.getElementById("inputSet2").value, 10) || 0,
+        set3_reps: parseInt(document.getElementById("inputSet3").value, 10) || 0,
+        set4_reps: parseInt(document.getElementById("inputSet4").value, 10) || 0,
+        catatan: document.getElementById("inputCatatan").value,
+        updated_at: new Date().toISOString(),
+        order: editIndex >= 0 ? workoutRows[editIndex].order : workoutRows.length
+      };
+
+      const preset = exercisePresets[newRow.exercise];
+      const targetSets = preset ? preset.sets : 4;
+      const repsArr = [newRow.set1_reps, newRow.set2_reps, newRow.set3_reps, newRow.set4_reps];
+      newRow.next_load = calculateNextWeekLoadQB13(newRow.exercise, newRow.target_reps, newRow.working_load, repsArr, newRow.catatan);
+
+      if (editIndex >= 0) {
+        workoutRows[editIndex] = newRow;
+        editIndex = -1;
+      } else {
+        workoutRows.push(newRow);
+      }
+
+      renderWorkoutTable();
+      resetForm();
+
+      showSpinner("Syncing exercise record to server...");
+      const res = await callApi({
+        action: "saveData",
+        username: currentUser,
+        project: currentProject,
+        rows: workoutRows
+      });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast("Workout record successfully saved & synced!", "success");
+        lastSyncedTime = new Date();
+      } else {
+        showToast("Saved locally. Server sync pending.", "warning");
+      }
+    }
+
+    function editWorkoutRow(index) {
+      const r = workoutRows[index];
+      editIndex = index;
+
+      document.getElementById("inputDaySession").value = r.day_session;
+      onSessionChange(r.day_session);
+      document.getElementById("inputExercise").value = r.exercise;
+      onExerciseSelect(r.exercise);
+
+      document.getElementById("inputWorkingLoad").value = r.working_load;
+      document.getElementById("inputSet1").value = r.set1_reps;
+      document.getElementById("inputSet2").value = r.set2_reps;
+      document.getElementById("inputSet3").value = r.set3_reps;
+      document.getElementById("inputSet4").value = r.set4_reps;
+      document.getElementById("inputCatatan").value = r.catatan;
+
+      calculateLoadDetails();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Loaded record into form for editing.", "info");
+    }
+
+    async function deleteWorkoutRow(index) {
+      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise record?", "Delete Record", "trash-2");
+      if (!confirmed) return;
+
+      workoutRows.splice(index, 1);
+      renderWorkoutTable();
+
+      showSpinner("Updating server data...");
+      const res = await callApi({
+        action: "saveData",
+        username: currentUser,
+        project: currentProject,
+        rows: workoutRows
+      });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast("Record successfully deleted.", "success");
+      }
+    }
+
+    function resetForm() {
+      document.getElementById("formWorkout").reset();
+      editIndex = -1;
+      document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
+      document.getElementById("todayBadge").classList.add("hidden");
+      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+    }
+
+    function changeProjectFreetext() {
+      const val = document.getElementById("inputProject").value.trim();
+      if (val) {
+        currentProject = `Week ${val}`;
+        loadWorkoutData();
+      }
+    }
+
+    function switchAppTab(tab) {
+      const workoutBtn = document.getElementById("tabWorkoutBtn");
+      const analyticsBtn = document.getElementById("tabAnalyticsBtn");
+      const workoutTab = document.getElementById("tabWorkout");
+      const analyticsTab = document.getElementById("tabAnalytics");
+
+      if (tab === 'workout') {
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        workoutTab.classList.remove("hidden");
+        analyticsTab.classList.add("hidden");
+      } else {
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        workoutTab.classList.add("hidden");
+        analyticsTab.classList.remove("hidden");
+        renderAnalyticsDashboard();
+      }
+    }
+
+    function renderAnalyticsDashboard() {
+      renderE1RMChart();
+      renderVolumeRpeChart();
+      renderMuscleDistChart();
+      renderAcwrChart();
+    }
+
+    function renderE1RMChart() {
+      const ctx = document.getElementById("chartE1RM").getContext("2d");
+      const exerciseFilter = document.getElementById("analyticsExerciseFilter").value;
+
+      if (window.chartInstanceE1RM) window.chartInstanceE1RM.destroy();
+
+      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      let dataPoints = [40, 42.5, 45, 47.5];
+
+      window.chartInstanceE1RM = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${exerciseFilter} e1RM (kg)`,
+            data: dataPoints,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderVolumeRpeChart() {
+      const ctx = document.getElementById("chartVolumeRpe").getContext("2d");
+      if (window.chartInstanceVolumeRpe) window.chartInstanceVolumeRpe.destroy();
+
+      window.chartInstanceVolumeRpe = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["Mon", "Tue", "Thu", "Fri"],
+          datasets: [{
+            label: 'Volume Load (kg)',
+            data: [3500, 4200, 3800, 4500],
+            backgroundColor: '#3b82f6',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderMuscleDistChart() {
+      const ctx = document.getElementById("chartMuscleDistribution").getContext("2d");
+      if (window.chartInstanceMuscleDist) window.chartInstanceMuscleDist.destroy();
+
+      window.chartInstanceMuscleDist = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ["Chest", "Back", "Quads", "Posterior", "Deltoids", "Arms", "Calves"],
+          datasets: [{
+            label: 'Weekly Effective Sets',
+            data: [12, 14, 12, 10, 15, 10, 10],
+            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+            borderColor: '#2563eb',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderAcwrChart() {
+      const ctx = document.getElementById("chartACWR").getContext("2d");
+      if (window.chartInstanceACWR) window.chartInstanceACWR.destroy();
+
+      window.chartInstanceACWR = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          datasets: [{
+            label: 'ACWR Ratio',
+            data: [1.0, 1.1, 1.2, 1.05],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 0.5, max: 2.0 } }
+        }
+      });
+    }
+
+    async function loadAdminData() {
+      showSpinner("Loading admin dashboard console...");
+      const res = await callApi({ action: "getAdminData", username: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        renderAdminUsers(res.usersMeta || []);
+        renderAdminLogs(res.activityLogs || []);
+      } else {
+        showToast("Failed to load admin data.", "error");
+      }
+    }
+
+    function renderAdminUsers(users) {
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        return;
+      }
+
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+
+        let statusBadge = u.status === "ACTIVE" 
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
+
+        let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
+        if (u.status === "ACTIVE") {
+          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
+        }
+
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-xs">${u.user}</td>
+          <td class="p-3">${statusBadge}</td>
+          <td class="p-3 text-center flex items-center justify-center gap-2">
+            ${actionBtns}
+            <button onclick="deleteUserModal('${u.user}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        return;
+      }
+
+      logs.reverse().forEach(l => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        const timeFormatted = new Date(l.time).toLocaleString();
+
+        tr.innerHTML = `
+          <td class="p-2.5 themed-text-muted text-[11px]">${timeFormatted}</td>
+          <td class="p-2.5 font-semibold">${l.user}</td>
+          <td class="p-2.5">${l.activity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function approveUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Approve account registration for user "${targetUser}"?`, "Approve User", "user-check");
+      if (!confirmed) return;
+
+      showSpinner(`Approving user ${targetUser}...`);
+      const res = await callApi({ action: "approveUser", targetUser, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message, "error");
+      }
+    }
+
+    async function deleteUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Delete user "${targetUser}" and all associated workout files?`, "Delete User", "user-x");
+      if (!confirmed) return;
+
+      showSpinner(`Deleting user ${targetUser}...`);
+      const res = await callApi({ action: "deleteUser", targetUser, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message, "error");
+      }
+    }
+
+    function viewUserDetailModal(username) {
+      const container = document.getElementById("adminUserDetailContainer");
+      container.classList.remove("hidden");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
+
+      const overview = document.getElementById("userStatsOverview");
+      overview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Total Workouts Logged</span>
+          <span class="text-base font-bold text-blue-600 dark:text-blue-400">12 Sessions</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Average Compliance</span>
+          <span class="text-base font-bold text-emerald-600 dark:text-emerald-400">95%</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Status</span>
+          <span class="text-base font-bold text-purple-600 dark:text-purple-400">Active</span>
+        </div>
+      `;
+
+      const benchmarksList = document.getElementById("userBenchmarksList");
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
+      
+      benchmarksList.innerHTML = "";
+      Object.keys(savedBenchmarks).slice(0, 8).forEach(ex => {
+        benchmarksList.innerHTML += `
+          <div class="themed-subcard p-2 rounded-lg border text-xs">
+            <span class="themed-text-muted block text-[10px] truncate">${ex}</span>
+            <span class="font-bold text-sm">${savedBenchmarks[ex]} kg</span>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("syncStatus").classList.add("hidden");
+      showToast("Successfully signed out.", "info");
+    }
+  </script>
+</body>
+</html>";
+
+    let currentUser = null;
+    let isAdmin = false;
+    let currentProject = ""; 
+    let workoutRows = [];
+    let editIndex = -1;
+    let originalBaseLoad = 0;
+
+    let lastSyncedTime = null;
+    let pendingQueueCount = 0;
+    let wasOnline = navigator.onLine;
+
+    let lastSelectedSession = "";
+    let lastBodyWeight = "";
+
+    const exercisePresets = {
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+    };
+
+    let initialBenchmarkLoads = {
+      "Barbell Bench Press": 20.0,
+      "Chest Supported Dumbbell Row": 20.0,
+      "Bodyweight Pull-Ups": 0.0,
+      "Barbell Overhead Press": 12.5,
+      "Dumbbell Lateral Raises - A": 5.0,
+      "Triceps Pressdowns (Cable)": 7.5,
+      "Dumbbell Hammer Curl": 7.5,
+      "Barbell Squats": 20.0,
+      "Romanian Deadlifts": 17.5,
+      "Standing Barbell Calf Raises - A": 12.5,
+      "Incline Dumbbell Press": 12.5,
+      "Bent-over Barbell Row": 20.0,
+      "Seated Dumbbell Press": 10.0,
+      "Face Pulls (Cable)": 10.0,
+      "Dumbbell Lateral Raises - B": 5.0,
+      "Barbell Curl": 7.5,
+      "Cable Overhead Triceps Extension": 7.5,
+      "Conventional Deadlift": 25.0,
+      "Dumbbell Bulgarian Split Squat": 7.5,
+      "Standing Barbell Calf Raises - B": 12.5
+    };
+
+    const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
+
+    function showToast(message, type = "info", duration = 3000) {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+
+      const toast = document.createElement("div");
+      let bgColor = "bg-slate-800 text-white";
+      let icon = "info";
+
+      if (type === "warning") {
+        bgColor = "bg-amber-600 text-white";
+        icon = "alert-triangle";
+      } else if (type === "success") {
+        bgColor = "bg-emerald-600 text-white";
+        icon = "check-circle";
+      } else if (type === "error") {
+        bgColor = "bg-red-600 text-white";
+        icon = "alert-circle";
+      }
+
+      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove("translate-y-4", "opacity-0");
+      });
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    window.addEventListener("scroll", () => {
+      const btn = document.getElementById("scrollToTopBtn");
+      if (window.scrollY > 300) {
+        btn.classList.remove("opacity-0", "pointer-events-none", "translate-y-4");
+        btn.classList.add("opacity-100", "translate-y-0");
+      } else {
+        btn.classList.add("opacity-0", "pointer-events-none", "translate-y-4");
+        btn.classList.remove("opacity-100", "translate-y-0");
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showSpinner(msg = "Processing Request...") {
+      document.getElementById("loadingMessage").innerText = msg;
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.remove("hidden");
+      setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+    }
+
+    function hideSpinner() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.classList.add("opacity-0");
+      setTimeout(() => overlay.classList.add("hidden"), 200);
+    }
+
+    function showModernAlert(message, title = "System Notification", iconName = "info") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.add("hidden");
+        confirmBtn.innerText = "OK";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500/30 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function showModernConfirm(message, title = "Confirm Action", iconName = "help-circle") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", iconName);
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Cancel";
+        confirmBtn.innerText = "Confirm";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 border border-red-500 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function mround2_5(val) {
+      return Math.round(val / 2.5) * 2.5;
+    }
+
+    function floor2_5(val) {
+      return Math.floor(val / 2.5) * 2.5;
+    }
+
+    function roundToQuarter(val) {
+      return Math.round(val * 4) / 4;
+    }
+
+    function calculateSideWeight(exercise, totalLoad) {
+      const exLower = exercise.toLowerCase();
+      if (exLower.includes("pull-up") || exLower.includes("pull up")) {
+        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
+        return roundToQuarter(bw + totalLoad);
+      }
+      
+      if (totalLoad <= 0) return 0;
+      let side = totalLoad;
+      if (exLower.includes("barbell")) {
+        side = Math.max(0, (totalLoad - 10) / 2);
+      } else if (exLower.includes("dumbbell")) {
+        side = Math.max(0, (totalLoad - 2.5) / 2);
+      }
+      return roundToQuarter(side);
+    }
+
+    function onSessionChange(sessionVal) {
+      lastSelectedSession = sessionVal;
+      const exerciseSelect = document.getElementById("inputExercise");
+      exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
+
+      if (!sessionVal) return;
+
+      Object.keys(exercisePresets).forEach(ex => {
+        if (exercisePresets[ex].session === sessionVal) {
+          const opt = document.createElement("option");
+          opt.value = ex;
+          opt.innerText = ex;
+          exerciseSelect.appendChild(opt);
+        }
+      });
+
+      const currentDay = new Date().getDay();
+      const todaySession = dayToSessionMap[currentDay];
+      const badge = document.getElementById("todayBadge");
+
+      if (todaySession && todaySession === sessionVal) {
+        badge.classList.remove("hidden");
+        document.getElementById("formWorkout").classList.add("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
+      } else {
+        badge.classList.add("hidden");
+        document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
+      }
+    }
+
+    function onExerciseSelect(exVal) {
+      if (!exVal) return;
+      const preset = exercisePresets[exVal];
+      if (preset) {
+        document.getElementById("inputTargetReps").value = preset.reps;
+        document.getElementById("inputRestTime").value = preset.rest;
+
+        const totalSets = preset.sets || 4;
+        for (let i = 1; i <= 4; i++) {
+          const container = document.getElementById(`containerSet${i}`);
+          const input = document.getElementById(`inputSet${i}`);
+          if (i <= totalSets) {
+            container.classList.remove("hidden");
+            input.disabled = false;
+          } else {
+            container.classList.add("hidden");
+            input.value = 0;
+            input.disabled = true;
+          }
+        }
+
+        const set3Input = document.getElementById("inputSet3");
+        if (set3Input) {
+          if (totalSets >= 4) {
+            set3Input.setAttribute("data-next", "inputSet4");
+          } else {
+            set3Input.setAttribute("data-next", "inputCatatan");
+          }
+        }
+
+        const warmupContainer = document.getElementById("warmupContainer");
+        if (preset.isFirst) {
+          warmupContainer.classList.remove("hidden");
+        } else {
+          warmupContainer.classList.add("hidden");
+        }
+
+        let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
+        originalBaseLoad = autoLoad;
+        document.getElementById("inputWorkingLoad").value = autoLoad;
+
+        calculateLoadDetails();
+      }
+    }
+
+    function get4WeeksHistoryLoad(exerciseName, currentProj) {
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
+      const defaultLoad = savedBenchmarks[exerciseName] ?? (initialBenchmarkLoads[exerciseName] ?? 20);
+
+      if (!currentProj) return defaultLoad;
+      
+      const match = currentProj.match(/Week\s*(\d+)/i);
+      let currentWeekNum = match ? parseInt(match[1], 10) : 1;
+
+      for (let i = 1; i <= 4; i++) {
+        let prevWeekNum = currentWeekNum - i;
+        if (prevWeekNum < 1) break;
+
+        let prevProjName = `Week ${prevWeekNum}`;
+        let prevData = localStorage.getItem(`workout_data_${currentUser}_${prevProjName}`);
+        if (prevData) {
+          let rows = JSON.parse(prevData);
+          let matchRow = rows.find(r => r.exercise === exerciseName);
+          if (matchRow && matchRow.next_load > 0) {
+            return matchRow.next_load;
+          }
+        }
+      }
+
+      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
+      if (currentMatch) return currentMatch.working_load;
+
+      return defaultLoad;
+    }
+
+    function calculateLoadDetails() {
+      const load = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const exercise = document.getElementById("inputExercise").value;
+      const sideDisplay = document.getElementById("sideLoadDisplay");
+      const notice = document.getElementById("sideLoadFormulaNotice");
+
+      const bwVal = document.getElementById("inputBodyWeight").value;
+      if (bwVal) lastBodyWeight = bwVal;
+
+      if (!exercise) {
+        sideDisplay.innerText = "- kg / side";
+        calculateWarmupPreview(0, exercise);
+        return;
+      }
+
+      let sideWeight = calculateSideWeight(exercise, load);
+      const exLower = exercise.toLowerCase();
+
+      if (exLower.includes("pull-up") || exLower.includes("pull up")) {
+        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
+        notice.innerText = `*Pull-Up Formula: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Load`;
+      } else if (exLower.includes("barbell")) {
+        notice.innerText = "*Barbell Formula: (Total Load - 10kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
+      } else if (exLower.includes("dumbbell")) {
+        notice.innerText = "*Dumbbell Formula: (Total Load - 2.5kg) / 2";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg / side`;
+      } else {
+        notice.innerText = "*Total Stack Load (Cable / Machine)";
+        sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total`;
+      }
+
+      calculateWarmupPreview(load, exercise);
+    }
+
+    function calculateWarmupPreview(totalLoad, exercise) {
+      const previewEl = document.getElementById("warmupPreview");
+      if (!exercise) {
+        previewEl.innerHTML = `
+          <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 3: -</div>
+          <div class="themed-input p-1.5 rounded-lg border">Set 4: -</div>
+        `;
+        return;
+      }
+
+      const w1 = floor2_5(totalLoad * 0.40);
+      const w2 = floor2_5(totalLoad * 0.60);
+      const w3 = floor2_5(totalLoad * 0.80);
+      const w4 = floor2_5(totalLoad * 0.90);
+
+      const s1 = calculateSideWeight(exercise, w1);
+      const s2 = calculateSideWeight(exercise, w2);
+      const s3 = calculateSideWeight(exercise, w3);
+      const s4 = calculateSideWeight(exercise, w4);
+
+      previewEl.innerHTML = `
+        <div class="themed-input p-1.5 rounded-lg border">Set 1: <b>${w1}k</b> (${s1.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 2: <b>${w2}k</b> (${s2.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 3: <b>${w3}k</b> (${s3.toFixed(2)})</div>
+        <div class="themed-input p-1.5 rounded-lg border">Set 4: <b>${w4}k</b> (${s4.toFixed(2)})</div>
+      `;
+    }
+
+    function checkAutoRegulation() {
+      const targetStr = document.getElementById("inputTargetReps").value;
+      if (!targetStr) return;
+      const parts = targetStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0] || 0;
+
+      const set1 = parseInt(document.getElementById("inputSet1").value, 10) || 0;
+      const set2 = parseInt(document.getElementById("inputSet2").value, 10) || 0;
+      const set3 = parseInt(document.getElementById("inputSet3").value, 10) || 0;
+      const set4 = parseInt(document.getElementById("inputSet4").value, 10) || 0;
+
+      const autoNotice = document.getElementById("autoRegNotice");
+      const autoText = document.getElementById("autoRegText");
+
+      let failedSet = 0;
+      if (set1 > 0 && set1 < minTarget) failedSet = 1;
+      else if (set2 > 0 && set2 < minTarget) failedSet = 2;
+      else if (set3 > 0 && set3 < minTarget) failedSet = 3;
+      else if (set4 > 0 && set4 < minTarget) failedSet = 4;
+
+      if (failedSet > 0 && minTarget > 0) {
+        let deloadLoad = mround2_5(originalBaseLoad * 0.925); 
+
+        document.getElementById("inputWorkingLoad").value = deloadLoad;
+        calculateLoadDetails();
+
+        autoNotice.classList.remove("hidden");
+        autoText.innerText = `Rep target failure (${minTarget} reps) on Set ${failedSet}! Working load adjusted from ${originalBaseLoad} kg to ${deloadLoad} kg.`;
+      } else {
+        document.getElementById("inputWorkingLoad").value = originalBaseLoad;
+        calculateLoadDetails();
+        autoNotice.classList.add("hidden");
+      }
+    }
+
+    function first_set_assessment(exercise_type, trial_load, reps_performed, rpe_output) {
+      let initial_baseline = trial_load;
+      
+      if (exercise_type === "COMPOUND") {
+        if (reps_performed >= 6 && reps_performed <= 8) {
+          if (rpe_output <= 6.5) initial_baseline = trial_load * 1.05;
+          else if (rpe_output >= 7.0 && rpe_output <= 8.5) initial_baseline = trial_load;
+          else if (rpe_output >= 9.0) initial_baseline = trial_load * 0.95;
+        } else if (reps_performed > 8) {
+          initial_baseline = trial_load * 1.075;
+        } else {
+          initial_baseline = trial_load * 0.90;
+        }
+      } else if (exercise_type === "ISOLATION") {
+        if (reps_performed >= 8 && reps_performed <= 10) {
+          if (rpe_output <= 7.0) initial_baseline = trial_load + 2.5;
+          else if (rpe_output >= 7.5 && rpe_output <= 8.5) initial_baseline = trial_load;
+          else initial_baseline = trial_load - 2.5;
+        } else if (reps_performed > 10) {
+          initial_baseline = trial_load + 2.5;
+        } else {
+          initial_baseline = Math.max(0, trial_load - 2.5);
+        }
+      }
+
+      return Math.round(mround2_5(initial_baseline) * 10) / 10;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      checkSession();
+      registerServiceWorker();
+      setupEnterNavigation();
+
+      window.addEventListener('online', handleNetworkChange);
+      window.addEventListener('offline', handleNetworkChange);
+      updateOnlineStatus();
+    });
+
+    function setupEnterNavigation() {
+      const inputs = document.querySelectorAll('.enter-nav');
+      inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const isOptional = this.getAttribute('data-optional') === 'true';
+            const val = this.value.trim();
+
+            if (!val && !isOptional) {
+              const fieldName = this.previousElementSibling ? this.previousElementSibling.innerText : "this field";
+              showModernAlert(`Please fill in ${fieldName} before proceeding!`, "Required Field", "alert-circle");
+              this.focus();
+              return;
+            }
+
+            let nextId = this.getAttribute('data-next');
+            if (this.id === "inputSet3") {
+              const container4 = document.getElementById("containerSet4");
+              if (container4 && container4.classList.contains("hidden")) {
+                nextId = "inputCatatan";
+              }
+            }
+
+            if (nextId) {
+              const nextEl = document.getElementById(nextId);
+              if (nextEl) {
+                if (nextEl.tagName === 'BUTTON') nextEl.click();
+                else nextEl.focus();
+              }
+            }
+          }
+        });
+      });
+    }
+
+    function handleNetworkChange() {
+      const isNowOnline = navigator.onLine;
+      if (wasOnline !== isNowOnline) {
+        wasOnline = isNowOnline;
+        if (isNowOnline) showToast("You are back online. Syncing data...", "success", 2500);
+        else showToast("You are now offline. Data will be saved locally.", "warning", 3000);
+      }
+      updateOnlineStatus();
+    }
+
+    function updateOnlineStatus() {
+      const ind = document.getElementById("statusIndicator");
+      const txt = document.getElementById("statusText");
+      if (!ind || !txt) return;
+
+      if (navigator.onLine) {
+        ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400";
+        txt.innerText = "Online · Synced";
+      } else {
+        ind.className = "w-2 h-2 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500";
+        txt.innerText = pendingQueueCount > 0 ? `Offline · [${pendingQueueCount}] pending` : "Offline · Saved locally";
+      }
+    }
+
+    function showSyncDetailModal() {
+      const timeStr = lastSyncedTime ? lastSyncedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not synced yet";
+      const statusStr = navigator.onLine ? "Online" : "Offline";
+      const queueStr = pendingQueueCount > 0 ? `${pendingQueueCount} items queued for sync` : "No pending queue";
+      const message = `Current Status: ${statusStr}\nLast synced at: ${timeStr}\nSync Queue: ${queueStr}`;
+
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const card = document.getElementById("modalCard");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const modalIcon = document.getElementById("modalIcon");
+
+        modalTitle.innerText = "Connection & Sync Details";
+        modalMessage.innerText = message;
+        modalIcon.setAttribute("data-lucide", navigator.onLine ? "refresh-cw" : "wifi-off");
+        lucide.createIcons();
+
+        cancelBtn.classList.remove("hidden");
+        cancelBtn.innerText = "Close";
+        confirmBtn.innerText = "Sync Now";
+        confirmBtn.className = "px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-xl transition shadow-md";
+
+        overlay.classList.remove("hidden");
+        setTimeout(() => {
+          overlay.classList.remove("opacity-0");
+          card.classList.remove("scale-95");
+        }, 10);
+
+        cancelBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            resolve(false);
+          }, 200);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.classList.add("opacity-0");
+          card.classList.add("scale-95");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            if (navigator.onLine) showToast("Synced successfully.", "success", 2000);
+            else showToast("Cannot sync: Device is offline.", "error", 2500);
+            resolve(true);
+          }, 200);
+        };
+      });
+    }
+
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'workout-log-cache-v1';
+          const urlsToCache = ['/'];
+          self.addEventListener('install', event => {
+            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+          });
+          self.addEventListener('fetch', event => {
+            event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed: ', err));
+      }
+    }
+
+    function switchAuthTab(tab) {
+      if (tab === 'login') {
+        document.getElementById("formLogin").classList.remove("hidden");
+        document.getElementById("formRegister").classList.add("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+      } else {
+        document.getElementById("formLogin").classList.add("hidden");
+        document.getElementById("formRegister").classList.remove("hidden");
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+      }
+    }
+
+    function checkSession() {
+      const savedUser = localStorage.getItem("workout_user");
+      const savedRole = localStorage.getItem("workout_is_admin");
+
+      if (savedUser) {
+        currentUser = savedUser;
+        isAdmin = (savedRole === "true");
+        showAppUI();
+      }
+    }
+
+    async function callApi(payload) {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        console.error("API Call Error:", err);
+        return { status: "error", message: "Network connection error." };
+      }
+    }
+
+    async function submitLogin(e) {
+      e.preventDefault();
+      if (!navigator.onLine) {
+        showToast("Cannot sign in: Internet connection is offline.", "error", 3500);
+        await showModernAlert("Sign in requires an active internet connection.", "Network Offline", "wifi-off");
+        return;
+      }
+
+      const username = document.getElementById("loginUsername").value.trim();
+      const pin = document.getElementById("loginPin").value.trim();
+
+      showSpinner("Authenticating credentials...");
+      const res = await callApi({ action: "login", username, pin });
+      hideSpinner();
+
+      if (res.status === "success" || res.authenticated) {
+        currentUser = username;
+        isAdmin = res.isAdmin || false;
+        localStorage.setItem("workout_user", currentUser);
+        localStorage.setItem("workout_is_admin", isAdmin);
+        showAppUI();
+      } else {
+        await showModernAlert(res.message || "Invalid username or PIN.", "Authentication Failed", "alert-circle");
+      }
+    }
+
+    async function submitRegister(e) {
+      e.preventDefault();
+      if (!navigator.onLine) {
+        showToast("Cannot register: Internet connection is offline.", "error", 3500);
+        await showModernAlert("User registration requires an active internet connection.", "Network Offline", "wifi-off");
+        return;
+      }
+
+      const username = document.getElementById("regUsername").value.trim();
+      const pin = document.getElementById("regPin").value.trim();
+
+      const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
+        await showModernAlert(`Username "${username}" sudah digunakan.`, "Pendaftaran Ditolak", "user-x");
+        return;
+      }
+
+      let userBenchmarks = {};
+      const benchLoad = parseFloat(document.getElementById("test_load_bench").value) || 20;
+      const benchReps = parseInt(document.getElementById("test_reps_bench").value, 10) || 7;
+      const benchRpe = parseFloat(document.getElementById("test_rpe_bench").value) || 8.0;
+
+      let assessedBench = first_set_assessment("COMPOUND", benchLoad, benchReps, benchRpe);
+      userBenchmarks["Barbell Bench Press"] = assessedBench;
+
+      const squatLoad = parseFloat(document.getElementById("test_load_squat").value) || 20;
+      const squatReps = parseInt(document.getElementById("test_reps_squat").value, 10) || 7;
+      const squatRpe = parseFloat(document.getElementById("test_rpe_squat").value) || 8.0;
+
+      let assessedSquat = first_set_assessment("COMPOUND", squatLoad, squatReps, squatRpe);
+      userBenchmarks["Barbell Squats"] = assessedSquat;
+
+      const latLoad = parseFloat(document.getElementById("test_load_lat").value) || 5;
+      const latReps = parseInt(document.getElementById("test_reps_lat").value, 10) || 9;
+      const latRpe = parseFloat(document.getElementById("test_rpe_lat").value) || 8.0;
+
+      let assessedLat = first_set_assessment("ISOLATION", latLoad, latReps, latRpe);
+      userBenchmarks["Dumbbell Lateral Raises - A"] = assessedLat;
+      userBenchmarks["Dumbbell Lateral Raises - B"] = assessedLat;
+
+      userBenchmarks["Chest Supported Dumbbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Bodyweight Pull-Ups"] = 0.0;
+      userBenchmarks["Barbell Overhead Press"] = mround2_5(assessedBench * 0.625);
+      userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
+      userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
+      userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
+      userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
+      userBenchmarks["Seated Dumbbell Press"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Face Pulls (Cable)"] = mround2_5(assessedBench * 0.50);
+      userBenchmarks["Barbell Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Conventional Deadlift"] = mround2_5(assessedSquat * 1.25);
+      userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
+      userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
+
+      showSpinner("Registering user & setting up initial load baseline...");
+      const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
+      hideSpinner();
+
+      if (res.status === "success") {
+        existingUserList.push(username);
+        localStorage.setItem("registered_users_list", JSON.stringify(existingUserList));
+        localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+        await showModernAlert((res.message || "Registration successful!"), "Registration Completed", "check-circle");
+        switchAuthTab('login');
+      } else {
+        await showModernAlert(res.message || "Registration failed.", "Error", "alert-circle");
+      }
+    }
+
+    function showAppUI() {
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.add("flex");
+
+      if (isAdmin) {
+        document.getElementById("adminSection").classList.remove("hidden");
+        document.getElementById("appSection").classList.add("hidden");
+        loadAdminData();
+      } else {
+        document.getElementById("adminSection").classList.add("hidden");
+        document.getElementById("appSection").classList.remove("hidden");
+        currentProject = "Week 1";
+        document.getElementById("inputProject").value = 1;
+        loadWorkoutData();
+      }
+    }
+
+    async function loadWorkoutData() {
+      if (!currentUser) return;
+      showSpinner("Loading workout logs...");
+      const res = await callApi({ action: "getData", username: currentUser, project: currentProject });
+      hideSpinner();
+
+      if (res.status === "success") {
+        workoutRows = res.rows || [];
+        renderWorkoutTable();
+      } else {
+        workoutRows = [];
+        renderWorkoutTable();
+      }
+    }
+
+    function renderWorkoutTable() {
+      const tbody = document.getElementById("workoutTableBody");
+      tbody.innerHTML = "";
+
+      if (workoutRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-xs themed-text-muted">No records found for ${currentProject}. Start logging your workouts above!</td></tr>`;
+        return;
+      }
+
+      workoutRows.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        const sideVal = calculateSideWeight(r.exercise, r.working_load);
+        const exLower = (r.exercise || "").toLowerCase();
+
+        let loadDisplay = `${r.working_load} kg`;
+        if (exLower.includes("barbell") || exLower.includes("dumbbell")) {
+          loadDisplay = `${sideVal} kg / side <span class="text-[10px] themed-text-muted block">(${r.working_load} kg Total)</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-medium text-xs">${r.day_session}</td>
+          <td class="px-4 py-3 text-xs font-semibold">${r.exercise} <span class="block text-[10px] themed-text-muted font-normal">${r.catatan || ''}</span></td>
+          <td class="px-4 py-3 text-center text-xs font-medium">${r.target_reps}</td>
+          <td class="px-4 py-3 text-right text-xs font-bold">${loadDisplay}</td>
+          <td class="px-4 py-3 text-center text-xs font-mono">${r.set1_reps}, ${r.set2_reps}, ${r.set3_reps}, ${r.set4_reps}</td>
+          <td class="px-4 py-3 text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">${r.next_load} kg</td>
+          <td class="px-4 py-3 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="editWorkoutRow(${idx})" class="p-1 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 transition" title="Edit">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteWorkoutRow(${idx})" class="p-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 dark:bg-slate-700 dark:text-red-300 transition" title="Delete">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    async function addOrUpdateWorkout(e) {
+      e.preventDefault();
+      const projInput = document.getElementById("inputProject").value.trim();
+      currentProject = `Week ${projInput}`;
+
+      const newRow = {
+        day_session: document.getElementById("inputDaySession").value,
+        exercise: document.getElementById("inputExercise").value,
+        target_reps: document.getElementById("inputTargetReps").value,
+        sets_info: "4 Set",
+        working_load: parseFloat(document.getElementById("inputWorkingLoad").value) || 0,
+        set1_reps: parseInt(document.getElementById("inputSet1").value, 10) || 0,
+        set2_reps: parseInt(document.getElementById("inputSet2").value, 10) || 0,
+        set3_reps: parseInt(document.getElementById("inputSet3").value, 10) || 0,
+        set4_reps: parseInt(document.getElementById("inputSet4").value, 10) || 0,
+        catatan: document.getElementById("inputCatatan").value,
+        updated_at: new Date().toISOString(),
+        order: editIndex >= 0 ? workoutRows[editIndex].order : workoutRows.length
+      };
+
+      const preset = exercisePresets[newRow.exercise];
+      const targetSets = preset ? preset.sets : 4;
+      const repsArr = [newRow.set1_reps, newRow.set2_reps, newRow.set3_reps, newRow.set4_reps];
+      newRow.next_load = calculateNextWeekLoadQB13(newRow.exercise, newRow.target_reps, newRow.working_load, repsArr, newRow.catatan);
+
+      if (editIndex >= 0) {
+        workoutRows[editIndex] = newRow;
+        editIndex = -1;
+      } else {
+        workoutRows.push(newRow);
+      }
+
+      renderWorkoutTable();
+      resetForm();
+
+      showSpinner("Syncing exercise record to server...");
+      const res = await callApi({
+        action: "saveData",
+        username: currentUser,
+        project: currentProject,
+        rows: workoutRows
+      });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast("Workout record successfully saved & synced!", "success");
+        lastSyncedTime = new Date();
+      } else {
+        showToast("Saved locally. Server sync pending.", "warning");
+      }
+    }
+
+    function editWorkoutRow(index) {
+      const r = workoutRows[index];
+      editIndex = index;
+
+      document.getElementById("inputDaySession").value = r.day_session;
+      onSessionChange(r.day_session);
+      document.getElementById("inputExercise").value = r.exercise;
+      onExerciseSelect(r.exercise);
+
+      document.getElementById("inputWorkingLoad").value = r.working_load;
+      document.getElementById("inputSet1").value = r.set1_reps;
+      document.getElementById("inputSet2").value = r.set2_reps;
+      document.getElementById("inputSet3").value = r.set3_reps;
+      document.getElementById("inputSet4").value = r.set4_reps;
+      document.getElementById("inputCatatan").value = r.catatan;
+
+      calculateLoadDetails();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Loaded record into form for editing.", "info");
+    }
+
+    async function deleteWorkoutRow(index) {
+      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise record?", "Delete Record", "trash-2");
+      if (!confirmed) return;
+
+      workoutRows.splice(index, 1);
+      renderWorkoutTable();
+
+      showSpinner("Updating server data...");
+      const res = await callApi({
+        action: "saveData",
+        username: currentUser,
+        project: currentProject,
+        rows: workoutRows
+      });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast("Record successfully deleted.", "success");
+      }
+    }
+
+    function resetForm() {
+      document.getElementById("formWorkout").reset();
+      editIndex = -1;
+      document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
+      document.getElementById("todayBadge").classList.add("hidden");
+      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+    }
+
+    function changeProjectFreetext() {
+      const val = document.getElementById("inputProject").value.trim();
+      if (val) {
+        currentProject = `Week ${val}`;
+        loadWorkoutData();
+      }
+    }
+
+    function switchAppTab(tab) {
+      const workoutBtn = document.getElementById("tabWorkoutBtn");
+      const analyticsBtn = document.getElementById("tabAnalyticsBtn");
+      const workoutTab = document.getElementById("tabWorkout");
+      const analyticsTab = document.getElementById("tabAnalytics");
+
+      if (tab === 'workout') {
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        workoutTab.classList.remove("hidden");
+        analyticsTab.classList.add("hidden");
+      } else {
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        workoutTab.classList.add("hidden");
+        analyticsTab.classList.remove("hidden");
+        renderAnalyticsDashboard();
+      }
+    }
+
+    function renderAnalyticsDashboard() {
+      renderE1RMChart();
+      renderVolumeRpeChart();
+      renderMuscleDistChart();
+      renderAcwrChart();
+    }
+
+    function renderE1RMChart() {
+      const ctx = document.getElementById("chartE1RM").getContext("2d");
+      const exerciseFilter = document.getElementById("analyticsExerciseFilter").value;
+
+      if (window.chartInstanceE1RM) window.chartInstanceE1RM.destroy();
+
+      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      let dataPoints = [40, 42.5, 45, 47.5];
+
+      window.chartInstanceE1RM = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${exerciseFilter} e1RM (kg)`,
+            data: dataPoints,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderVolumeRpeChart() {
+      const ctx = document.getElementById("chartVolumeRpe").getContext("2d");
+      if (window.chartInstanceVolumeRpe) window.chartInstanceVolumeRpe.destroy();
+
+      window.chartInstanceVolumeRpe = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["Mon", "Tue", "Thu", "Fri"],
+          datasets: [{
+            label: 'Volume Load (kg)',
+            data: [3500, 4200, 3800, 4500],
+            backgroundColor: '#3b82f6',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderMuscleDistChart() {
+      const ctx = document.getElementById("chartMuscleDistribution").getContext("2d");
+      if (window.chartInstanceMuscleDist) window.chartInstanceMuscleDist.destroy();
+
+      window.chartInstanceMuscleDist = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ["Chest", "Back", "Quads", "Posterior", "Deltoids", "Arms", "Calves"],
+          datasets: [{
+            label: 'Weekly Effective Sets',
+            data: [12, 14, 12, 10, 15, 10, 10],
+            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+            borderColor: '#2563eb',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderAcwrChart() {
+      const ctx = document.getElementById("chartACWR").getContext("2d");
+      if (window.chartInstanceACWR) window.chartInstanceACWR.destroy();
+
+      window.chartInstanceACWR = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          datasets: [{
+            label: 'ACWR Ratio',
+            data: [1.0, 1.1, 1.2, 1.05],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 0.5, max: 2.0 } }
+        }
+      });
+    }
+
+    async function loadAdminData() {
+      showSpinner("Loading admin dashboard console...");
+      const res = await callApi({ action: "getAdminData", username: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        renderAdminUsers(res.usersMeta || []);
+        renderAdminLogs(res.activityLogs || []);
+      } else {
+        showToast("Failed to load admin data.", "error");
+      }
+    }
+
+    function renderAdminUsers(users) {
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        return;
+      }
+
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+
+        let statusBadge = u.status === "ACTIVE" 
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
+
+        let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
+        if (u.status === "ACTIVE") {
+          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
+        }
+
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-xs">${u.user}</td>
+          <td class="p-3">${statusBadge}</td>
+          <td class="p-3 text-center flex items-center justify-center gap-2">
+            ${actionBtns}
+            <button onclick="deleteUserModal('${u.user}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        return;
+      }
+
+      logs.reverse().forEach(l => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        const timeFormatted = new Date(l.time).toLocaleString();
+
+        tr.innerHTML = `
+          <td class="p-2.5 themed-text-muted text-[11px]">${timeFormatted}</td>
+          <td class="p-2.5 font-semibold">${l.user}</td>
+          <td class="p-2.5">${l.activity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function approveUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Approve account registration for user "${targetUser}"?`, "Approve User", "user-check");
+      if (!confirmed) return;
+
+      showSpinner(`Approving user ${targetUser}...`);
+      const res = await callApi({ action: "approveUser", targetUser, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message, "error");
+      }
+    }
+
+    async function deleteUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Delete user "${targetUser}" and all associated workout files?`, "Delete User", "user-x");
+      if (!confirmed) return;
+
+      showSpinner(`Deleting user ${targetUser}...`);
+      const res = await callApi({ action: "deleteUser", targetUser, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message, "error");
+      }
+    }
+
+    function viewUserDetailModal(username) {
+      const container = document.getElementById("adminUserDetailContainer");
+      container.classList.remove("hidden");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
+
+      const overview = document.getElementById("userStatsOverview");
+      overview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Total Workouts Logged</span>
+          <span class="text-base font-bold text-blue-600 dark:text-blue-400">12 Sessions</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Average Compliance</span>
+          <span class="text-base font-bold text-emerald-600 dark:text-emerald-400">95%</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block font-medium">Status</span>
+          <span class="text-base font-bold text-purple-600 dark:text-purple-400">Active</span>
+        </div>
+      `;
+
+      const benchmarksList = document.getElementById("userBenchmarksList");
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
+      
+      benchmarksList.innerHTML = "";
+      Object.keys(savedBenchmarks).slice(0, 8).forEach(ex => {
+        benchmarksList.innerHTML += `
+          <div class="themed-subcard p-2 rounded-lg border text-xs">
+            <span class="themed-text-muted block text-[10px] truncate">${ex}</span>
+            <span class="font-bold text-sm">${savedBenchmarks[ex]} kg</span>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("syncStatus").classList.add("hidden");
+      showToast("Successfully signed out.", "info");
+    }
+  </script>
 </body>
 </html>
