@@ -1424,6 +1424,26 @@
       }
     }
 
+    function switchAppTab(tab) {
+      const workoutTab = document.getElementById("tabWorkout");
+      const analyticsTab = document.getElementById("tabAnalytics");
+      const workoutBtn = document.getElementById("tabWorkoutBtn");
+      const analyticsBtn = document.getElementById("tabAnalyticsBtn");
+
+      if (tab === 'workout') {
+        workoutTab.classList.remove("hidden");
+        analyticsTab.classList.add("hidden");
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+      } else {
+        workoutTab.classList.add("hidden");
+        analyticsTab.classList.remove("hidden");
+        analyticsBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 flex items-center gap-2.5";
+        workoutBtn.className = "px-5 sm:px-8 py-4 font-bold text-sm sm:text-base themed-text-muted hover:text-blue-500 flex items-center gap-2.5";
+        renderAnalyticsDashboard();
+      }
+    }
+
     function checkSession() {
       const savedUser = localStorage.getItem("workout_user");
       const savedRole = localStorage.getItem("workout_is_admin");
@@ -1674,7 +1694,6 @@
       event.stopPropagation();
       const popover = document.getElementById("actionPopover");
       const menu = document.getElementById("actionPopoverMenu");
-      const row = workoutRows[idx];
 
       document.getElementById("btnMenuEdit").onclick = () => {
         closeActionPopover();
@@ -2177,6 +2196,68 @@
           }
         }
       });
+    }
+
+    async function loadAdminData() {
+      showSpinner("Loading admin console data...");
+      const res = await callApi({ action: "getAdminData" });
+      hideSpinner();
+
+      if (res.status === "success") {
+        renderAdminUsers(res.users || []);
+        renderAdminLogs(res.logs || []);
+      }
+    }
+
+    function renderAdminUsers(users) {
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-3 font-semibold">${u.username}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs ${u.isAdmin ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}">${u.isAdmin ? 'Admin' : 'User'}</span></td>
+          <td class="p-3 text-center">
+            <button onclick="viewUserDetail('${u.username}')" class="text-xs bg-blue-600 text-white px-2.5 py-1 rounded-lg">View Profile</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2.5 themed-text-muted">${l.timestamp}</td>
+          <td class="p-2.5 font-semibold">${l.username}</td>
+          <td class="p-2.5">${l.activity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewUserDetail(username) {
+      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      const container = document.getElementById("adminUserDetailContainer");
+      document.getElementById("userDetailTitle").innerText = `User Profile & Stats: ${username}`;
+
+      const list = document.getElementById("userBenchmarksList");
+      list.innerHTML = "";
+      Object.keys(benchmarks).forEach(k => {
+        const item = document.createElement("div");
+        item.className = "themed-subcard p-2 rounded-lg text-xs";
+        item.innerHTML = `<span class="themed-text-muted block text-[10px]">${k}</span><b>${benchmarks[k]} kg</b>`;
+        list.appendChild(item);
+      });
+
+      container.classList.remove("hidden");
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
   </script>
 </body>
