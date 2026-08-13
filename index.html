@@ -1461,8 +1461,12 @@
 
       if (res && res.status === "success" && Array.isArray(res.rows)) {
         workoutRows = res.rows;
+        // Simpan salinan lokal untuk penggunaan offline / analytics
+        localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       } else {
-        workoutRows = [];
+        // Fallback ke localStorage jika tidak terhubung atau data dari sheet kosong
+        const localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
+        workoutRows = localData ? JSON.parse(localData) : [];
       }
       renderWorkoutTable();
     }
@@ -1543,6 +1547,9 @@
       } else {
         workoutRows.push(newRow);
       }
+
+      // Simpan ke localStorage
+      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
 
       renderWorkoutTable();
 
@@ -1639,6 +1646,7 @@
       if (!confirmed) return;
 
       workoutRows.splice(index, 1);
+      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       renderWorkoutTable();
 
       showSpinner("Updating server data...");
@@ -1691,6 +1699,26 @@
       }
     }
 
+    // Helper untuk mengambil seluruh riwayat workout dari LocalStorage
+    function getAllHistoryData() {
+      let historyMap = {}; 
+      if (!currentUser) return historyMap;
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key && key.startsWith(`workout_data_${currentUser}_Week `)) {
+          let weekStr = key.replace(`workout_data_${currentUser}_`, '');
+          try {
+            let data = JSON.parse(localStorage.getItem(key));
+            if (Array.isArray(data) && data.length > 0) {
+              historyMap[weekStr] = data;
+            }
+          } catch(e){}
+        }
+      }
+      return historyMap;
+    }
+
     function renderAnalyticsDashboard() {
       renderE1RMChart();
       renderVolumeRpeChart();
@@ -1704,8 +1732,40 @@
 
       if (window.chartInstanceE1RM) window.chartInstanceE1RM.destroy();
 
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let dataPoints = [40, 42.5, 45, 47.5];
+      let historyMap = getAllHistoryData();
+      let weeks = Object.keys(historyMap).sort((a, b) => {
+        let numA = parseInt(a.replace('Week ', '')) || 0;
+        let numB = parseInt(b.replace('Week ', '')) || 0;
+        return numA - numB;
+      });
+
+      // Jika data aktif ada tapi belum tersimpan di historyMap
+      if (currentProject && workoutRows.length > 0 && !weeks.includes(currentProject)) {
+        weeks.push(currentProject);
+        historyMap[currentProject] = workoutRows;
+      }
+
+      let labels = [];
+      let dataPoints = [];
+
+      weeks.forEach(w => {
+        let rows = historyMap[w] || [];
+        let match = rows.find(r => r.exercise === exerciseFilter);
+        if (match) {
+          let maxReps = Math.max(match.set1_reps || 0, match.set2_reps || 0, match.set3_reps || 0, match.set4_reps || 0);
+          if (maxReps > 0 && match.working_load > 0) {
+            // Formula Brzycki e1RM: Weight / (1.0278 - (0.0278 * Reps))
+            let e1rm = match.working_load / (1.0278 - (0.0278 * maxReps));
+            labels.push(w);
+            dataPoints.push(Math.round(e1rm * 10) / 10);
+          }
+        }
+      });
+
+      if (labels.length === 0) {
+        labels = ["No Data Available"];
+        dataPoints = [0];
+      }
 
       window.chartInstanceE1RM = new Chart(ctx, {
         type: 'line',
@@ -1724,7 +1784,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { display: true } }
         }
       });
     }
@@ -1733,13 +1793,46 @@
       const ctx = document.getElementById("chartVolumeRpe").getContext("2d");
       if (window.chartInstanceVolumeRpe) window.chartInstanceVolumeRpe.destroy();
 
+      let sessionMap = {
+        "Mon - Upper A": { volume: 0, rpeSum: 0, count: 0 },
+        "Tue - Lower A": { volume: 0, rpeSum: 0, count: 0 },
+        "Thu - Upper B": { volume: 0, rpeSum: 0, count: 0 },
+        "Fri - Lower B": { volume: 0, rpeSum: 0, count: 0 }
+      };
+
+      workoutRows.forEach(r => {
+        let totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+        let vol = totalReps * (r.working_load || 0);
+        
+        // Ekstraksi RPE dari Catatan jika ada (contoh: "RPE 8.5")
+        let rpeVal = 8.0; 
+        if (r.catatan) {
+          let match = r.catatan.match(/RPE\s*(\d+(\.\d+)?)/i);
+          if (match) rpeVal = parseFloat(match[1]);
+        }
+
+        if (sessionMap[r.day_session]) {
+          sessionMap[r.day_session].volume += vol;
+          sessionMap[r.day_session].rpeSum += rpeVal;
+          sessionMap[r.day_session].count += 1;
+        }
+      });
+
+      let labels = ["Mon", "Tue", "Thu", "Fri"];
+      let volumeData = [
+        sessionMap["Mon - Upper A"].volume,
+        sessionMap["Tue - Lower A"].volume,
+        sessionMap["Thu - Upper B"].volume,
+        sessionMap["Fri - Lower B"].volume
+      ];
+
       window.chartInstanceVolumeRpe = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ["Mon", "Tue", "Thu", "Fri"],
+          labels: labels,
           datasets: [{
             label: 'Volume Load (kg)',
-            data: [3500, 4200, 3800, 4500],
+            data: volumeData,
             backgroundColor: '#3b82f6',
             borderRadius: 6
           }]
@@ -1747,7 +1840,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { display: true } }
         }
       });
     }
@@ -1756,13 +1849,42 @@
       const ctx = document.getElementById("chartMuscleDistribution").getContext("2d");
       if (window.chartInstanceMuscleDist) window.chartInstanceMuscleDist.destroy();
 
+      let muscleSets = {
+        "Chest": 0,
+        "Back": 0,
+        "Quads": 0,
+        "Posterior": 0,
+        "Deltoids": 0,
+        "Arms": 0,
+        "Calves": 0
+      };
+
+      workoutRows.forEach(r => {
+        let preset = exercisePresets[r.exercise];
+        if (preset && preset.muscleGroup) {
+          let group = preset.muscleGroup === "Posterior Chain" ? "Posterior" : preset.muscleGroup;
+          let activeSets = 0;
+          if (r.set1_reps > 0) activeSets++;
+          if (r.set2_reps > 0) activeSets++;
+          if (r.set3_reps > 0) activeSets++;
+          if (r.set4_reps > 0) activeSets++;
+          
+          if (muscleSets[group] !== undefined) {
+            muscleSets[group] += activeSets;
+          }
+        }
+      });
+
+      let labels = Object.keys(muscleSets);
+      let dataPoints = Object.values(muscleSets);
+
       window.chartInstanceMuscleDist = new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: ["Chest", "Back", "Quads", "Posterior", "Deltoids", "Arms", "Calves"],
+          labels: labels,
           datasets: [{
             label: 'Weekly Effective Sets',
-            data: [12, 14, 12, 10, 15, 10, 10],
+            data: dataPoints,
             backgroundColor: 'rgba(37, 99, 235, 0.2)',
             borderColor: '#2563eb',
             borderWidth: 2
@@ -1771,7 +1893,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { display: true } }
         }
       });
     }
@@ -1780,13 +1902,56 @@
       const ctx = document.getElementById("chartACWR").getContext("2d");
       if (window.chartInstanceACWR) window.chartInstanceACWR.destroy();
 
+      let historyMap = getAllHistoryData();
+      let weeks = Object.keys(historyMap).sort((a, b) => {
+        let numA = parseInt(a.replace('Week ', '')) || 0;
+        let numB = parseInt(b.replace('Week ', '')) || 0;
+        return numA - numB;
+      });
+
+      if (currentProject && workoutRows.length > 0 && !weeks.includes(currentProject)) {
+        weeks.push(currentProject);
+        historyMap[currentProject] = workoutRows;
+      }
+
+      let weeklyVolumes = [];
+      let labels = [];
+
+      weeks.forEach(w => {
+        let rows = historyMap[w] || [];
+        let totalVol = 0;
+        rows.forEach(r => {
+          let setsReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+          totalVol += setsReps * (r.working_load || 0);
+        });
+        labels.push(w);
+        weeklyVolumes.push(totalVol);
+      });
+
+      let acwrPoints = [];
+      for (let i = 0; i < weeklyVolumes.length; i++) {
+        let acute = weeklyVolumes[i]; // Load minggu ini
+        // Chronic: Rata-rata hingga 4 minggu sebelumnya
+        let startIdx = Math.max(0, i - 3);
+        let chronicArr = weeklyVolumes.slice(startIdx, i + 1);
+        let chronic = chronicArr.reduce((a, b) => a + b, 0) / chronicArr.length;
+        
+        let ratio = chronic > 0 ? (acute / chronic) : 1.0;
+        acwrPoints.push(Math.round(ratio * 100) / 100);
+      }
+
+      if (labels.length === 0) {
+        labels = ["No Data"];
+        acwrPoints = [0];
+      }
+
       window.chartInstanceACWR = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          labels: labels,
           datasets: [{
             label: 'ACWR Ratio',
-            data: [1.0, 1.1, 1.2, 1.05],
+            data: acwrPoints,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 2,
@@ -1796,8 +1961,8 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { y: { min: 0.5, max: 2.0 } }
+          plugins: { legend: { display: true } },
+          scales: { y: { min: 0, max: 2.5 } }
         }
       });
     }
