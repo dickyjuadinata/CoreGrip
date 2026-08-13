@@ -170,7 +170,6 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative overflow-x-hidden w-full">
 
-  <!-- Point 1 & 2: Structural header layout & proportional elements -->
   <header class="themed-header border-b border-blue-400/20 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-2">
@@ -211,7 +210,6 @@
         </div>
         <div>
           <label class="block text-xs font-semibold themed-text-muted mb-1.5">PIN</label>
-          <!-- Point 6: Numeric input for login PIN -->
           <input type="password" inputmode="numeric" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
         <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
@@ -226,7 +224,6 @@
         </div>
         <div>
           <label class="block text-xs font-semibold themed-text-muted mb-1.5">Create PIN</label>
-          <!-- Point 6: Numeric input for registration PIN -->
           <input type="password" inputmode="numeric" id="regPin" required placeholder="Set security PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="test_load_bench">
         </div>
 
@@ -238,7 +235,7 @@
             <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
           </div>
 
-          <!-- Point 6: Numeric input with decimals for assessment fields -->
+          <!-- Desimal diperbolehkan di Load (kg) Assessment -->
           <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
@@ -247,15 +244,15 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
-                  <input type="number" inputmode="numeric" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_bench">
+                  <input type="number" inputmode="numeric" step="1" id="test_reps_bench" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_bench">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
                 </div>
               </div>
             </div>
@@ -267,15 +264,15 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
-                  <input type="number" inputmode="numeric" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_squat">
+                  <input type="number" inputmode="numeric" step="1" id="test_reps_squat" placeholder="6-8" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_squat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_lat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_rpe_squat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_lat">
                 </div>
               </div>
             </div>
@@ -287,15 +284,15 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
-                  <input type="number" inputmode="numeric" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_lat">
+                  <input type="number" inputmode="numeric" step="1" id="test_reps_lat" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_lat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
-                  <input type="number" inputmode="decimal" step="0.5" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="btnRegisterSubmit">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_rpe_lat" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="btnRegisterSubmit">
                 </div>
               </div>
             </div>
@@ -335,10 +332,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" id="inputProject" min="1" value="" placeholder="e.g., 1" onchange="changeProjectFreetext()" required class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <!-- Poin 1: Week Number default kosong/0 -->
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
+                <!-- Poin 4: Body Weight (kg) Desimal -->
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
                 <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
               </div>
@@ -368,18 +367,16 @@
               </div>
             </div>
 
-            <!-- Point 5: Swapped side load calculation card with warm-up sets card position -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
               <div>
+                <!-- Poin 4: Primary Working Load (kg) Desimal -->
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <!-- Point 4: enter-nav and data-next setup on Primary Working Load -->
                 <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
 
-              <!-- Moved Warm-up sets to position 2 -->
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
                 <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
@@ -390,7 +387,6 @@
                 </div>
               </div>
 
-              <!-- Moved Side load calculation to position 3 -->
               <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
                 <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
                 <div class="font-bold text-sm" id="sideLoadDisplay">- kg / side</div>
@@ -405,30 +401,29 @@
 
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
+              <!-- Poin 2 & 4: Kalkulasi dipicu saat onchange (enter/selesai/blur) dan hanya menerima angka bulat -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <!-- Point 4: Trigger manual calculation checks without resetting manual load inputs -->
-                  <input type="number" inputmode="numeric" id="inputSet1" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" id="inputSet2" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" id="inputSet3" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" id="inputSet4" min="0" oninput="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
-              <!-- Point 4: enter-nav submit option on Enter for notes -->
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
@@ -644,7 +639,7 @@
     let workoutRows = [];
     let editIndex = -1;
     let originalBaseLoad = 0;
-    let isManualLoad = false; // Point 4: Manual Load override flag
+    let isManualLoad = false;
 
     let lastSyncedTime = null;
     let pendingQueueCount = 0;
@@ -934,7 +929,7 @@
 
     function onExerciseSelect(exVal) {
       if (!exVal) return;
-      isManualLoad = false; // Reset manual load flag when selection changes
+      isManualLoad = false;
       const preset = exercisePresets[exVal];
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
@@ -978,7 +973,6 @@
       }
     }
 
-    // Point 4: Handle manual load input event
     function onManualWorkingLoadInput() {
       isManualLoad = true;
       const val = parseFloat(document.getElementById("inputWorkingLoad").value);
@@ -1084,7 +1078,7 @@
       `;
     }
 
-    // Point 4: Prevent automatic formula override on set input if user entered custom load manually
+    // Poin 2: Hanya berkalkulasi setelah selesai / enter / pindah kolom
     function checkAutoRegulation() {
       const targetStr = document.getElementById("inputTargetReps").value;
       if (!targetStr) return;
@@ -1161,7 +1155,6 @@
       updateOnlineStatus();
     });
 
-    // Point 4: Enter navigation handles keyboard navigation & submission on save button target
     function setupEnterNavigation() {
       const inputs = document.querySelectorAll('.enter-nav');
       inputs.forEach(input => {
@@ -1456,19 +1449,18 @@
       } else {
         document.getElementById("adminSection").classList.add("hidden");
         document.getElementById("appSection").classList.remove("hidden");
-        // Point 3: Default Week 1 set properly on open
-        currentProject = "Week 1";
-        document.getElementById("inputProject").value = 1;
+        // Poin 1: Week Number default kosong/0
+        currentProject = "";
+        document.getElementById("inputProject").value = "";
         loadWorkoutData();
       }
     }
 
-    // Point 3: Fixed empty workout table render handling
     async function loadWorkoutData() {
       if (!currentUser) return;
       if (!currentProject) {
-        currentProject = "Week 1";
-        document.getElementById("inputProject").value = 1;
+        renderWorkoutTable();
+        return;
       }
       showSpinner("Loading workout logs...");
       const res = await callApi({ action: "getData", username: currentUser, project: currentProject });
@@ -1487,7 +1479,7 @@
       tbody.innerHTML = "";
 
       if (!workoutRows || workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-xs themed-text-muted">No records found for ${currentProject || 'Week 1'}. Start logging your workouts above!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-xs themed-text-muted">No records found for ${currentProject || 'selected week'}. Start logging your workouts above!</td></tr>`;
         return;
       }
 
@@ -1495,11 +1487,11 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         const sideVal = calculateSideWeight(r.exercise, r.working_load);
-        const exLower = (r.exercise || "").toLowerCase();
-
-        let loadDisplay = `${r.working_load} kg`;
-        if (exLower.includes("barbell") || exLower.includes("dumbbell")) {
-          loadDisplay = `${sideVal} kg / side <span class="text-[10px] themed-text-muted block">(${r.working_load} kg Total)</span>`;
+        
+        // Poin 3: Tampilan harus beban total
+        let loadDisplay = `<span class="font-bold">${r.working_load} kg Total</span>`;
+        if (r.exercise.toLowerCase().includes("barbell") || r.exercise.toLowerCase().includes("dumbbell")) {
+          loadDisplay += `<span class="text-[10px] themed-text-muted block">(${sideVal} kg / side)</span>`;
         }
 
         tr.innerHTML = `
@@ -1527,7 +1519,7 @@
 
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
-      const projInput = document.getElementById("inputProject").value.trim() || "1";
+      const projInput = document.getElementById("inputProject").value.trim() || "0";
       currentProject = `Week ${projInput}`;
 
       const newRow = {
@@ -1631,7 +1623,7 @@
     }
 
     function changeProjectFreetext() {
-      const val = document.getElementById("inputProject").value.trim() || "1";
+      const val = document.getElementById("inputProject").value.trim() || "0";
       currentProject = `Week ${val}`;
       loadWorkoutData();
     }
