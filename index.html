@@ -693,6 +693,35 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
+    function calculateNextWeekLoadQB13(exercise, targetRepsStr, currentLoad, repsArr, catatan) {
+      if (!targetRepsStr) return currentLoad;
+      const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
+      const minTarget = parts[0] || 0;
+      const maxTarget = parts[1] || minTarget;
+
+      const preset = exercisePresets[exercise];
+      const totalSets = preset ? preset.sets : 4;
+      const validReps = repsArr.slice(0, totalSets);
+
+      let allReachedMax = validReps.every(r => r >= maxTarget);
+      let anyBelowMin = validReps.some(r => r < minTarget);
+
+      let nextLoad = currentLoad;
+      let step = 2.5;
+      const exLower = exercise.toLowerCase();
+      if (exLower.includes("lateral raise") || exLower.includes("curl") || exLower.includes("extension")) {
+        step = 2.5;
+      }
+
+      if (allReachedMax) {
+        nextLoad = currentLoad + step;
+      } else if (anyBelowMin) {
+        nextLoad = Math.max(0, currentLoad - step);
+      }
+
+      return mround2_5(nextLoad);
+    }
+
     function showToast(message, type = "info", duration = 3000) {
       const container = document.getElementById("toastContainer");
       if (!container) return;
