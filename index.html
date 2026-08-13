@@ -235,7 +235,6 @@
             <p class="text-[11px] themed-text-muted mt-1">Perform a trial set for the exercises below to determine your initial baseline working load.</p>
           </div>
 
-          <!-- Desimal diperbolehkan di Load (kg) Assessment -->
           <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar p-1">
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
@@ -332,12 +331,10 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <!-- Poin 1: Week Number default kosong/0 -->
                   <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
-                <!-- Poin 4: Body Weight (kg) Desimal -->
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
                 <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
               </div>
@@ -369,7 +366,6 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
               <div>
-                <!-- Poin 4: Primary Working Load (kg) Desimal -->
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
@@ -401,7 +397,6 @@
 
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
-              <!-- Poin 2 & 4: Kalkulasi dipicu saat onchange (enter/selesai/blur) dan hanya menerima angka bulat -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
@@ -1078,7 +1073,6 @@
       `;
     }
 
-    // Poin 2: Hanya berkalkulasi setelah selesai / enter / pindah kolom
     function checkAutoRegulation() {
       const targetStr = document.getElementById("inputTargetReps").value;
       if (!targetStr) return;
@@ -1449,7 +1443,6 @@
       } else {
         document.getElementById("adminSection").classList.add("hidden");
         document.getElementById("appSection").classList.remove("hidden");
-        // Poin 1: Week Number default kosong/0
         currentProject = "";
         document.getElementById("inputProject").value = "";
         loadWorkoutData();
@@ -1488,7 +1481,6 @@
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         const sideVal = calculateSideWeight(r.exercise, r.working_load);
         
-        // Poin 3: Tampilan harus beban total
         let loadDisplay = `<span class="font-bold">${r.working_load} kg Total</span>`;
         if (r.exercise.toLowerCase().includes("barbell") || r.exercise.toLowerCase().includes("dumbbell")) {
           loadDisplay += `<span class="text-[10px] themed-text-muted block">(${sideVal} kg / side)</span>`;
@@ -1522,9 +1514,13 @@
       const projInput = document.getElementById("inputProject").value.trim() || "0";
       currentProject = `Week ${projInput}`;
 
+      const currentDaySession = document.getElementById("inputDaySession").value;
+      const currentBodyWeight = document.getElementById("inputBodyWeight").value;
+      const currentExercise = document.getElementById("inputExercise").value;
+
       const newRow = {
-        day_session: document.getElementById("inputDaySession").value,
-        exercise: document.getElementById("inputExercise").value,
+        day_session: currentDaySession,
+        exercise: currentExercise,
         target_reps: document.getElementById("inputTargetReps").value,
         sets_info: "4 Set",
         working_load: parseFloat(document.getElementById("inputWorkingLoad").value) || 0,
@@ -1549,7 +1545,9 @@
       }
 
       renderWorkoutTable();
-      resetForm();
+
+      // Poin 1: Menjaga sesi tetap terbuka & otomatis memilih exercise selanjutnya
+      prepareNextExerciseInSession(currentDaySession, currentBodyWeight, projInput, currentExercise);
 
       showSpinner("Syncing exercise record to server...");
       const res = await callApi({
@@ -1565,6 +1563,51 @@
         lastSyncedTime = new Date();
       } else {
         showToast("Saved locally. Server sync pending.", "warning");
+      }
+    }
+
+    function prepareNextExerciseInSession(session, bodyWeight, weekNum, currentExercise) {
+      editIndex = -1;
+      isManualLoad = false;
+      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("inputCatatan").value = "";
+
+      // Mempertahankan Week, Body Weight, dan Session
+      document.getElementById("inputProject").value = weekNum;
+      document.getElementById("inputBodyWeight").value = bodyWeight;
+      document.getElementById("inputDaySession").value = session;
+
+      onSessionChange(session);
+
+      // Cari exercise berikutnya dalam sesi yang sama
+      const sessionExercises = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === session);
+      const currentIndex = sessionExercises.indexOf(currentExercise);
+
+      let nextExercise = "";
+      if (currentIndex !== -1 && currentIndex + 1 < sessionExercises.length) {
+        nextExercise = sessionExercises[currentIndex + 1];
+      }
+
+      if (nextExercise) {
+        document.getElementById("inputExercise").value = nextExercise;
+        onExerciseSelect(nextExercise);
+      } else {
+        document.getElementById("inputExercise").value = "";
+        document.getElementById("inputTargetReps").value = "";
+        document.getElementById("inputRestTime").value = "";
+        document.getElementById("inputWorkingLoad").value = "0";
+        document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      }
+
+      // Kosongkan reps per set
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`inputSet${i}`).value = "";
+      }
+
+      // Langsung fokus ke kolom Set 1 agar user langsung bisa memasukkan nilai reps
+      const set1Input = document.getElementById("inputSet1");
+      if (set1Input && !set1Input.disabled) {
+        setTimeout(() => set1Input.focus(), 100);
       }
     }
 
