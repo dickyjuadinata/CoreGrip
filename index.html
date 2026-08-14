@@ -185,7 +185,7 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Hanya muncul setelah login via JS/CSS logic) -->
+        <!-- Desktop Navigation Tabs (Hanya muncul setelah login) -->
         <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
@@ -202,19 +202,19 @@
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button (Hanya muncul setelah login pada mobile) -->
-        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
+        <!-- Mobile Hamburger Button (Hanya muncul di mobile & setelah login) -->
+        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none items-center justify-center">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Desktop Sign Out Button (Sign out di header atas khusus desktop/non-mobile) -->
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
+        <!-- Desktop Sign Out Button -->
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation (Hanya pada mobile dan setelah login) -->
+    <!-- Mobile Drawer Navigation (Hanya muncul di mobile & setelah login) -->
     <div id="mobileDrawer" class="hidden md:hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -222,8 +222,7 @@
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
-      <!-- Tombol Sign Out di dalam drawer mobile (serasi dengan tombol navigasi lainnya) -->
-      <button onclick="handleLogout(); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2 border-t border-gray-800 pt-3 mt-1">
+      <button onclick="handleLogout(); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 flex items-center gap-2 transition">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
@@ -1470,13 +1469,16 @@
 
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("syncStatus").classList.remove("hidden");
-      document.getElementById("syncStatus").classList.add("flex");
-
-      // Tampilkan menu navigasi atas (desktop) dan hamburger button (mobile) setelah login
+      
+      // Menampilkan navigasi setelah login
       document.getElementById("headerNavTabs").classList.remove("hidden");
       document.getElementById("headerNavTabs").classList.add("flex");
       document.getElementById("mobileMenuBtn").classList.remove("hidden");
+      document.getElementById("mobileMenuBtn").classList.add("flex");
+      document.getElementById("signOutBtnHeader").classList.remove("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("flex");
+      document.getElementById("syncStatus").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.add("flex");
 
       if (isAdmin) {
         document.getElementById("adminSection").classList.remove("hidden");
@@ -2163,15 +2165,20 @@
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
       
-      // Sembunyikan kembali elemen navigasi header & mobile drawer saat logout
+      // Sembunyikan navigasi, drawer, dan tombol sign out ketika logout
       document.getElementById("headerNavTabs").classList.remove("flex");
       document.getElementById("headerNavTabs").classList.add("hidden");
+      document.getElementById("mobileMenuBtn").classList.remove("flex");
       document.getElementById("mobileMenuBtn").classList.add("hidden");
-      document.getElementById("mobileDrawer").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.remove("flex");
+      document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("syncStatus").classList.remove("flex");
       document.getElementById("syncStatus").classList.add("hidden");
+      document.getElementById("mobileDrawer").classList.add("hidden");
       
       showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
 </html>
+```[cite: 1]
