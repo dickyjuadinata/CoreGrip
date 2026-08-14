@@ -502,7 +502,7 @@
                 <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
                   <option value="Barbell Squats">Barbell Squats</option>
-                  <option value="Conventional Deadlift">Conventional Deadlift</option>
+                  <option value="Barbell Deadlift">Barbell Deadlift</option>
                   <option value="Barbell Overhead Press">Barbell Overhead Press</option>
                 </select>
               </div>
@@ -693,7 +693,7 @@
       "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: true },
       
       "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Barbell Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
       "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
       "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
@@ -704,7 +704,7 @@
       "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Barbell Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
       "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
@@ -718,7 +718,7 @@
       "Triceps Pressdowns (Cable)": 0.0,
       "Dumbbell Hammer Curl": 0.0,
       "Barbell Squats": 10.0,
-      "Romanian Deadlifts": 10.0,
+      "Barbell Romanian Deadlifts": 10.0,
       "Standing Barbell Calf Raises - A": 10.0,
       "Incline Dumbbell Press": 2.5,
       "Bent-over Barbell Row": 10.0,
@@ -727,7 +727,7 @@
       "Dumbbell Lateral Raises": 2.5,
       "Barbell Curl": 10.0,
       "Cable Overhead Triceps Extension": 0.0,
-      "Conventional Deadlift": 10.0,
+      "Barbell Deadlift": 10.0,
       "Dumbbell Bulgarian Split Squat": 2.5,
       "Standing Barbell Calf Raises": 10.0
     };
@@ -1573,7 +1573,7 @@
       userBenchmarks["Barbell Overhead Press"] = mround2_5(assessedBench * 0.625);
       userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
-      userBenchmarks["Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
+      userBenchmarks["Barbell Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
       userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
       userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
       userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
@@ -1581,7 +1581,7 @@
       userBenchmarks["Face Pulls (Cable)"] = mround2_5(assessedBench * 0.50);
       userBenchmarks["Barbell Curl"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
-      userBenchmarks["Conventional Deadlift"] = mround2_5(assessedSquat * 1.25);
+      userBenchmarks["Barbell Deadlift"] = mround2_5(assessedSquat * 1.25);
       userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
       userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
 
