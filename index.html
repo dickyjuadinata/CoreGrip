@@ -694,7 +694,7 @@
       
       "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
       "Barbell Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
       "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
       "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
@@ -706,7 +706,7 @@
       
       "Barbell Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+      "Standing Barbell Calf Raises": { session: "Fri - Lower B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
     let initialBenchmarkLoads = {
@@ -719,7 +719,7 @@
       "Dumbbell Hammer Curl": 0.0,
       "Barbell Squats": 10.0,
       "Barbell Romanian Deadlifts": 10.0,
-      "Standing Barbell Calf Raises - A": 10.0,
+      "Standing Barbell Calf Raises": 10.0,
       "Incline Dumbbell Press": 2.5,
       "Bent-over Barbell Row": 10.0,
       "Seated Dumbbell Press": 2.5,
@@ -1574,7 +1574,7 @@
       userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Barbell Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
-      userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
+      userBenchmarks["Standing Barbell Calf Raises"] = mround2_5(assessedSquat * 0.60);
       userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
       userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
       userBenchmarks["Seated Dumbbell Press"] = mround2_5(assessedBench * 0.50);
@@ -1583,7 +1583,7 @@
       userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Barbell Deadlift"] = mround2_5(assessedSquat * 1.25);
       userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
-      userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
+      userBenchmarks["Standing Barbell Calf Raises"] = mround2_5(assessedSquat * 0.60);
 
       showSpinner("Registering user & setting up initial load baseline...");
       const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
