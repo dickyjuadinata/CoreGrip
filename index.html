@@ -361,16 +361,16 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext(); checkFormActivation();" oninput="checkFormActivation()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" oninput="checkFormActivation()" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
-                <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
+                <select id="inputDaySession" onchange="onSessionChange(this.value)" required disabled class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputExercise">
                   <option value="">-- Select Session --</option>
                   <option value="Mon - Upper A">Mon - Upper A</option>
                   <option value="Tue - Lower A">Tue - Lower A</option>
@@ -380,65 +380,17 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
-                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputWorkingLoad">
+                <select id="inputExercise" onchange="onExerciseSelect(this.value)" required disabled class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputWorkingLoad">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
-                <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
+                <input type="text" id="inputTargetReps" readonly disabled class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Rest Interval Target</label>
-                <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
-              </div>
-            </div>
-
-            <!-- CONTAINER DUMBBELL HAMMER CURL (SUPERSSET KEDUA TERBUKA BERSAMAAN JIKA TRICEPS PRESSDOWNS DIPILIH) -->
-            <div id="supersetDumbbellHammerContainer" class="hidden themed-subcard p-4 rounded-xl border space-y-3 border-blue-500/50">
-              <div class="flex justify-between items-center">
-                <span class="font-bold text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                  <i data-lucide="layers" class="w-4 h-4"></i> Superset Exercise: Dumbbell Hammer Curl (No Rest Until Both Finished)
-                </span>
-                <span class="text-[10px] px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded font-semibold">Superset Pair</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label class="block text-[11px] font-semibold themed-text-muted mb-1">Working Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.1" id="inputHammerLoad" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold">
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-[11px] font-semibold themed-text-muted mb-1">Actual Reps (Set 1, 2, 3)</label>
-                  <div class="grid grid-cols-3 gap-2">
-                    <input type="number" inputmode="numeric" id="hammerSet1" placeholder="Set 1" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                    <input type="number" inputmode="numeric" id="hammerSet2" placeholder="Set 2" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                    <input type="number" inputmode="numeric" id="hammerSet3" placeholder="Set 3" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- CONTAINER CABLE OVERHEAD TRICEPS EXTENSION (SUPERSET KEDUA TERBUKA BERSAMAAN JIKA BARBELL CURL DIPILIH) -->
-            <div id="supersetCableExtensionContainer" class="hidden themed-subcard p-4 rounded-xl border space-y-3 border-purple-500/50">
-              <div class="flex justify-between items-center">
-                <span class="font-bold text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                  <i data-lucide="layers" class="w-4 h-4"></i> Superset Exercise: Cable Overhead Triceps Extension (No Rest Until Both Finished)
-                </span>
-                <span class="text-[10px] px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded font-semibold">Superset Pair</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label class="block text-[11px] font-semibold themed-text-muted mb-1">Working Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.1" id="inputExtensionLoad" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold">
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-[11px] font-semibold themed-text-muted mb-1">Actual Reps (Set 1, 2, 3)</label>
-                  <div class="grid grid-cols-3 gap-2">
-                    <input type="number" inputmode="numeric" id="extensionSet1" placeholder="Set 1" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                    <input type="number" inputmode="numeric" id="extensionSet2" placeholder="Set 2" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                    <input type="number" inputmode="numeric" id="extensionSet3" placeholder="Set 3" class="w-full px-2 py-2 themed-input rounded-xl border text-center text-xs font-bold">
-                  </div>
-                </div>
+                <input type="text" id="inputRestTime" readonly disabled class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
             </div>
 
@@ -448,7 +400,7 @@
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required disabled class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet1">
               </div>
 
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
@@ -465,6 +417,54 @@
                 <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
                 <div class="font-bold text-sm" id="sideLoadDisplay">- kg / side</div>
                 <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
+              </div>
+            </div>
+
+            <!-- Kartu Superset Kedua untuk Triceps Pressdowns (Cable) & Dumbbell Hammer Curl -->
+            <div id="supersetCardContainer1" class="hidden themed-subcard p-4 rounded-xl border border-blue-400/50 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-4 h-4"></i> Superset Card: Triceps Pressdowns (Cable) & Dumbbell Hammer Curl
+                </span>
+                <span class="text-[10px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded font-semibold">Superset (No rest until both complete)</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-xs font-semibold text-blue-600 dark:text-blue-400">Dumbbell Hammer Curl - Working Load & Sets</label>
+                  <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoadHammer" oninput="calculateLoadDetails()" placeholder="Load (kg)" class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none">
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <input type="number" inputmode="numeric" placeholder="Set 1 reps" id="inputHammerSet1" onblur="handleSupersetSetBlur(1)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                    <input type="number" inputmode="numeric" placeholder="Set 2 reps" id="inputHammerSet2" onblur="handleSupersetSetBlur(2)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                    <input type="number" inputmode="numeric" placeholder="Set 3 reps" id="inputHammerSet3" onblur="handleSupersetSetBlur(3)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                  </div>
+                </div>
+                <div class="text-[11px] themed-text-muted flex flex-col justify-center space-y-1">
+                  <p><b>Instructions:</b> Fill out Set 1 for Triceps Pressdowns, then Set 1 for Dumbbell Hammer Curl. The countdown timer activates automatically after both exercises' respective sets are completed.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kartu Superset Ketiga untuk Barbell Curl & Cable Overhead Triceps Extension -->
+            <div id="supersetCardContainer2" class="hidden themed-subcard p-4 rounded-xl border border-blue-400/50 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-4 h-4"></i> Superset Card: Barbell Curl & Cable Overhead Triceps Extension
+                </span>
+                <span class="text-[10px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded font-semibold">Superset (No rest until both complete)</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-xs font-semibold text-blue-600 dark:text-blue-400">Cable Overhead Triceps Extension - Working Load & Sets</label>
+                  <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoadExtension" oninput="calculateLoadDetails()" placeholder="Load (kg)" class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none">
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <input type="number" inputmode="numeric" placeholder="Set 1 reps" id="inputExtensionSet1" onblur="handleSupersetSetBlur(1)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                    <input type="number" inputmode="numeric" placeholder="Set 2 reps" id="inputExtensionSet2" onblur="handleSupersetSetBlur(2)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                    <input type="number" inputmode="numeric" placeholder="Set 3 reps" id="inputExtensionSet3" onblur="handleSupersetSetBlur(3)" class="w-full px-2 py-1.5 themed-input rounded-lg border text-center text-xs font-bold">
+                  </div>
+                </div>
+                <div class="text-[11px] themed-text-muted flex flex-col justify-center space-y-1">
+                  <p><b>Instructions:</b> Fill out Set 1 for Barbell Curl, then Set 1 for Cable Overhead Triceps Extension. The countdown timer activates automatically after both exercises' respective sets are completed.</p>
+                </div>
               </div>
             </div>
 
@@ -487,31 +487,31 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputCatatan">
                 </div>
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-1">Execution Notes (Optional, e.g. "RPE 8.0")</label>
-              <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
+              <input type="text" id="inputCatatan" disabled placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
             <div class="flex justify-end items-center gap-2 pt-2">
               <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
-              <button type="submit" id="btnSaveWorkout" class="bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
+              <button type="submit" id="btnSaveWorkout" disabled class="bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95 opacity-50 cursor-not-allowed">
                 Save Exercise Record
               </button>
             </div>
@@ -737,8 +737,8 @@
       "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
       "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: "Dumbbell Hammer Curl" },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: "Dumbbell Hammer Curl" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetPaired: "Triceps Pressdowns (Cable)" },
       
       "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
       "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
@@ -749,8 +749,8 @@
       "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
       "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
       "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: "Cable Overhead Triceps Extension" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: "Cable Overhead Triceps Extension" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetPaired: "Barbell Curl" },
       
       "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
       "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
@@ -784,31 +784,42 @@
 
     function checkFormActivation() {
       const weekVal = document.getElementById("inputProject").value.trim();
-      const bwInput = document.getElementById("inputBodyWeight");
-      
-      // 1. Kolom Body Weight disable sebelum kolom Week Number terisi
-      if (weekVal === "") {
-        bwInput.disabled = true;
-        bwInput.classList.add("opacity-50", "cursor-not-allowed");
-        bwInput.value = "";
-      } else {
-        bwInput.disabled = false;
-        bwInput.classList.remove("opacity-50", "cursor-not-allowed");
-      }
-
-      const bwVal = bwInput.value.trim();
+      const bwVal = document.getElementById("inputBodyWeight").value.trim();
       const form = document.getElementById("formWorkout");
       if (!form) return;
-      const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
+
+      const bodyWeightInput = document.getElementById("inputBodyWeight");
+      const sessionSelect = document.getElementById("inputDaySession");
+      const exerciseSelect = document.getElementById("inputExercise");
+      const workingLoadInput = document.getElementById("inputWorkingLoad");
+      const setInputs = [
+        document.getElementById("inputSet1"),
+        document.getElementById("inputSet2"),
+        document.getElementById("inputSet3"),
+        document.getElementById("inputSet4")
+      ];
+      const catatanInput = document.getElementById("inputCatatan");
+      const submitBtn = document.getElementById("btnSaveWorkout");
+
+      if (weekVal !== "") {
+        bodyWeightInput.disabled = false;
+        bodyWeightInput.classList.remove("opacity-50", "cursor-not-allowed");
+      } else {
+        bodyWeightInput.disabled = true;
+        bodyWeightInput.classList.add("opacity-50", "cursor-not-allowed");
+        bodyWeightInput.value = "";
+      }
+
       const isEnabled = (weekVal !== "" && bwVal !== "");
-      elements.forEach(el => {
-        if (el.id !== "inputProject" && el.id !== "inputBodyWeight") {
-          el.disabled = !isEnabled;
-          if (!isEnabled) {
-            el.classList.add("opacity-50", "cursor-not-allowed");
-          } else {
-            el.classList.remove("opacity-50", "cursor-not-allowed");
-          }
+      
+      [sessionSelect, exerciseSelect, workingLoadInput, ...setInputs, catatanInput, submitBtn].forEach(el => {
+        if (!el) return;
+        if (el === bodyWeightInput) return;
+        el.disabled = !isEnabled;
+        if (!isEnabled) {
+          el.classList.add("opacity-50", "cursor-not-allowed");
+        } else {
+          el.classList.remove("opacity-50", "cursor-not-allowed");
         }
       });
     }
@@ -850,19 +861,10 @@
         const currentExercise = document.getElementById("inputExercise").value;
         const preset = exercisePresets[currentExercise];
         
-        // 2 & 3. Jika exercise adalah Triceps Pressdowns (Cable) atau Barbell Curl, cek kelengkapan superset partner sebelum mengaktifkan timer
-        if (currentExercise === "Triceps Pressdowns (Cable)") {
-          const hammerVal = document.getElementById("hammerSet3").value.trim();
-          if (hammerVal === "") {
-            showToast("Harap isi juga kolom Dumbbell Hammer Curl (superset) sebelum timer aktif.", "warning", 3500);
-            return;
-          }
-        } else if (currentExercise === "Barbell Curl") {
-          const extVal = document.getElementById("extensionSet3").value.trim();
-          if (extVal === "") {
-            showToast("Harap isi juga kolom Cable Overhead Triceps Extension (superset) sebelum timer aktif.", "warning", 3500);
-            return;
-          }
+        // Jika exercise memiliki supersetTarget, jangan jalankan timer karena menunggu kedua exercise selesai
+        if (preset && preset.supersetTarget) {
+          showToast(`Superset active: Complete corresponding set for ${preset.supersetTarget} before rest timer starts.`, "info", 3000);
+          return;
         }
 
         let restSec = 300; // default 5 minutes
@@ -870,6 +872,21 @@
           restSec = preset.restSeconds;
         }
         startRestCountdown(restSec);
+      }
+    }
+
+    function handleSupersetSetBlur(setNumber) {
+      const currentExercise = document.getElementById("inputExercise").value;
+      const preset = exercisePresets[currentExercise];
+      if (!preset || !preset.supersetTarget) return;
+
+      let primarySetVal = document.getElementById(`inputSet${setNumber}`).value.trim();
+      let secondarySetVal = document.getElementById(`inputHammerSet${setNumber}`)?.value.trim() || document.getElementById(`inputExtensionSet${setNumber}`)?.value.trim();
+
+      if (primarySetVal !== "" && secondarySetVal !== "") {
+        let restSec = preset.restSeconds || 60;
+        startRestCountdown(restSec);
+        showToast("Superset sets completed! Rest timer activated.", "success", 3000);
       }
     }
 
@@ -1148,23 +1165,27 @@
       if (!exVal) return;
       isManualLoad = false;
       const preset = exercisePresets[exVal];
-
-      // 2 & 3. Kontrol tampilan container superset terbuka bersamaan
-      const hammerContainer = document.getElementById("supersetDumbbellHammerContainer");
-      const extensionContainer = document.getElementById("supersetCableExtensionContainer");
       
-      if (hammerContainer) hammerContainer.classList.add("hidden");
-      if (extensionContainer) extensionContainer.classList.add("hidden");
-
-      if (exVal === "Triceps Pressdowns (Cable)") {
-        if (hammerContainer) hammerContainer.classList.remove("hidden");
-      } else if (exVal === "Barbell Curl") {
-        if (extensionContainer) extensionContainer.classList.remove("hidden");
-      }
+      const superset1 = document.getElementById("supersetCardContainer1");
+      const superset2 = document.getElementById("supersetCardContainer2");
+      superset1.classList.add("hidden");
+      superset2.classList.add("hidden");
 
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
+
+        if (exVal === "Triceps Pressdowns (Cable)" || exVal === "Dumbbell Hammer Curl") {
+          superset1.classList.remove("hidden");
+          if (exVal === "Triceps Pressdowns (Cable)") {
+            document.getElementById("inputWorkingLoadHammer").value = get4WeeksHistoryLoad("Dumbbell Hammer Curl", currentProject);
+          }
+        } else if (exVal === "Barbell Curl" || exVal === "Cable Overhead Triceps Extension") {
+          superset2.classList.remove("hidden");
+          if (exVal === "Barbell Curl") {
+            document.getElementById("inputWorkingLoadExtension").value = get4WeeksHistoryLoad("Cable Overhead Triceps Extension", currentProject);
+          }
+        }
 
         const totalSets = preset.sets || 4;
         for (let i = 1; i <= 4; i++) {
@@ -1173,10 +1194,12 @@
           if (i <= totalSets) {
             container.classList.remove("hidden");
             input.disabled = false;
+            input.classList.remove("opacity-50", "cursor-not-allowed");
           } else {
             container.classList.add("hidden");
             input.value = 0;
             input.disabled = true;
+            input.classList.add("opacity-50", "cursor-not-allowed");
           }
         }
 
@@ -1693,7 +1716,6 @@
 
         currentProject = "";
         document.getElementById("inputProject").value = "";
-        checkFormActivation();
         loadWorkoutData();
       }
       lucide.createIcons();
@@ -1765,7 +1787,6 @@
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
 
-      // Validasi aturan: Kolom week dan body weight wajib terisi
       const weekVal = document.getElementById("inputProject").value.trim();
       const bwVal = document.getElementById("inputBodyWeight").value.trim();
       if (!weekVal || !bwVal) {
@@ -1810,6 +1831,51 @@
         editIndex = -1;
       } else {
         workoutRows.push(newRow);
+      }
+
+      // Jika superset, tambahkan juga baris kedua secara otomatis
+      if (currentExercise === "Triceps Pressdowns (Cable)") {
+        const hammerLoad = parseFloat(document.getElementById("inputWorkingLoadHammer").value) || 0;
+        const hammerSet1 = parseInt(document.getElementById("inputHammerSet1").value, 10) || 0;
+        const hammerSet2 = parseInt(document.getElementById("inputHammerSet2").value, 10) || 0;
+        const hammerSet3 = parseInt(document.getElementById("inputHammerSet3").value, 10) || 0;
+        const hammerRow = {
+          day_session: currentDaySession,
+          exercise: "Dumbbell Hammer Curl",
+          target_reps: exercisePresets["Dumbbell Hammer Curl"].reps,
+          sets_info: "3 Set",
+          working_load: hammerLoad,
+          set1_reps: hammerSet1,
+          set2_reps: hammerSet2,
+          set3_reps: hammerSet3,
+          set4_reps: 0,
+          catatan: "Superset with Triceps Pressdowns",
+          updated_at: new Date().toISOString(),
+          order: workoutRows.length
+        };
+        hammerRow.next_load = calculateNextWeekLoadQB13("Dumbbell Hammer Curl", hammerRow.target_reps, hammerLoad, [hammerSet1, hammerSet2, hammerSet3, 0], hammerRow.catatan);
+        workoutRows.push(hammerRow);
+      } else if (currentExercise === "Barbell Curl") {
+        const extLoad = parseFloat(document.getElementById("inputWorkingLoadExtension").value) || 0;
+        const extSet1 = parseInt(document.getElementById("inputExtensionSet1").value, 10) || 0;
+        const extSet2 = parseInt(document.getElementById("inputExtensionSet2").value, 10) || 0;
+        const extSet3 = parseInt(document.getElementById("inputExtensionSet3").value, 10) || 0;
+        const extRow = {
+          day_session: currentDaySession,
+          exercise: "Cable Overhead Triceps Extension",
+          target_reps: exercisePresets["Cable Overhead Triceps Extension"].reps,
+          sets_info: "3 Set",
+          working_load: extLoad,
+          set1_reps: extSet1,
+          set2_reps: extSet2,
+          set3_reps: extSet3,
+          set4_reps: 0,
+          catatan: "Superset with Barbell Curl",
+          updated_at: new Date().toISOString(),
+          order: workoutRows.length
+        };
+        extRow.next_load = calculateNextWeekLoadQB13("Cable Overhead Triceps Extension", extRow.target_reps, extLoad, [extSet1, extSet2, extSet3, 0], extRow.catatan);
+        workoutRows.push(extRow);
       }
 
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
@@ -1861,86 +1927,90 @@
         document.getElementById("inputExercise").value = "";
         document.getElementById("inputTargetReps").value = "";
         document.getElementById("inputRestTime").value = "";
-        document.getElementById("inputWorkingLoad").value = "";
+        document.getElementById("inputWorkingLoad").value = "0";
+        document.getElementById("sideLoadDisplay").innerText = "- kg / side";
       }
-      checkFormActivation();
+
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`inputSet${i}`).value = "";
+      }
+
+      const set1Input = document.getElementById("inputSet1");
+      if (set1Input && !set1Input.disabled) {
+        setTimeout(() => set1Input.focus(), 100);
+      }
     }
 
     function editWorkoutRow(index) {
-      editIndex = index;
       const r = workoutRows[index];
-      if (!r) return;
+      editIndex = index;
+      isManualLoad = true;
 
-      document.getElementById("inputProject").value = currentProject.replace("Week ", "");
-      document.getElementById("inputBodyWeight").value = lastBodyWeight || "70";
       document.getElementById("inputDaySession").value = r.day_session;
       onSessionChange(r.day_session);
-
       document.getElementById("inputExercise").value = r.exercise;
       onExerciseSelect(r.exercise);
 
       document.getElementById("inputWorkingLoad").value = r.working_load;
       originalBaseLoad = r.working_load;
-      calculateLoadDetails();
-
       document.getElementById("inputSet1").value = r.set1_reps;
       document.getElementById("inputSet2").value = r.set2_reps;
       document.getElementById("inputSet3").value = r.set3_reps;
       document.getElementById("inputSet4").value = r.set4_reps;
-      document.getElementById("inputCatatan").value = r.catatan || "";
+      document.getElementById("inputCatatan").value = r.catatan;
 
-      checkFormActivation();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      calculateLoadDetails();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Loaded record into form for editing.", "info");
     }
 
     async function deleteWorkoutRow(index) {
-      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise record?", "Confirm Deletion", "trash-2");
+      const confirmed = await showModernConfirm("Are you sure you want to delete this exercise record?", "Delete Record", "trash-2");
       if (!confirmed) return;
 
       workoutRows.splice(index, 1);
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       renderWorkoutTable();
-      showToast("Exercise record deleted.", "info");
 
-      showSpinner("Syncing deletion to server...");
-      await callApi({
+      showSpinner("Updating server data...");
+      const res = await callApi({
         action: "saveData",
         username: currentUser,
         project: currentProject,
         rows: workoutRows
       });
       hideSpinner();
+
+      if (res.status === "success") {
+        showToast("Record successfully deleted.", "success");
+        lastSyncedTime = new Date();
+      }
     }
 
     function resetForm() {
+      document.getElementById("formWorkout").reset();
       editIndex = -1;
       isManualLoad = false;
-      document.getElementById("formWorkout").reset();
-      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
       document.getElementById("todayBadge").classList.add("hidden");
-      document.getElementById("timerWidget").classList.add("hidden");
-      document.getElementById("supersetDumbbellHammerContainer").classList.add("hidden");
-      document.getElementById("supersetCableExtensionContainer").classList.add("hidden");
-      if (activeRestTimer) clearInterval(activeRestTimer);
+      document.getElementById("autoRegNotice").classList.add("hidden");
+      document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      document.getElementById("supersetCardContainer1").classList.add("hidden");
+      document.getElementById("supersetCardContainer2").classList.add("hidden");
       checkFormActivation();
-      showToast("Form reset.", "info", 2000);
     }
 
     function changeProjectFreetext() {
-      const val = document.getElementById("inputProject").value.trim();
-      if (val !== "") {
-        currentProject = `Week ${val}`;
-        loadWorkoutData();
-      } else {
-        currentProject = "";
-        workoutRows = [];
-        renderWorkoutTable();
-      }
+      const val = document.getElementById("inputProject").value.trim() || "0";
+      currentProject = `Week ${val}`;
+      checkFormActivation();
+      loadWorkoutData();
     }
 
     function switchAppTab(tab) {
       const workoutTab = document.getElementById("tabWorkout");
       const analyticsTab = document.getElementById("tabAnalytics");
+
       const navWorkoutBtn = document.getElementById("navWorkoutBtn");
       const navAnalyticsBtn = document.getElementById("navAnalyticsBtn");
       const mobileNavWorkoutBtn = document.getElementById("mobileNavWorkoutBtn");
@@ -1949,32 +2019,410 @@
       if (tab === 'workout') {
         workoutTab.classList.remove("hidden");
         analyticsTab.classList.add("hidden");
-        
+
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
-        
-        if (mobileNavWorkoutBtn) mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
-        if (mobileNavAnalyticsBtn) mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
+
+        mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
+        mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
       } else {
         workoutTab.classList.add("hidden");
         analyticsTab.classList.remove("hidden");
-        
+
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
-        
-        if (mobileNavWorkoutBtn) mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
-        if (mobileNavAnalyticsBtn) mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
+
+        mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
+        mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
 
         renderAnalyticsDashboard();
       }
     }
 
-    function renderAnalyticsDashboard() {
-      // Analytics chart rendering stub / placeholder to preserve functionality
+    function getAllHistoryData() {
+      let historyMap = {}; 
+      if (!currentUser) return historyMap;
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key && key.startsWith(`workout_data_${currentUser}_Week `)) {
+          let weekStr = key.replace(`workout_data_${currentUser}_`, '');
+          try {
+            let data = JSON.parse(localStorage.getItem(key));
+            if (Array.isArray(data) && data.length > 0) {
+              historyMap[weekStr] = data;
+            }
+          } catch(e){}
+        }
+      }
+      return historyMap;
     }
 
-    function loadAdminData() {
-      // Admin dashboard data loader stub / placeholder to preserve functionality
+    function renderAnalyticsDashboard() {
+      renderE1RMChart();
+      renderVolumeRpeChart();
+      renderMuscleDistChart();
+      renderAcwrChart();
+    }
+
+    function renderE1RMChart() {
+      const ctx = document.getElementById("chartE1RM").getContext("2d");
+      const exerciseFilter = document.getElementById("analyticsExerciseFilter").value;
+
+      if (window.chartInstanceE1RM) window.chartInstanceE1RM.destroy();
+
+      let historyMap = getAllHistoryData();
+      let weeks = Object.keys(historyMap).sort((a, b) => {
+        let numA = parseInt(a.replace('Week ', '')) || 0;
+        let numB = parseInt(b.replace('Week ', '')) || 0;
+        return numA - numB;
+      });
+
+      if (currentProject && workoutRows.length > 0 && !weeks.includes(currentProject)) {
+        weeks.push(currentProject);
+        historyMap[currentProject] = workoutRows;
+      }
+
+      let labels = [];
+      let dataPoints = [];
+
+      weeks.forEach(w => {
+        let rows = historyMap[w] || [];
+        let match = rows.find(r => r.exercise === exerciseFilter);
+        if (match) {
+          let maxReps = Math.max(match.set1_reps || 0, match.set2_reps || 0, match.set3_reps || 0, match.set4_reps || 0);
+          if (maxReps > 0 && match.working_load > 0) {
+            let e1rm = match.working_load / (1.0278 - (0.0278 * maxReps));
+            labels.push(w);
+            dataPoints.push(Math.round(e1rm * 10) / 10);
+          }
+        }
+      });
+
+      if (labels.length === 0) {
+        labels = ["No Data Available"];
+        dataPoints = [0];
+      }
+
+      window.chartInstanceE1RM = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${exerciseFilter} e1RM (kg)`,
+            data: dataPoints,
+            borderColor: '#0066FF',
+            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true } }
+        }
+      });
+    }
+
+    function renderVolumeRpeChart() {
+      const ctx = document.getElementById("chartVolumeRpe").getContext("2d");
+      if (window.chartInstanceVolumeRpe) window.chartInstanceVolumeRpe.destroy();
+
+      let sessionMap = {
+        "Mon - Upper A": { volume: 0, rpeSum: 0, count: 0 },
+        "Tue - Lower A": { volume: 0, rpeSum: 0, count: 0 },
+        "Thu - Upper B": { volume: 0, rpeSum: 0, count: 0 },
+        "Fri - Lower B": { volume: 0, rpeSum: 0, count: 0 }
+      };
+
+      workoutRows.forEach(r => {
+        let totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+        let vol = totalReps * (r.working_load || 0);
+        
+        let rpeVal = 8.0; 
+        if (r.catatan) {
+          let match = r.catatan.match(/RPE\s*(\d+(\.\d+)?)/i);
+          if (match) rpeVal = parseFloat(match[1]);
+        }
+
+        if (sessionMap[r.day_session]) {
+          sessionMap[r.day_session].volume += vol;
+          sessionMap[r.day_session].rpeSum += rpeVal;
+          sessionMap[r.day_session].count += 1;
+        }
+      });
+
+      let labels = ["Mon", "Tue", "Thu", "Fri"];
+      let volumeData = [
+        sessionMap["Mon - Upper A"].volume,
+        sessionMap["Tue - Lower A"].volume,
+        sessionMap["Thu - Upper B"].volume,
+        sessionMap["Fri - Lower B"].volume
+      ];
+
+      window.chartInstanceVolumeRpe = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Volume Load (kg)',
+            data: volumeData,
+            backgroundColor: '#0066FF',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true } }
+        }
+      });
+    }
+
+    function renderMuscleDistChart() {
+      const ctx = document.getElementById("chartMuscleDistribution").getContext("2d");
+      if (window.chartInstanceMuscleDist) window.chartInstanceMuscleDist.destroy();
+
+      let muscleSets = {
+        "Chest": 0,
+        "Back": 0,
+        "Quads": 0,
+        "Posterior": 0,
+        "Deltoids": 0,
+        "Arms": 0,
+        "Calves": 0
+      };
+
+      workoutRows.forEach(r => {
+        let preset = exercisePresets[r.exercise];
+        if (preset && preset.muscleGroup) {
+          let group = preset.muscleGroup === "Posterior Chain" ? "Posterior" : preset.muscleGroup;
+          let activeSets = 0;
+          if (r.set1_reps > 0) activeSets++;
+          if (r.set2_reps > 0) activeSets++;
+          if (r.set3_reps > 0) activeSets++;
+          if (r.set4_reps > 0) activeSets++;
+          
+          if (muscleSets[group] !== undefined) {
+            muscleSets[group] += activeSets;
+          }
+        }
+      });
+
+      let labels = Object.keys(muscleSets);
+      let dataPoints = Object.values(muscleSets);
+
+      window.chartInstanceMuscleDist = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Weekly Effective Sets',
+            data: dataPoints,
+            backgroundColor: 'rgba(0, 102, 255, 0.2)',
+            borderColor: '#0066FF',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true } }
+        }
+      });
+    }
+
+    function renderAcwrChart() {
+      const ctx = document.getElementById("chartACWR").getContext("2d");
+      if (window.chartInstanceACWR) window.chartInstanceACWR.destroy();
+
+      let historyMap = getAllHistoryData();
+      let weeks = Object.keys(historyMap).sort((a, b) => {
+        let numA = parseInt(a.replace('Week ', '')) || 0;
+        let numB = parseInt(b.replace('Week ', '')) || 0;
+        return numA - numB;
+      });
+
+      if (currentProject && workoutRows.length > 0 && !weeks.includes(currentProject)) {
+        weeks.push(currentProject);
+        historyMap[currentProject] = workoutRows;
+      }
+
+      let weeklyVolumes = [];
+      let labels = [];
+
+      weeks.forEach(w => {
+        let rows = historyMap[w] || [];
+        let totalVol = 0;
+        rows.forEach(r => {
+          let setsReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+          totalVol += setsReps * (r.working_load || 0);
+        });
+        labels.push(w);
+        weeklyVolumes.push(totalVol);
+      });
+
+      let acwrPoints = [];
+      for (let i = 0; i < weeklyVolumes.length; i++) {
+        let acute = weeklyVolumes[i]; 
+        let startIdx = Math.max(0, i - 3);
+        let chronicArr = weeklyVolumes.slice(startIdx, i + 1);
+        let chronic = chronicArr.reduce((a, b) => a + b, 0) / chronicArr.length;
+        
+        let ratio = chronic > 0 ? (acute / chronic) : 1.0;
+        acwrPoints.push(Math.round(ratio * 100) / 100);
+      }
+
+      if (labels.length === 0) {
+        labels = ["No Data"];
+        acwrPoints = [0];
+      }
+
+      window.chartInstanceACWR = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'ACWR Ratio',
+            data: acwrPoints,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true } },
+          scales: { y: { min: 0, max: 2.5 } }
+        }
+      });
+    }
+
+    async function loadAdminData() {
+      showSpinner("Loading admin dashboard console...");
+      const res = await callApi({ action: "getAdminData", username: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        renderAdminUsers(res.usersMeta || []);
+        renderAdminLogs(res.activityLogs || []);
+        lastSyncedTime = new Date();
+      } else {
+        showToast("Failed to load admin data.", "error");
+      }
+    }
+
+    function renderAdminUsers(users) {
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        return;
+      }
+
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+
+        let statusBadge = u.status === "ACTIVE" 
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
+
+        let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
+        if (u.status === "ACTIVE") {
+          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
+        }
+
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-xs">${u.user}</td>
+          <td class="p-3">${statusBadge}</td>
+          <td class="p-3 text-center">${actionBtns}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        return;
+      }
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        tr.innerHTML = `
+          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.user || '-'}</td>
+          <td class="p-2.5">${l.activity || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function approveUserModal(username) {
+      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve User", "user-check");
+      if (!confirmed) return;
+
+      showSpinner("Approving user account...");
+      const res = await callApi({ action: "adminApprove", adminUser: currentUser, targetUser: username });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(`User ${username} approved successfully.`, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message || "Failed to approve user.", "error");
+      }
+    }
+
+    async function viewUserDetailModal(username) {
+      showSpinner(`Loading profile stats for ${username}...`);
+      const res = await callApi({ action: "getAdminUserDetail", adminUser: currentUser, targetUser: username });
+      hideSpinner();
+
+      if (res.status === "success") {
+        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Stats: ${username}`;
+
+        const statsDiv = document.getElementById("userStatsOverview");
+        statsDiv.innerHTML = `
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Account Status</span>
+            <span class="font-bold text-sm text-emerald-600">${res.statusMeta || 'ACTIVE'}</span>
+          </div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Total Workouts Logged</span>
+            <span class="font-bold text-sm text-blue-600">${res.totalWorkouts || 0}</span>
+          </div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Last Active</span>
+            <span class="font-bold text-sm">${res.lastActive || 'Today'}</span>
+          </div>
+        `;
+
+        const benchmarksList = document.getElementById("userBenchmarksList");
+        benchmarksList.innerHTML = "";
+        const bMarks = res.benchmarks || {};
+        Object.keys(bMarks).forEach(k => {
+          benchmarksList.innerHTML += `
+            <div class="themed-input p-2 rounded-lg border text-xs">
+              <span class="themed-text-muted block text-[10px] truncate">${k}</span>
+              <span class="font-bold">${bMarks[k]} kg</span>
+            </div>
+          `;
+        });
+        lucide.createIcons();
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } else {
+        showToast("Failed to load user profile details.", "error");
+      }
     }
 
     function closeUserDetail() {
@@ -1986,15 +2434,20 @@
       localStorage.removeItem("workout_is_admin");
       currentUser = null;
       isAdmin = false;
-      currentProject = "";
       workoutRows = [];
+      currentProject = "";
+
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white";
       document.getElementById("signOutBtnHeader").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("mobileDrawer").classList.add("hidden");
+
+      document.getElementById("loginUsername").value = "";
+      document.getElementById("loginPin").value = "";
       switchAuthTab('login');
       showToast("Signed out successfully.", "info");
     }
