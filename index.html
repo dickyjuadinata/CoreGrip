@@ -198,7 +198,7 @@
       
       <div class="flex items-center space-x-3 h-full">
         <!-- Online Sync Button (Transparent Background) -->
-        <p class="flex text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
+        <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
@@ -724,7 +724,6 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    /* Fungsi Drawer Mobile yang diperbaiki */
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
       const menuBtn = document.getElementById("mobileMenuBtn");
@@ -747,7 +746,6 @@
       }
     }
 
-    /* Penutupan otomatis drawer jika ukuran layar kembali ke desktop */
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) {
         toggleMobileDrawer(false);
@@ -1757,22 +1755,18 @@
         workoutTab.classList.remove("hidden");
         analyticsTab.classList.add("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
       } else {
         workoutTab.classList.add("hidden");
         analyticsTab.classList.remove("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
 
@@ -2164,24 +2158,24 @@
         </div>
         <div class="themed-subcard p-3 rounded-xl border text-xs">
           <span class="themed-text-muted block font-medium">Status</span>
-          <span class="text-base font-bold text-purple-600 dark:text-purple-400">Active</span>
+          <span class="text-base font-bold text-emerald-600 dark:text-emerald-400">Active</span>
         </div>
       `;
 
       const benchmarksList = document.getElementById("userBenchmarksList");
-      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
-      
       benchmarksList.innerHTML = "";
-      Object.keys(savedBenchmarks).slice(0, 8).forEach(ex => {
-        benchmarksList.innerHTML += `
-          <div class="themed-subcard p-2 rounded-lg border text-xs">
-            <span class="themed-text-muted block text-[10px] truncate">${ex}</span>
-            <span class="font-bold text-sm">${savedBenchmarks[ex]} kg</span>
-          </div>
-        `;
+      
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
+      Object.keys(savedBenchmarks).forEach(ex => {
+        const val = savedBenchmarks[ex];
+        const div = document.createElement("div");
+        div.className = "themed-input p-2 rounded-xl border text-xs";
+        div.innerHTML = `<span class="themed-text-muted text-[10px] block truncate">${ex}</span><span class="font-bold text-sm">${val} kg</span>`;
+        benchmarksList.appendChild(div);
       });
-      lucide.createIcons();
+
       container.scrollIntoView({ behavior: 'smooth' });
+      lucide.createIcons();
     }
 
     function closeUserDetail() {
@@ -2189,25 +2183,24 @@
     }
 
     function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
       currentUser = null;
       isAdmin = false;
-      
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+
+      document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("authSection").classList.remove("hidden");
-      
-      // Sembunyikan navigasi, sync, dan tombol logout pada halaman login
       document.getElementById("headerNavTabs").className = "hidden";
       document.getElementById("mobileMenuBtn").className = "hidden";
       document.getElementById("signOutBtnHeader").className = "hidden";
       document.getElementById("syncStatus").className = "hidden";
-      
-      toggleMobileDrawer(false);
-      
-      showToast("Successfully signed out.", "info");
+
+      switchAuthTab('login');
+      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
 </html>
+[cite: 2]
+```[cite: 2]
