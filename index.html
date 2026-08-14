@@ -185,8 +185,8 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs -->
-        <nav id="headerNavTabs" class="hidden md:flex items-center space-x-1">
+        <!-- Desktop Navigation Tabs (Hanya muncul setelah login) -->
+        <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
           </button>
@@ -202,19 +202,19 @@
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button (Hidden until login) -->
-        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
+        <!-- Mobile Hamburger Button (Hanya muncul setelah login) -->
+        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Sign Out Desktop Only -->
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
+        <!-- Tombol Sign Out Desktop (Warna serasi, disesuaikan) -->
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation (Hidden until login) -->
+    <!-- Mobile Drawer Navigation -->
     <div id="mobileDrawer" class="hidden md:hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -1469,8 +1469,16 @@
 
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
+      
+      // Poin 4: Seluruh menu navigasi hanya muncul setelah login, tidak muncul di login page
       document.getElementById("headerNavTabs").classList.remove("hidden");
+      document.getElementById("headerNavTabs").classList.add("flex");
       document.getElementById("mobileMenuBtn").classList.remove("hidden");
+
+      // Poin 2 & 5: Tombol sign out desktop diubah kelasnya dan disembunyikan pada header mobile
+      document.getElementById("signOutBtnHeader").classList.remove("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("hidden", "md:flex");
+      
       document.getElementById("syncStatus").classList.remove("hidden");
       document.getElementById("syncStatus").classList.add("flex");
 
@@ -2158,12 +2166,18 @@
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
+      
+      // Sembunyikan kembali menu navigasi saat logout (poin 3 & 4)
+      document.getElementById("headerNavTabs").classList.remove("flex");
       document.getElementById("headerNavTabs").classList.add("hidden");
       document.getElementById("mobileMenuBtn").classList.add("hidden");
-      document.getElementById("mobileDrawer").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.remove("flex", "md:flex");
+      document.getElementById("signOutBtnHeader").classList.add("hidden");
+      
       document.getElementById("syncStatus").classList.add("hidden");
       showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
 </html>
+```[cite: 1]
