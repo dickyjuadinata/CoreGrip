@@ -55,7 +55,6 @@
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
-    /* Skema Warna Light Mode Sesuai Permintaan */
     :root {
       --bg-page: #f9fafb;
       --bg-card: #ffffff;
@@ -74,7 +73,6 @@
       --table-header-text: #0066FF;
     }
 
-    /* Skema Warna Dark Mode Sesuai Permintaan */
     @media (prefers-color-scheme: dark) {
       :root {
         --bg-page: #0f172a;
@@ -172,7 +170,6 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative overflow-x-hidden w-full">
 
-  <!-- Header & Navigasi Atas -->
   <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
@@ -185,7 +182,6 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Hidden by default on login page) -->
         <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
@@ -197,25 +193,21 @@
       </div>
       
       <div class="flex items-center space-x-3 h-full">
-        <!-- Online Sync Button (Hidden by default on login page, shown after login) -->
         <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Desktop Sign Out Button (Transparent Background) -->
         <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-transparent hover:bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation -->
     <div id="mobileDrawer" class="hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -224,7 +216,6 @@
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
       <div class="border-t border-gray-800 my-1"></div>
-      <!-- Mobile Sign Out Button (Transparent Background inside Drawer) -->
       <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-red-300 bg-transparent hover:bg-white/10 border border-red-500/30 flex items-center gap-2 transition">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
@@ -400,7 +391,7 @@
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required disabled class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav disabled:opacity-50 disabled:cursor-not-allowed" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
 
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
@@ -425,13 +416,12 @@
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
-            <!-- Countdown Timer Indicator Widget -->
             <div id="timerWidget" class="hidden bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-blue-700 dark:text-blue-300">
               <div class="flex items-center gap-2">
                 <i data-lucide="timer" class="w-4 h-4 animate-pulse"></i>
-                <span id="timerLabel">Rest Interval Active:</span>
+                <span id="timerLabel">Rest Interval Active (Superset Mode - 0s):</span>
               </div>
-              <span id="timerCountdown" class="text-sm font-mono font-bold">05:00</span>
+              <span id="timerCountdown" class="text-sm font-mono font-bold">00:00</span>
             </div>
 
             <div>
@@ -439,19 +429,19 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" disabled onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputCatatan">
                 </div>
               </div>
             </div>
@@ -627,25 +617,6 @@
     </div>
   </div>
 
-  <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
-    <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
-      <div class="p-1 space-y-1 text-xs font-semibold">
-        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
-          <span class="text-base">✏️</span> Edit Exercise
-        </button>
-        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
-          <span class="text-base">🗑️</span> Delete Exercise
-        </button>
-      </div>
-      <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
-      <div class="p-1">
-        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
-          <span class="text-base">🚨</span> Delete Entire Session
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
     <div class="themed-card max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
       <div class="flex items-start gap-3">
@@ -683,28 +654,31 @@
     let lastBodyWeight = "";
     let activeRestTimer = null;
 
+    /* 4 jenis exercise superset / tanpa istirahat (rest diatur 0 min atau 0-0 sec) */
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Triceps Pressdowns (Cable) Superset with Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 0 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 0 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 0 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 0 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 0 min", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Barbell Curl Superset with Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 0 min", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 0 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
     let initialBenchmarkLoads = {
@@ -713,7 +687,8 @@
       "Bodyweight Pull-Ups": 0.0,
       "Barbell Overhead Press": 12.5,
       "Dumbbell Lateral Raises - A": 5.0,
-      "Triceps Pressdowns (Cable) Superset with Dumbbell Hammer Curl": 7.5,
+      "Triceps Pressdowns (Cable)": 7.5,
+      "Dumbbell Hammer Curl": 7.5,
       "Barbell Squats": 20.0,
       "Romanian Deadlifts": 17.5,
       "Standing Barbell Calf Raises - A": 12.5,
@@ -722,7 +697,8 @@
       "Seated Dumbbell Press": 10.0,
       "Face Pulls (Cable)": 10.0,
       "Dumbbell Lateral Raises - B": 5.0,
-      "Barbell Curl Superset with Cable Overhead Triceps Extension": 7.5,
+      "Barbell Curl": 7.5,
+      "Cable Overhead Triceps Extension": 7.5,
       "Conventional Deadlift": 25.0,
       "Dumbbell Bulgarian Split Squat": 7.5,
       "Standing Barbell Calf Raises - B": 12.5
@@ -730,7 +706,6 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    /* Fungsi Drawer Mobile yang diperbaiki */
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
       const menuBtn = document.getElementById("mobileMenuBtn");
@@ -753,18 +728,36 @@
       }
     }
 
-    /* Penutupan otomatis drawer jika ukuran layar kembali ke desktop */
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) {
         toggleMobileDrawer(false);
       }
     });
 
-    /* Trigger Countdown Timer Otomatis dan Push Notification saat input set terisi */
+    /* Parsing timerCountdown otomatis mengambil waktu paling atas/maksimal dari string rest (misal 3-5 menit -> 5 menit) */
+    function parseTopRestTimeInSeconds(restStr) {
+      if (!restStr) return 0;
+      let matches = [...restStr.matchAll(/(\d+)(?:\s*-\s*(\d+))?\s*(min|sec)/gi)];
+      if (matches.length > 0) {
+        let m = matches[matches.length - 1];
+        let topVal = parseInt(m[2] ? m[2] : m[1], 10);
+        let unit = m[3].toLowerCase();
+        if (unit.startsWith('min')) {
+          return topVal * 60;
+        } else {
+          return topVal;
+        }
+      }
+      return 0;
+    }
+
     function handleSetInputBlur(setNumber) {
       const inputVal = document.getElementById(`inputSet${setNumber}`).value.trim();
-      if (inputVal !== "" && parseInt(inputVal, 10) >= 0) {
-        startRestCountdown(300); // Hardcoded 5 menit (300 detik)
+      const restStr = document.getElementById("inputRestTime").value;
+      const durationSeconds = parseTopRestTimeInSeconds(restStr);
+
+      if (inputVal !== "" && parseInt(inputVal, 10) >= 0 && durationSeconds > 0) {
+        startRestCountdown(durationSeconds);
       }
     }
 
@@ -792,8 +785,8 @@
         if (remaining <= 0) {
           clearInterval(activeRestTimer);
           widget.classList.add("hidden");
-          showToast("Waktu istirahat selesai! Silakan lanjut ke set berikutnya.", "success", 4000);
-          triggerPushNotification("CoreGrip Rest Timer", "Waktu istirahat selesai! Waktunya set latihan berikutnya.");
+          showToast("Rest interval completed! Proceed to the next set.", "success", 4000);
+          triggerPushNotification("CoreGrip Rest Timer", "Rest interval completed! Time for your next training set.");
         }
       }, 1000);
     }
@@ -1010,17 +1003,34 @@
       return roundToQuarter(side);
     }
 
+    function updateSetsUnlockState() {
+      const sessionVal = document.getElementById("inputDaySession").value;
+      const exerciseVal = document.getElementById("inputExercise").value;
+      const isReady = sessionVal !== "" && exerciseVal !== "";
+
+      for (let i = 1; i <= 4; i++) {
+        const input = document.getElementById(`inputSet${i}`);
+        if (!input) continue;
+        if (isReady) {
+          input.disabled = false;
+          input.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          input.disabled = true;
+          input.classList.add("opacity-50", "cursor-not-allowed");
+          input.value = "";
+        }
+      }
+    }
+
     function onSessionChange(sessionVal) {
       lastSelectedSession = sessionVal;
       const exerciseSelect = document.getElementById("inputExercise");
       exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
 
-      // Primary Working Load (kg) tidak bisa di input sebelum input Training Session dan Exercise Name (hanya tampil default)[cite: 3]
-      const workingLoadInput = document.getElementById("inputWorkingLoad");
-      workingLoadInput.value = "";
-      workingLoadInput.disabled = true;
-
-      if (!sessionVal) return;
+      if (!sessionVal) {
+        updateSetsUnlockState();
+        return;
+      }
 
       Object.keys(exercisePresets).forEach(ex => {
         if (exercisePresets[ex].session === sessionVal) {
@@ -1042,18 +1052,12 @@
         badge.classList.add("hidden");
         document.getElementById("formWorkout").classList.remove("ring-2", "ring-emerald-500", "bg-emerald-50/50", "dark:bg-emerald-950/20");
       }
+      updateSetsUnlockState();
     }
 
     function onExerciseSelect(exVal) {
-      const workingLoadInput = document.getElementById("inputWorkingLoad");
-      if (!exVal) {
-        workingLoadInput.value = "";
-        workingLoadInput.disabled = true;
-        return;
-      }
-      
-      // Mengaktifkan input Working Load setelah Training Session & Exercise Name dipilih
-      workingLoadInput.disabled = false;
+      updateSetsUnlockState();
+      if (!exVal) return;
       isManualLoad = false;
       const preset = exercisePresets[exVal];
       if (preset) {
@@ -1066,11 +1070,11 @@
           const input = document.getElementById(`inputSet${i}`);
           if (i <= totalSets) {
             container.classList.remove("hidden");
-            input.disabled = false;
           } else {
             container.classList.add("hidden");
             input.value = 0;
             input.disabled = true;
+            input.classList.add("opacity-50", "cursor-not-allowed");
           }
         }
 
@@ -1092,7 +1096,7 @@
 
         let autoLoad = get4WeeksHistoryLoad(exVal, currentProject);
         originalBaseLoad = autoLoad;
-        workingLoadInput.value = autoLoad;
+        document.getElementById("inputWorkingLoad").value = autoLoad;
 
         calculateLoadDetails();
       }
@@ -1230,7 +1234,7 @@
         calculateLoadDetails();
 
         autoNotice.classList.remove("hidden");
-        autoText.innerText = `Rep target failure (${minTarget} reps) on Set ${failedSet}! Working load adjusted from ${originalBaseLoad} kg to ${deloadLoad} kg.`;
+        autoText.innerText = `Target rep threshold not met (${minTarget} reps) on Set ${failedSet}! Working load automatically deloaded from ${originalBaseLoad} kg to ${deloadLoad} kg.`;
       } else {
         if (!isManualLoad) {
           document.getElementById("inputWorkingLoad").value = originalBaseLoad;
@@ -1273,6 +1277,7 @@
       checkSession();
       registerServiceWorker();
       setupEnterNavigation();
+      updateSetsUnlockState();
 
       window.addEventListener('online', handleNetworkChange);
       window.addEventListener('offline', handleNetworkChange);
@@ -1285,6 +1290,7 @@
         input.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') {
             e.preventDefault();
+            if (this.disabled) return;
             const isOptional = this.getAttribute('data-optional') === 'true';
             const val = this.value.trim();
 
@@ -1305,7 +1311,7 @@
 
             if (nextId) {
               const nextEl = document.getElementById(nextId);
-              if (nextEl) {
+              if (nextEl && !nextEl.disabled) {
                 if (nextEl.tagName === 'BUTTON' || nextEl.type === 'submit') {
                   const form = nextEl.closest('form');
                   if (form) {
@@ -1505,7 +1511,7 @@
 
       const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
-        await showModernAlert(`Username "${username}" sudah digunakan.`, "Pendaftaran Ditolak", "user-x");
+        await showModernAlert(`Username "${username}" is already taken.`, "Registration Denied", "user-x");
         return;
       }
 
@@ -1535,14 +1541,16 @@
       userBenchmarks["Chest Supported Dumbbell Row"] = mround2_5(assessedBench * 1.0);
       userBenchmarks["Bodyweight Pull-Ups"] = 0.0;
       userBenchmarks["Barbell Overhead Press"] = mround2_5(assessedBench * 0.625);
-      userBenchmarks["Triceps Pressdowns (Cable) Superset with Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Triceps Pressdowns (Cable)"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Dumbbell Hammer Curl"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Romanian Deadlifts"] = mround2_5(assessedSquat * 0.85);
       userBenchmarks["Standing Barbell Calf Raises - A"] = mround2_5(assessedSquat * 0.60);
       userBenchmarks["Incline Dumbbell Press"] = mround2_5(assessedBench * 0.60);
       userBenchmarks["Bent-over Barbell Row"] = mround2_5(assessedBench * 1.0);
       userBenchmarks["Seated Dumbbell Press"] = mround2_5(assessedBench * 0.50);
       userBenchmarks["Face Pulls (Cable)"] = mround2_5(assessedBench * 0.50);
-      userBenchmarks["Barbell Curl Superset with Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Barbell Curl"] = mround2_5(assessedBench * 0.375);
+      userBenchmarks["Cable Overhead Triceps Extension"] = mround2_5(assessedBench * 0.375);
       userBenchmarks["Conventional Deadlift"] = mround2_5(assessedSquat * 1.25);
       userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
       userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
@@ -1655,12 +1663,11 @@
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
 
-      // Validasi aturan: Kolom week dan body weight wajib terisi
       const weekVal = document.getElementById("inputProject").value.trim();
       const bwVal = document.getElementById("inputBodyWeight").value.trim();
       if (!weekVal || !bwVal) {
-        showToast("Kolom Week Number dan Body Weight wajib diisi!", "error", 4000);
-        await showModernAlert("Kolom Week Number dan Body Weight masih kosong. Harap isi kedua kolom tersebut untuk menyimpan record latihan.", "Validasi Gagal", "alert-circle");
+        showToast("Week Number and Body Weight fields are required!", "error", 4000);
+        await showModernAlert("Week Number and Body Weight fields are empty. Please fill in both fields to save the workout record.", "Validation Failed", "alert-circle");
         if (!weekVal) {
           document.getElementById("inputProject").focus();
         } else {
@@ -1691,7 +1698,6 @@
         order: editIndex >= 0 ? workoutRows[editIndex].order : workoutRows.length
       };
 
-      const preset = exercisePresets[newRow.exercise];
       const repsArr = [newRow.set1_reps, newRow.set2_reps, newRow.set3_reps, newRow.set4_reps];
       newRow.next_load = calculateNextWeekLoadQB13(newRow.exercise, newRow.target_reps, newRow.working_load, repsArr, newRow.catatan);
 
@@ -1744,7 +1750,6 @@
         nextExercise = sessionExercises[currentIndex + 1];
       }
 
-      const workingLoadInput = document.getElementById("inputWorkingLoad");
       if (nextExercise) {
         document.getElementById("inputExercise").value = nextExercise;
         onExerciseSelect(nextExercise);
@@ -1752,8 +1757,7 @@
         document.getElementById("inputExercise").value = "";
         document.getElementById("inputTargetReps").value = "";
         document.getElementById("inputRestTime").value = "";
-        workingLoadInput.value = "";
-        workingLoadInput.disabled = true;
+        document.getElementById("inputWorkingLoad").value = "0";
         document.getElementById("sideLoadDisplay").innerText = "- kg / side";
       }
 
@@ -1761,10 +1765,7 @@
         document.getElementById(`inputSet${i}`).value = "";
       }
 
-      const set1Input = document.getElementById("inputSet1");
-      if (set1Input && !set1Input.disabled) {
-        setTimeout(() => set1Input.focus(), 100);
-      }
+      updateSetsUnlockState();
     }
 
     function editWorkoutRow(index) {
@@ -1777,9 +1778,7 @@
       document.getElementById("inputExercise").value = r.exercise;
       onExerciseSelect(r.exercise);
 
-      const workingLoadInput = document.getElementById("inputWorkingLoad");
-      workingLoadInput.disabled = false;
-      workingLoadInput.value = r.working_load;
+      document.getElementById("inputWorkingLoad").value = r.working_load;
       originalBaseLoad = r.working_load;
       document.getElementById("inputSet1").value = r.set1_reps;
       document.getElementById("inputSet2").value = r.set2_reps;
@@ -1820,11 +1819,10 @@
       editIndex = -1;
       isManualLoad = false;
       document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
-      document.getElementById("inputWorkingLoad").value = "";
-      document.getElementById("inputWorkingLoad").disabled = true;
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      updateSetsUnlockState();
     }
 
     function changeProjectFreetext() {
@@ -1846,22 +1844,18 @@
         workoutTab.classList.remove("hidden");
         analyticsTab.classList.add("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
       } else {
         workoutTab.classList.add("hidden");
         analyticsTab.classList.remove("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
 
@@ -2164,14 +2158,21 @@
           : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
 
         let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
+        if (u.status === "ACTIVE") {
+          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
+        }
 
         tr.innerHTML = `
           <td class="p-3 font-semibold text-xs">${u.user}</td>
-          <td class="p-3 text-xs">${statusBadge}</td>
-          <td class="p-3 text-center">${actionBtns}</td>
+          <td class="p-3">${statusBadge}</td>
+          <td class="p-3 text-center flex items-center justify-center gap-2">
+            ${actionBtns}
+            <button onclick="deleteUserModal('${u.user}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition">Delete</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
+      lucide.createIcons();
     }
 
     function renderAdminLogs(logs) {
@@ -2183,32 +2184,57 @@
         return;
       }
 
-      logs.forEach(l => {
+      logs.reverse().forEach(l => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        const timeFormatted = new Date(l.time).toLocaleString();
+
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
-          <td class="p-2.5 text-xs">${l.activity || '-'}</td>
+          <td class="p-2.5 themed-text-muted text-[11px]">${timeFormatted}</td>
+          <td class="p-2.5 font-semibold">${l.user}</td>
+          <td class="p-2.5">${l.activity}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    async function approveUserModal(username) {
-      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve User", "user-check");
+    async function approveUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Approve account registration for user "${targetUser}"?`, "Approve User", "user-check");
       if (!confirmed) return;
 
-      showSpinner("Approving user access...");
-      const res = await callApi({ action: "approveUser", username: currentUser, targetUser: username });
+      showSpinner(`Approving user ${targetUser}...`);
+      const res = await callApi({ action: "approveUser", targetUser, adminUser: currentUser });
       hideSpinner();
 
       if (res.status === "success") {
-        showToast(`User ${username} approved successfully.`, "success");
+        showToast(res.message, "success");
         loadAdminData();
       } else {
-        showToast(res.message || "Failed to approve user.", "error");
+        showToast(res.message, "error");
       }
+    }
+
+    async function deleteUserModal(targetUser) {
+      const confirmed = await showModernConfirm(`Delete user "${targetUser}" and all associated workout files?`, "Delete User", "user-x");
+      if (!confirmed) return;
+
+      showSpinner(`Deleting user ${targetUser}...`);
+      const res = await callApi({ action: "deleteUser", targetUser, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message, "error");
+      }
+    }
+
+    function viewUserDetailModal(username) {
+      const container = document.getElementById("adminUserDetailContainer");
+      container.classList.remove("hidden");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile: ${username}`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function closeUserDetail() {
@@ -2216,24 +2242,20 @@
     }
 
     function handleLogout() {
-      showModernConfirm("Are you sure you want to sign out?", "Sign Out", "log-out").then(confirmed => {
-        if (!confirmed) return;
-        localStorage.removeItem("workout_user");
-        localStorage.removeItem("workout_is_admin");
-        currentUser = null;
-        isAdmin = false;
-        
-        document.getElementById("appSection").classList.add("hidden");
-        document.getElementById("adminSection").classList.add("hidden");
-        document.getElementById("authSection").classList.remove("hidden");
-        document.getElementById("headerNavTabs").className = "hidden";
-        document.getElementById("mobileMenuBtn").className = "hidden";
-        document.getElementById("signOutBtnHeader").className = "hidden";
-        document.getElementById("syncStatus").className = "hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white";
-        
-        showToast("Signed out successfully.", "info");
-      });
+      currentUser = null;
+      isAdmin = false;
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("syncStatus").className = "hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white";
+      document.getElementById("formLogin").reset();
+      switchAuthTab('login');
+      showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
 </html>
+```[cite: 1]
