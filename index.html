@@ -202,14 +202,14 @@
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button -->
-        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
+        <!-- Mobile Hamburger Button (Hanya muncul setelah login via class 'hidden' awal yang dibuka via JS) -->
+        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation -->
+    <!-- Mobile Drawer Navigation (Menu Sign Out dipindah ke sini) -->
     <div id="mobileDrawer" class="hidden md:hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -217,8 +217,8 @@
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
-      <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-white hover:bg-red-600/20 transition items-center gap-2">
-        <i data-lucide="log-out" class="w-4 h-4"></i> <span>Sign Out</span>
+      <button id="signOutBtnMobile" onclick="handleLogout()" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-white hover:bg-red-600/20 flex items-center gap-2 transition">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
   </header>
@@ -1464,8 +1464,8 @@
 
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("signOutBtnHeader").classList.remove("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("flex");
+      // Hamburger button hanya muncul setelah login
+      document.getElementById("mobileMenuBtn").classList.remove("hidden");
       document.getElementById("syncStatus").classList.remove("hidden");
       document.getElementById("syncStatus").classList.add("flex");
 
@@ -2153,7 +2153,8 @@
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("mobileMenuBtn").classList.add("hidden");
+      document.getElementById("mobileDrawer").classList.add("hidden");
       document.getElementById("syncStatus").classList.add("hidden");
       showToast("Successfully signed out.", "info");
     }
