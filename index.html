@@ -425,24 +425,33 @@
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
+            <!-- Countdown Timer Indicator Widget -->
+            <div id="timerWidget" class="hidden bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-blue-700 dark:text-blue-300">
+              <div class="flex items-center gap-2">
+                <i data-lucide="timer" class="w-4 h-4 animate-pulse"></i>
+                <span id="timerLabel">Rest Interval Active:</span>
+              </div>
+              <span id="timerCountdown" class="text-sm font-mono font-bold">05:00</span>
+            </div>
+
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
@@ -672,6 +681,7 @@
 
     let lastSelectedSession = "";
     let lastBodyWeight = "";
+    let activeRestTimer = null;
 
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
@@ -753,6 +763,57 @@
         toggleMobileDrawer(false);
       }
     });
+
+    /* Trigger Countdown Timer Otomatis dan Push Notification saat input set terisi */
+    function handleSetInputBlur(setNumber) {
+      const inputVal = document.getElementById(`inputSet${setNumber}`).value.trim();
+      if (inputVal !== "" && parseInt(inputVal, 10) >= 0) {
+        startRestCountdown(300); // Hardcoded 5 menit (300 detik)
+      }
+    }
+
+    function startRestCountdown(durationSeconds) {
+      const widget = document.getElementById("timerWidget");
+      const counterEl = document.getElementById("timerCountdown");
+      if (!widget || !counterEl) return;
+
+      widget.classList.remove("hidden");
+      if (activeRestTimer) clearInterval(activeRestTimer);
+
+      let remaining = durationSeconds;
+      
+      function updateDisplay() {
+        let mins = Math.floor(remaining / 60);
+        let secs = remaining % 60;
+        counterEl.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+
+      updateDisplay();
+
+      activeRestTimer = setInterval(() => {
+        remaining--;
+        updateDisplay();
+        if (remaining <= 0) {
+          clearInterval(activeRestTimer);
+          widget.classList.add("hidden");
+          showToast("Waktu istirahat selesai! Silakan lanjut ke set berikutnya.", "success", 4000);
+          triggerPushNotification("CoreGrip Rest Timer", "Waktu istirahat selesai! Waktunya set latihan berikutnya.");
+        }
+      }, 1000);
+    }
+
+    function triggerPushNotification(title, body) {
+      if (!("Notification" in window)) return;
+      if (Notification.permission === "granted") {
+        new Notification(title, { body });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification(title, { body });
+          }
+        });
+      }
+    }
 
     function calculateNextWeekLoadQB13(exercise, targetRepsStr, currentLoad, repsArr, catatan) {
       if (!targetRepsStr) return currentLoad;
@@ -1586,11 +1647,26 @@
 
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
-      const projInput = document.getElementById("inputProject").value.trim() || "0";
+
+      // Validasi aturan: Kolom week dan body weight wajib terisi
+      const weekVal = document.getElementById("inputProject").value.trim();
+      const bwVal = document.getElementById("inputBodyWeight").value.trim();
+      if (!weekVal || !bwVal) {
+        showToast("Kolom Week Number dan Body Weight wajib diisi!", "error", 4000);
+        await showModernAlert("Kolom Week Number dan Body Weight masih kosong. Harap isi kedua kolom tersebut untuk menyimpan record latihan.", "Validasi Gagal", "alert-circle");
+        if (!weekVal) {
+          document.getElementById("inputProject").focus();
+        } else {
+          document.getElementById("inputBodyWeight").focus();
+        }
+        return;
+      }
+
+      const projInput = weekVal;
       currentProject = `Week ${projInput}`;
 
       const currentDaySession = document.getElementById("inputDaySession").value;
-      const currentBodyWeight = document.getElementById("inputBodyWeight").value;
+      const currentBodyWeight = bwVal;
       const currentExercise = document.getElementById("inputExercise").value;
 
       const newRow = {
@@ -2167,14 +2243,6 @@
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
-      
-      document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
-      toggleMobileDrawer(false);
-
-      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
