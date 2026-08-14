@@ -732,6 +732,37 @@
       drawer.classList.toggle("hidden");
     }
 
+    function handleLogout() {
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+
+      document.getElementById("headerNavTabs").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.add("hidden");
+
+      document.getElementById("mobileNavWorkoutBtn").classList.add("hidden");
+      document.getElementById("mobileNavWorkoutBtn").classList.remove("flex");
+      document.getElementById("mobileNavAnalyticsBtn").classList.add("hidden");
+      document.getElementById("mobileNavAnalyticsBtn").classList.remove("flex");
+      document.getElementById("mobileSignOutBtn").classList.add("hidden");
+      document.getElementById("mobileSignOutBtn").classList.remove("flex");
+
+      document.getElementById("syncStatus").classList.add("hidden");
+      document.getElementById("syncStatus").classList.remove("flex");
+
+      const drawer = document.getElementById("mobileDrawer");
+      if (!drawer.classList.contains("hidden")) {
+        drawer.classList.add("hidden");
+      }
+
+      showToast("Signed out successfully.", "info");
+    }
+
     function calculateNextWeekLoadQB13(exercise, targetRepsStr, currentLoad, repsArr, catatan) {
       if (!targetRepsStr) return currentLoad;
       const parts = targetRepsStr.split("-").map(n => parseInt(n.trim(), 10));
