@@ -208,7 +208,7 @@
         </button>
 
         <!-- Desktop Sign Out Button -->
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-red-600 hover:bg-red-700 active:bg-blue-600 focus:bg-blue-600 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
       </div>
@@ -222,7 +222,7 @@
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
-      <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer();" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 flex items-center gap-2">
+      <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer();" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 active:bg-blue-600 focus:bg-blue-600 flex items-center gap-2">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
