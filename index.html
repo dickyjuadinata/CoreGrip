@@ -251,7 +251,7 @@
           <input type="password" inputmode="numeric" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
         <button type="submit" id="btnLoginSubmit" class="w-full bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
-          Sign In to Portal
+          Sign In to
         </button>
       </form>
 
@@ -281,7 +281,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.1" id="test_load_bench" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_bench" placeholder="10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_bench">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
@@ -301,7 +301,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.1" id="test_load_squat" placeholder="20" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_squat" placeholder="10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_squat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
@@ -321,7 +321,7 @@
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                  <input type="number" inputmode="decimal" step="0.1" id="test_load_lat" placeholder="5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
+                  <input type="number" inputmode="decimal" step="0.1" id="test_load_lat" placeholder="2.5" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_reps_lat">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
@@ -361,12 +361,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" oninput="checkFormActivation()" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -404,7 +404,7 @@
               </div>
 
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
+                <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets:</span>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
                   <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
                   <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
@@ -684,59 +684,71 @@
     let activeRestTimer = null;
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 0, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetNext: true },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises": { session: "Mon - Upper A", reps: "8-10", rest: "1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "45-60 sec", restSeconds: 0, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetNext: true },
       "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: true },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
       "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "60-90 sec", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises": { session: "Thu - Upper B", reps: "10-12", rest: "1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
     let initialBenchmarkLoads = {
-      "Barbell Bench Press": 20.0,
-      "Chest Supported Dumbbell Row": 20.0,
+      "Barbell Bench Press": 10.0,
+      "Chest Supported Dumbbell Row": 2.5,
       "Bodyweight Pull-Ups": 0.0,
-      "Barbell Overhead Press": 12.5,
-      "Dumbbell Lateral Raises - A": 5.0,
-      "Triceps Pressdowns (Cable)": 7.5,
-      "Dumbbell Hammer Curl": 7.5,
-      "Barbell Squats": 20.0,
-      "Romanian Deadlifts": 17.5,
-      "Standing Barbell Calf Raises - A": 12.5,
-      "Incline Dumbbell Press": 12.5,
-      "Bent-over Barbell Row": 20.0,
-      "Seated Dumbbell Press": 10.0,
-      "Face Pulls (Cable)": 10.0,
-      "Dumbbell Lateral Raises - B": 5.0,
-      "Barbell Curl": 7.5,
-      "Cable Overhead Triceps Extension": 7.5,
-      "Conventional Deadlift": 25.0,
-      "Dumbbell Bulgarian Split Squat": 7.5,
-      "Standing Barbell Calf Raises - B": 12.5
+      "Barbell Overhead Press": 10.0,
+      "Dumbbell Lateral Raises": 2.5,
+      "Triceps Pressdowns (Cable)": 0.0,
+      "Dumbbell Hammer Curl": 0.0,
+      "Barbell Squats": 10.0,
+      "Romanian Deadlifts": 10.0,
+      "Standing Barbell Calf Raises - A": 10.0,
+      "Incline Dumbbell Press": 2.5,
+      "Bent-over Barbell Row": 10.0,
+      "Seated Dumbbell Press": 2.5,
+      "Face Pulls (Cable)": 0.0,
+      "Dumbbell Lateral Raises": 2.5,
+      "Barbell Curl": 10.0,
+      "Cable Overhead Triceps Extension": 0.0,
+      "Conventional Deadlift": 10.0,
+      "Dumbbell Bulgarian Split Squat": 2.5,
+      "Standing Barbell Calf Raises": 10.0
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
     function checkFormActivation() {
       const weekVal = document.getElementById("inputProject").value.trim();
-      const bwVal = document.getElementById("inputBodyWeight").value.trim();
+      const bwInput = document.getElementById("inputBodyWeight");
+      
+      // Kolom body weight harus disable sebelum kolom week number di isi
+      if (weekVal !== "") {
+        bwInput.disabled = false;
+        bwInput.classList.remove("opacity-50", "cursor-not-allowed");
+      } else {
+        bwInput.disabled = true;
+        bwInput.classList.add("opacity-50", "cursor-not-allowed");
+        bwInput.value = "";
+      }
+
+      const bwVal = bwInput.value.trim();
       const form = document.getElementById("formWorkout");
       if (!form) return;
       const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
@@ -2171,29 +2183,22 @@
     function renderAdminUsers(users) {
       const tbody = document.getElementById("adminUsersTable");
       tbody.innerHTML = "";
-
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No users found.</td></tr>`;
         return;
       }
 
       users.forEach(u => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-
-        let statusBadge = u.status === "ACTIVE" 
-          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
-          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
-
-        let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
-        if (u.status === "ACTIVE") {
-          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
-        }
-
         tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.user}</td>
-          <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center">${actionBtns}</td>
+          <td class="p-3 font-semibold text-xs">${u.username} ${u.isAdmin ? '<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md ml-1 font-bold">Admin</span>' : ''}</td>
+          <td class="p-3 text-xs"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700">Active</span></td>
+          <td class="p-3 text-center">
+            <button onclick="viewUserProfile('${u.username}')" class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition">
+              View Stats
+            </button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -2202,68 +2207,62 @@
     function renderAdminLogs(logs) {
       const tbody = document.getElementById("adminLogsTable");
       tbody.innerHTML = "";
-      if (logs.length === 0) {
+      if (!logs || logs.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
         return;
       }
-      logs.forEach(l => {
+
+      logs.slice(-50).reverse().forEach(l => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold">${l.user || '-'}</td>
-          <td class="p-2.5">${l.activity || '-'}</td>
+          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
+          <td class="p-2.5 text-xs">${l.action || '-'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    async function approveUserModal(username) {
-      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve User", "user-check");
-      if (!confirmed) return;
-
-      showSpinner("Approving user account...");
-      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser: username });
-      hideSpinner();
-
-      if (res.status === "success") {
-        showToast(`User ${username} approved successfully.`, "success");
-        loadAdminData();
-      } else {
-        showToast(res.message || "Failed to approve user.", "error");
-      }
-    }
-
-    async function viewUserDetailModal(username) {
-      showSpinner(`Loading stats for ${username}...`);
-      const res = await callApi({ action: "getUserDetail", adminUser: currentUser, targetUser: username });
+    async function viewUserProfile(username) {
+      showSpinner(`Loading profile for ${username}...`);
+      const res = await callApi({ action: "getUserDetail", username: username });
       hideSpinner();
 
       if (res.status === "success") {
         document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: ${username}`;
         
         const overview = document.getElementById("userStatsOverview");
         overview.innerHTML = `
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Status</span><b class="text-sm text-emerald-600">${res.statusUser || 'ACTIVE'}</b></div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Total Workouts Logged</span><b class="text-sm">${res.totalWorkouts || 0} Records</b></div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Account Created</span><b class="text-sm">${res.createdAt || 'N/A'}</b></div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Total Workouts Logged</span>
+            <span class="text-lg font-bold text-blue-600">${res.totalWorkouts || 0}</span>
+          </div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Account Status</span>
+            <span class="text-lg font-bold text-emerald-600">Active</span>
+          </div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs">
+            <span class="themed-text-muted block">Role</span>
+            <span class="text-lg font-bold text-slate-700 dark:text-slate-200">${res.isAdmin ? 'Admin' : 'User'}</span>
+          </div>
         `;
 
         const benchmarksList = document.getElementById("userBenchmarksList");
         benchmarksList.innerHTML = "";
-        const benchObj = res.benchmarks || {};
-        Object.keys(benchObj).forEach(k => {
-          const div = document.createElement("div");
-          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
-          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${k}</span><b class="text-sm">${benchObj[k]} kg</b>`;
+        let bms = res.benchmarks || {};
+        Object.keys(bms).forEach(k => {
+          let div = document.createElement("div");
+          div.className = "themed-subcard p-2 rounded-lg border text-xs flex justify-between";
+          div.innerHTML = `<span class="truncate pr-2">${k}</span><span class="font-bold shrink-0">${bms[k]} kg</span>`;
           benchmarksList.appendChild(div);
         });
 
         lucide.createIcons();
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       } else {
-        showToast(res.message || "Failed to load user details.", "error");
+        showToast("Failed to fetch user profile details.", "error");
       }
     }
 
@@ -2271,11 +2270,17 @@
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
 
-    function handleLogout() {
-      currentUser = null;
-      isAdmin = false;
+    async function handleLogout() {
+      const confirmed = await showModernConfirm("Are you sure you want to sign out?", "Sign Out", "log-out");
+      if (!confirmed) return;
+
       localStorage.removeItem("workout_user");
       localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      workoutRows = [];
+      currentProject = "";
+
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
@@ -2283,6 +2288,8 @@
       document.getElementById("mobileMenuBtn").className = "hidden";
       document.getElementById("signOutBtnHeader").className = "hidden";
       document.getElementById("syncStatus").className = "hidden";
+      
+      document.getElementById("formLogin").reset();
       switchAuthTab('login');
       showToast("Signed out successfully.", "info");
     }
