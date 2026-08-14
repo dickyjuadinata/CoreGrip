@@ -174,7 +174,7 @@
 
   <!-- Header & Navigasi Atas -->
   <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
+    <div class="max-w-7xl mx-auto px-4 lg:px-6 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
         <div class="flex items-center space-x-2">
           <div class="bg-blue-600 p-1.5 rounded-lg shadow-inner shrink-0 flex items-center justify-center">
@@ -186,28 +186,29 @@
         </div>
 
         <!-- Desktop Navigation Tabs (Hidden by default, shown after login) -->
-        <nav id="headerNavTabs" class="hidden items-center space-x-1">
-          <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
+        <nav id="headerNavTabs" class="hidden items-center space-x-1.5">
+          <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2 h-8">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
           </button>
-          <button id="navAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
+          <button id="navAnalyticsBtn" onclick="switchAppTab('analytics')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2 h-8">
             <i data-lucide="line-chart" class="w-3.5 h-3.5"></i> Performance Analytics
           </button>
         </nav>
       </div>
       
-      <div class="flex items-center space-x-3 h-full">
-        <p class="hidden text-xs font-semibold text-gray-300 hover:text-white opacity-90 items-center gap-1.5 cursor-pointer transition bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg border border-white/20 hover:border-white/30 h-8" id="syncStatus" onclick="showSyncDetailModal()">
-          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
+      <div class="flex items-center space-x-2.5 h-full">
+        <!-- Diselaraskan gaya & warna tombol syncStatus dengan tombol workout log, analytics & sign out -->
+        <button id="syncStatus" onclick="showSyncDetailModal()" class="hidden text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 items-center gap-2 h-8 cursor-pointer focus:outline-none">
+          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400 shrink-0"></span>
           <span id="statusText">Online · Synced</span>
-        </p>
+        </button>
 
         <!-- Mobile Hamburger Button -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Desktop Sign Out Button (Styled to match Workout Log & Performance Analytics, hidden until login) -->
+        <!-- Desktop Sign Out Button -->
         <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 items-center gap-2 active:scale-95 h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
@@ -230,15 +231,16 @@
 
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
+  <!-- Dioptimalkan untuk tampilan PC dengan padding & grid responsif -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 lg:p-8 overflow-x-hidden">
 
-    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
+    <div id="authSection" class="max-w-xl mx-auto my-8 lg:my-16 themed-card rounded-2xl shadow-xl overflow-hidden">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
-        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3.5 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3.5 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
       </div>
 
-      <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 space-y-4">
+      <form id="formLogin" onsubmit="submitLogin(event)" class="p-6 lg:p-8 space-y-4">
         <div>
           <label class="block text-xs font-semibold themed-text-muted mb-1.5">Username</label>
           <input type="text" id="loginUsername" required placeholder="Enter your username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="loginPin">
@@ -252,7 +254,7 @@
         </button>
       </form>
 
-      <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 space-y-4 hidden">
+      <form id="formRegister" onsubmit="submitRegister(event)" class="p-6 lg:p-8 space-y-4 hidden">
         <div>
           <label class="block text-xs font-semibold themed-text-muted mb-1.5">New Username</label>
           <input type="text" id="regUsername" required placeholder="Choose a username" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="regPin">
@@ -342,18 +344,19 @@
     <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
       <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
         
-        <div id="tabWorkout" class="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-6 w-full max-w-full">
-          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-5 md:p-6 rounded-2xl border space-y-4 transition-all w-full">
+        <div id="tabWorkout" class="p-4 sm:p-5 lg:p-7 space-y-5 md:space-y-6 w-full max-w-full">
+          <form id="formWorkout" onsubmit="addOrUpdateWorkout(event)" class="themed-subcard p-4 sm:p-6 lg:p-7 rounded-2xl border space-y-5 transition-all w-full">
             <div class="flex justify-between items-center flex-wrap gap-2">
-              <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i> Log / Edit Exercise Record
+              <h3 class="font-bold text-xs sm:text-sm lg:text-base flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                <i data-lucide="plus-circle" class="w-4 h-4 lg:w-5 lg:h-5"></i> Log / Edit Exercise Record
               </h3>
               <span id="todayBadge" class="hidden text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 shadow-sm uppercase">
                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Today's Session
               </span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
+            <!-- Grid Dioptimalkan untuk PC (6 kolom pada Layar Besar) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5 lg:gap-4">
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
@@ -391,18 +394,19 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-start">
-              <div>
+            <!-- Grid Sub-Card Dioptimalkan untuk Desktop (3 kolom sejajar) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 lg:gap-4 items-stretch">
+              <div class="flex flex-col justify-between">
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2.5 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
 
-              <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+              <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1 flex flex-col justify-between">
                 <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Warm-up Sets (Auto FLOOR 2.5):</span>
-                <div class="grid grid-cols-2 gap-1 text-[11px] font-medium" id="warmupPreview">
+                <div class="grid grid-cols-2 gap-1.5 text-[11px] font-medium" id="warmupPreview">
                   <div class="themed-input p-1.5 rounded-lg border">Set 1: -</div>
                   <div class="themed-input p-1.5 rounded-lg border">Set 2: -</div>
                   <div class="themed-input p-1.5 rounded-lg border">Set 3: -</div>
@@ -410,9 +414,9 @@
                 </div>
               </div>
 
-              <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+              <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1 flex flex-col justify-between">
                 <span class="font-semibold block mb-1 text-[11px] text-blue-600 dark:text-blue-400">Side Load Calculation:</span>
-                <div class="font-bold text-sm" id="sideLoadDisplay">- kg / side</div>
+                <div class="font-bold text-sm lg:text-base my-auto" id="sideLoadDisplay">- kg / side</div>
                 <span class="text-[10px] themed-text-muted block" id="sideLoadFormulaNotice">*Calculated automatically based on implement type</span>
               </div>
             </div>
@@ -424,7 +428,7 @@
 
             <div>
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 lg:gap-4">
                 <div id="containerSet1">
                   <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
                   <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
@@ -449,25 +453,26 @@
               <input type="text" id="inputCatatan" placeholder="RPE, technical form, fatigue notes..." class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="btnSaveWorkout" data-optional="true">
             </div>
 
-            <div class="flex justify-end items-center gap-2 pt-2">
-              <button type="button" onclick="resetForm()" class="px-4 py-2 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
-              <button type="submit" id="btnSaveWorkout" class="bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95">
-                Save Exercise Record
+            <div class="flex justify-end items-center gap-3 pt-2">
+              <button type="button" onclick="resetForm()" class="px-5 py-2.5 text-xs font-semibold themed-text-muted hover:text-blue-600 transition active:scale-95">Reset</button>
+              <button type="submit" id="btnSaveWorkout" class="bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-blue-500/30 active:scale-95 flex items-center gap-2">
+                <i data-lucide="save" class="w-4 h-4"></i> Save Exercise Record
               </button>
             </div>
           </form>
 
+          <!-- Layout Tabel Dioptimalkan untuk PC -->
           <div class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
-            <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
-              <table class="w-full text-left text-sm min-w-[640px] border-collapse">
+            <div class="overflow-x-auto max-h-[550px] custom-scrollbar relative w-full">
+              <table class="w-full text-left text-sm border-collapse">
                 <thead class="themed-table-header text-xs font-semibold sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
                   <tr>
-                    <th class="px-4 py-3.5">Day / Session</th>
-                    <th class="px-4 py-3.5">Exercise</th>
+                    <th class="px-4 py-3.5 lg:px-6">Day / Session</th>
+                    <th class="px-4 py-3.5 lg:px-6">Exercise</th>
                     <th class="px-4 py-3.5 text-center">Target</th>
-                    <th class="px-4 py-3.5 text-right">Load (Side / Total)</th>
+                    <th class="px-4 py-3.5 lg:px-6 text-right">Load (Side / Total)</th>
                     <th class="px-4 py-3.5 text-center">Reps (Set 1-4)</th>
-                    <th class="px-4 py-3.5 text-right text-emerald-600 dark:text-emerald-400">Next Load (kg)</th>
+                    <th class="px-4 py-3.5 lg:px-6 text-right text-emerald-600 dark:text-emerald-400">Next Load (kg)</th>
                     <th class="px-4 py-3.5 text-center">Actions</th>
                   </tr>
                 </thead>
@@ -478,11 +483,12 @@
           </div>
         </div>
 
-        <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden w-full max-w-full">
+        <div id="tabAnalytics" class="p-4 sm:p-5 lg:p-7 space-y-6 hidden w-full max-w-full">
           <div id="analyticsAlerts" class="space-y-3"></div>
 
+          <!-- Modul Analytics Grid Dioptimalkan untuk Layar PC -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+            <div class="themed-subcard p-4 lg:p-5 rounded-2xl border space-y-3 w-full">
               <div class="flex justify-between items-center flex-wrap gap-2">
                 <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                   <i data-lucide="trending-up" class="w-4 h-4"></i> Module 1: Dynamic e1RM Progression
@@ -494,37 +500,37 @@
                   <option value="Barbell Overhead Press">Barbell Overhead Press</option>
                 </select>
               </div>
-              <div class="h-64 w-full">
+              <div class="h-64 lg:h-72 w-full">
                 <canvas id="chartE1RM"></canvas>
               </div>
               <p class="text-[11px] themed-text-muted italic">*e1RM calculated using Brzycki and Wathan formulas.</p>
             </div>
 
-            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+            <div class="themed-subcard p-4 lg:p-5 rounded-2xl border space-y-3 w-full">
               <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
               </h3>
-              <div class="h-64 w-full">
+              <div class="h-64 lg:h-72 w-full">
                 <canvas id="chartVolumeRpe"></canvas>
               </div>
               <p class="text-[11px] themed-text-muted italic">*Compares total external work done (kg) against internal fatigue.</p>
             </div>
 
-            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+            <div class="themed-subcard p-4 lg:p-5 rounded-2xl border space-y-3 w-full">
               <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
               </h3>
-              <div class="h-64 w-full flex justify-center">
+              <div class="h-64 lg:h-72 w-full flex justify-center">
                 <canvas id="chartMuscleDistribution"></canvas>
               </div>
               <p class="text-[11px] themed-text-muted italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week.</p>
             </div>
 
-            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+            <div class="themed-subcard p-4 lg:p-5 rounded-2xl border space-y-3 w-full">
               <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
               </h3>
-              <div class="h-64 w-full">
+              <div class="h-64 lg:h-72 w-full">
                 <canvas id="chartACWR"></canvas>
               </div>
               <p class="text-[11px] themed-text-muted italic">*Acute to Chronic Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
@@ -1245,10 +1251,10 @@
       if (!ind || !txt) return;
 
       if (navigator.onLine) {
-        ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400";
+        ind.className = "w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400 shrink-0";
         txt.innerText = "Online · Synced";
       } else {
-        ind.className = "w-2 h-2 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500";
+        ind.className = "w-2 h-2 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500 shrink-0";
         txt.innerText = pendingQueueCount > 0 ? `Offline · [${pendingQueueCount}] pending` : "Offline · Saved locally";
       }
     }
@@ -1332,13 +1338,13 @@
       if (tab === 'login') {
         document.getElementById("formLogin").classList.remove("hidden");
         document.getElementById("formRegister").classList.add("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3.5 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3.5 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
       } else {
         document.getElementById("formLogin").classList.add("hidden");
         document.getElementById("formRegister").classList.remove("hidden");
-        document.getElementById("tabLoginBtn").className = "flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
-        document.getElementById("tabRegisterBtn").className = "flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabLoginBtn").className = "flex-1 py-3.5 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center";
+        document.getElementById("tabRegisterBtn").className = "flex-1 py-3.5 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center";
       }
     }
 
@@ -1550,13 +1556,13 @@
         }
 
         tr.innerHTML = `
-          <td class="px-4 py-3 font-medium text-xs">${r.day_session}</td>
-          <td class="px-4 py-3 text-xs font-semibold">${r.exercise} <span class="block text-[10px] themed-text-muted font-normal">${r.catatan || ''}</span></td>
-          <td class="px-4 py-3 text-center text-xs font-medium">${r.target_reps}</td>
-          <td class="px-4 py-3 text-right text-xs font-bold">${loadDisplay}</td>
-          <td class="px-4 py-3 text-center text-xs font-mono">${r.set1_reps}, ${r.set2_reps}, ${r.set3_reps}, ${r.set4_reps}</td>
-          <td class="px-4 py-3 text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">${r.next_load} kg</td>
-          <td class="px-4 py-3 text-center">
+          <td class="px-4 py-3.5 lg:px-6 font-medium text-xs">${r.day_session}</td>
+          <td class="px-4 py-3.5 lg:px-6 text-xs font-semibold">${r.exercise} <span class="block text-[10px] themed-text-muted font-normal">${r.catatan || ''}</span></td>
+          <td class="px-4 py-3.5 text-center text-xs font-medium">${r.target_reps}</td>
+          <td class="px-4 py-3.5 lg:px-6 text-right text-xs font-bold">${loadDisplay}</td>
+          <td class="px-4 py-3.5 text-center text-xs font-mono">${r.set1_reps}, ${r.set2_reps}, ${r.set3_reps}, ${r.set4_reps}</td>
+          <td class="px-4 py-3.5 lg:px-6 text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">${r.next_load} kg</td>
+          <td class="px-4 py-3.5 text-center">
             <div class="flex items-center justify-center gap-1.5">
               <button onclick="editWorkoutRow(${idx})" class="p-1 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 transition" title="Edit">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
@@ -1747,8 +1753,8 @@
         analyticsTab.classList.add("hidden");
 
         // Styling desktop buttons
-        navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
-        navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
+        navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2 h-8";
+        navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2 h-8";
 
         // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
@@ -1758,8 +1764,8 @@
         analyticsTab.classList.remove("hidden");
 
         // Styling desktop buttons
-        navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
-        navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
+        navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2 h-8";
+        navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2 h-8";
 
         // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
@@ -2203,6 +2209,8 @@
 
       document.getElementById("syncStatus").classList.add("hidden");
       document.getElementById("syncStatus").classList.remove("flex");
+
+      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
