@@ -185,8 +185,8 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Hidden by default, shown after login) -->
-        <nav id="headerNavTabs" class="hidden items-center space-x-1.5">
+        <!-- Desktop Navigation Tabs (Hidden on mobile, hidden by default until login) -->
+        <nav id="headerNavTabs" class="hidden md:flex items-center space-x-1.5">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2 h-8">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
           </button>
@@ -209,7 +209,7 @@
         </button>
 
         <!-- Desktop Sign Out Button -->
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 items-center gap-2 active:scale-95 h-8">
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 items-center gap-2 active:scale-95 h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
       </div>
@@ -1480,12 +1480,10 @@
       // Tampilkan Navigasi Header Desktop
       const headerNavTabs = document.getElementById("headerNavTabs");
       headerNavTabs.classList.remove("hidden");
-      headerNavTabs.classList.add("flex");
 
       // Tampilkan Sign Out Header Desktop
       const signOutBtnHeader = document.getElementById("signOutBtnHeader");
       signOutBtnHeader.classList.remove("hidden");
-      signOutBtnHeader.classList.add("flex");
 
       // Tampilkan Navigasi & Sign Out Mobile
       const mobileNavWorkoutBtn = document.getElementById("mobileNavWorkoutBtn");
@@ -2177,40 +2175,6 @@
       });
       lucide.createIcons();
       container.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    /* Menyembunyikan navigasi & tombol Sign Out saat Logout */
-    function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
-      currentUser = null;
-      isAdmin = false;
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("authSection").classList.remove("hidden");
-
-      // Sembunyikan Navigasi Header & Sign Out
-      document.getElementById("headerNavTabs").classList.add("hidden");
-      document.getElementById("headerNavTabs").classList.remove("flex");
-      document.getElementById("signOutBtnHeader").classList.add("hidden");
-      document.getElementById("signOutBtnHeader").classList.remove("flex");
-
-      // Sembunyikan Navigasi & Sign Out Mobile
-      document.getElementById("mobileNavWorkoutBtn").classList.add("hidden");
-      document.getElementById("mobileNavWorkoutBtn").classList.remove("flex");
-      document.getElementById("mobileNavAnalyticsBtn").classList.add("hidden");
-      document.getElementById("mobileNavAnalyticsBtn").classList.remove("flex");
-      document.getElementById("mobileSignOutBtn").classList.add("hidden");
-      document.getElementById("mobileSignOutBtn").classList.remove("flex");
-
-      document.getElementById("syncStatus").classList.add("hidden");
-      document.getElementById("syncStatus").classList.remove("flex");
-
-      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
