@@ -361,7 +361,7 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" oninput="checkFormActivation()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
@@ -734,6 +734,7 @@
     let lastSelectedSession = "";
     let lastBodyWeight = "";
     let activeRestTimer = null;
+    let supersetCurrentRound = 1;
 
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
@@ -835,11 +836,25 @@
 
     /* Pengecekan Superset Selesai & Timer Countdown Otomatis */
     function checkSupersetCompletion() {
-      const ex1Set1 = document.getElementById("supersetEx1Set1").value.trim();
-      const ex2Set1 = document.getElementById("supersetEx2Set1").value.trim();
+      const ex1SetInput = document.getElementById("supersetEx1Set1");
+      const ex2SetInput = document.getElementById("supersetEx2Set1");
+      const ex1SetVal = ex1SetInput.value.trim();
+      const ex2SetVal = ex2SetInput.value.trim();
 
-      if (ex1Set1 !== "" && ex2Set1 !== "" && parseInt(ex1Set1, 10) >= 0 && parseInt(ex2Set1, 10) >= 0) {
-        startRestCountdown(60);
+      if (ex1SetVal !== "" && ex2SetVal !== "" && parseInt(ex1SetVal, 10) >= 0 && parseInt(ex2SetVal, 10) >= 0) {
+        if (supersetCurrentRound < 3) {
+          startRestCountdown(60, () => {
+            supersetCurrentRound++;
+            document.getElementById("supersetEx1Title").innerText = `${document.getElementById("supersetEx1Title").innerText.split(' (')[0]} (Round ${supersetCurrentRound})`;
+            document.getElementById("supersetEx2Title").innerText = `${document.getElementById("supersetEx2Title").innerText.split(' (')[0]} (Round ${supersetCurrentRound})`;
+            ex1SetInput.value = "";
+            ex2SetInput.value = "";
+            ex1SetInput.focus();
+            showToast(`Starting Round ${supersetCurrentRound}!`, "info", 3000);
+          });
+        } else {
+          startRestCountdown(60);
+        }
       }
     }
 
@@ -861,7 +876,7 @@
       }
     }
 
-    function startRestCountdown(durationSeconds) {
+    function startRestCountdown(durationSeconds, onCompleteCallback = null) {
       const widget = document.getElementById("timerWidget");
       const counterEl = document.getElementById("timerCountdown");
       if (!widget || !counterEl) return;
@@ -885,8 +900,11 @@
         if (remaining <= 0) {
           clearInterval(activeRestTimer);
           widget.classList.add("hidden");
-          showToast("Rest time finished! Please proceed to the next set.", "success", 4000);
+          showToast("Rest time finished!", "success", 4000);
           triggerPushNotification("CoreGrip Rest Timer", "Rest time finished! Time for your next exercise set.");
+          if (typeof onCompleteCallback === 'function') {
+            onCompleteCallback();
+          }
         }
       }, 1000);
     }
@@ -1135,6 +1153,7 @@
     function onExerciseSelect(exVal) {
       if (!exVal) return;
       isManualLoad = false;
+      supersetCurrentRound = 1;
       const preset = exercisePresets[exVal];
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
@@ -1149,21 +1168,23 @@
           standardLoadContainer.classList.add("hidden");
           standardSetsContainer.classList.add("hidden");
 
-          document.getElementById("supersetEx1Title").innerText = exVal;
+          document.getElementById("supersetEx1Title").innerText = `${exVal} (Round 1)`;
           document.getElementById("supersetEx1Reps").innerText = `Target: ${preset.reps}`;
           
           let autoLoad1 = get4WeeksHistoryLoad(exVal, currentProject);
           document.getElementById("supersetEx1Load").value = autoLoad1;
           document.getElementById("supersetEx1SideLoad").value = calculateSideWeight(exVal, autoLoad1).toFixed(2);
+          document.getElementById("supersetEx1Set1").value = "";
 
           const pairedEx = preset.pairedWith;
-          document.getElementById("supersetEx2Title").innerText = pairedEx;
+          document.getElementById("supersetEx2Title").innerText = `${pairedEx} (Round 1)`;
           if (pairedEx && exercisePresets[pairedEx]) {
             document.getElementById("supersetEx2Reps").innerText = `Target: ${exercisePresets[pairedEx].reps}`;
           }
           let autoLoad2 = get4WeeksHistoryLoad(pairedEx, currentProject);
           document.getElementById("supersetEx2Load").value = autoLoad2;
           document.getElementById("supersetEx2SideLoad").value = calculateSideWeight(pairedEx, autoLoad2).toFixed(2);
+          document.getElementById("supersetEx2Set1").value = "";
 
         } else {
           supersetContainer.classList.add("hidden");
@@ -1217,11 +1238,11 @@
     function onSupersetLoadInput(exNum) {
       if (exNum === 1) {
         const load = parseFloat(document.getElementById("supersetEx1Load").value) || 0;
-        const exName = document.getElementById("supersetEx1Title").innerText;
+        const exName = document.getElementById("supersetEx1Title").innerText.split(' (')[0];
         document.getElementById("supersetEx1SideLoad").value = calculateSideWeight(exName, load).toFixed(2);
       } else {
         const load = parseFloat(document.getElementById("supersetEx2Load").value) || 0;
-        const exName = document.getElementById("supersetEx2Title").innerText;
+        const exName = document.getElementById("supersetEx2Title").innerText.split(' (')[0];
         document.getElementById("supersetEx2SideLoad").value = calculateSideWeight(exName, load).toFixed(2);
       }
     }
@@ -2060,6 +2081,134 @@
       }
     }
 
+    async function handleLogout() {
+      const confirmed = await showModernConfirm("Are you sure you want to sign out?", "Sign Out", "log-out");
+      if (!confirmed) return;
+
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      currentProject = "";
+      workoutRows = [];
+
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("headerNavTabs").className = "hidden";
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden";
+      document.getElementById("signOutBtnHeader").className = "hidden";
+
+      showToast("Successfully signed out.", "success");
+    }
+
+    async function loadAdminData() {
+      showSpinner("Loading admin data...");
+      const res = await callApi({ action: "adminGetUsers" });
+      hideSpinner();
+
+      const usersTable = document.getElementById("adminUsersTable");
+      const logsTable = document.getElementById("adminLogsTable");
+      usersTable.innerHTML = "";
+      logsTable.innerHTML = "";
+
+      if (res && res.status === "success") {
+        const users = res.users || [];
+        if (users.length === 0) {
+          usersTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        } else {
+          users.forEach(u => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+            tr.innerHTML = `
+              <td class="p-3 font-semibold text-xs">${u.username}</td>
+              <td class="p-3 text-xs"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400'}">${u.status}</span></td>
+              <td class="p-3 text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition">View Stats</button>
+                  ${u.status !== 'approved' ? `<button onclick="approveUser('${u.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>` : ''}
+                </div>
+              </td>
+            `;
+            usersTable.appendChild(tr);
+          });
+        }
+
+        const logs = res.logs || [];
+        if (logs.length === 0) {
+          logsTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No audit logs available.</td></tr>`;
+        } else {
+          logs.forEach(l => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+            tr.innerHTML = `
+              <td class="p-2.5 font-mono text-[11px]">${l.timestamp}</td>
+              <td class="p-2.5 font-semibold">${l.username}</td>
+              <td class="p-2.5">${l.description}</td>
+            `;
+            logsTable.appendChild(tr);
+          });
+        }
+      } else {
+        usersTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs text-red-500">Failed to load admin console data.</td></tr>`;
+      }
+    }
+
+    async function approveUser(username) {
+      showSpinner(`Approving user ${username}...`);
+      const res = await callApi({ action: "adminApproveUser", username });
+      hideSpinner();
+
+      if (res.status === "success") {
+        showToast(`User ${username} approved successfully.`, "success");
+        loadAdminData();
+      } else {
+        showModernAlert(res.message || "Failed to approve user.", "Error", "alert-circle");
+      }
+    }
+
+    async function viewUserDetail(username) {
+      showSpinner(`Loading profile for ${username}...`);
+      const res = await callApi({ action: "adminGetUserDetail", username });
+      hideSpinner();
+
+      if (res && res.status === "success") {
+        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Stats: ${username}`;
+
+        const statsDiv = document.getElementById("userStatsOverview");
+        statsDiv.innerHTML = `
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Total Workouts Logged</span><b class="text-sm">${res.totalWorkouts || 0}</b></div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Account Status</span><b class="text-sm uppercase text-emerald-600">${res.status || 'Active'}</b></div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Last Active</span><b class="text-sm">${res.lastActive || 'Today'}</b></div>
+        `;
+
+        const benchmarksList = document.getElementById("userBenchmarksList");
+        benchmarksList.innerHTML = "";
+        const bMarks = res.benchmarks || {};
+        Object.keys(bMarks).forEach(ex => {
+          const item = document.createElement("div");
+          item.className = "themed-input p-2 rounded-lg border text-xs";
+          item.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><b>${bMarks[ex]} kg</b>`;
+          benchmarksList.appendChild(item);
+        });
+        lucide.createIcons();
+        document.getElementById("adminUserDetailContainer").scrollIntoView({ behavior: 'smooth' });
+      } else {
+        showModernAlert("Failed to load user details.", "Error", "alert-circle");
+      }
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    }
+
+    let chartE1RMInstance = null;
+    let chartVolumeRpeInstance = null;
+    let chartMuscleDistributionInstance = null;
+    let chartACWRInstance = null;
+
     function renderAnalyticsDashboard() {
       renderE1RMChart();
       renderVolumeRpeChart();
@@ -2068,44 +2217,72 @@
     }
 
     function renderE1RMChart() {
-      const ctx = document.getElementById('chartE1RM');
+      const ctx = document.getElementById('chartE1RM')?.getContext('2d');
       if (!ctx) return;
-      if (window.e1rmChartInstance) window.e1rmChartInstance.destroy();
 
-      window.e1rmChartInstance = new Chart(ctx, {
+      const selectedEx = document.getElementById('analyticsExerciseFilter')?.value || "Barbell Bench Press";
+      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      let dataPoints = [60, 62.5, 65, 67.5];
+
+      for (let i = 1; i <= 4; i++) {
+        let projName = `Week ${i}`;
+        let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
+        if (localData) {
+          let rows = JSON.parse(localData);
+          let match = rows.find(r => r.exercise === selectedEx);
+          if (match) {
+            let load = match.working_load;
+            let reps = match.set1_reps || 8;
+            let e1rm = load * (1 + reps / 30);
+            dataPoints[i - 1] = Math.round(e1rm * 10) / 10;
+          }
+        }
+      }
+
+      if (chartE1RMInstance) chartE1RMInstance.destroy();
+
+      chartE1RMInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          labels: labels,
           datasets: [{
-            label: 'Estimated 1RM (kg)',
-            data: [60, 62.5, 65, 67.5],
+            label: `${selectedEx} e1RM (kg)`,
+            data: dataPoints,
             borderColor: '#0066FF',
             backgroundColor: 'rgba(0, 102, 255, 0.1)',
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.3
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: 'rgba(200,200,200,0.1)' } },
+            x: { grid: { display: false } }
+          }
         }
       });
     }
 
     function renderVolumeRpeChart() {
-      const ctx = document.getElementById('chartVolumeRpe');
+      const ctx = document.getElementById('chartVolumeRpe')?.getContext('2d');
       if (!ctx) return;
-      if (window.volRpeChartInstance) window.volRpeChartInstance.destroy();
 
-      window.volRpeChartInstance = new Chart(ctx, {
+      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      let volumeData = [4500, 4800, 5100, 5300];
+
+      if (chartVolumeRpeInstance) chartVolumeRpeInstance.destroy();
+
+      chartVolumeRpeInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Upper A', 'Lower A', 'Upper B', 'Lower B'],
+          labels: labels,
           datasets: [{
             label: 'Volume Load (kg)',
-            data: [4500, 5200, 4800, 5500],
+            data: volumeData,
             backgroundColor: '#3b82f6',
             borderRadius: 6
           }]
@@ -2113,132 +2290,68 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: 'rgba(200,200,200,0.1)' } },
+            x: { grid: { display: false } }
+          }
         }
       });
     }
 
     function renderMuscleDistributionChart() {
-      const ctx = document.getElementById('chartMuscleDistribution');
+      const ctx = document.getElementById('chartMuscleDistribution')?.getContext('2d');
       if (!ctx) return;
-      if (window.muscleChartInstance) window.muscleChartInstance.destroy();
 
-      window.muscleChartInstance = new Chart(ctx, {
+      if (chartMuscleDistributionInstance) chartMuscleDistributionInstance.destroy();
+
+      chartMuscleDistributionInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ['Chest', 'Back', 'Quads', 'Deltoids', 'Arms'],
+          labels: ['Chest', 'Back', 'Quads', 'Deltoids', 'Arms', 'Calves'],
           datasets: [{
-            data: [14, 16, 12, 10, 12],
-            backgroundColor: ['#0066FF', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    }
-
-    function renderACWRChart() {
-      const ctx = document.getElementById('chartACWR');
-      if (!ctx) return;
-      if (window.acwrChartInstance) window.acwrChartInstance.destroy();
-
-      window.acwrChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-          datasets: [{
-            label: 'ACWR Ratio',
-            data: [0.95, 1.05, 1.15, 1.0],
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true
+            data: [14, 16, 12, 15, 10, 8],
+            backgroundColor: ['#0066FF', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
         }
       });
     }
 
-    async function loadAdminData() {
-      showSpinner("Loading admin console data...");
-      const res = await callApi({ action: "adminGetUsers" });
-      hideSpinner();
+    function renderACWRChart() {
+      const ctx = document.getElementById('chartACWR')?.getContext('2d');
+      if (!ctx) return;
 
-      const tbody = document.getElementById("adminUsersTable");
-      tbody.innerHTML = "";
+      if (chartACWRInstance) chartACWRInstance.destroy();
 
-      let users = res.users || ["Dicky", "AdminUser"];
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        tr.innerHTML = `
-          <td class="p-3 font-semibold">${u}</td>
-          <td class="p-3"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">Active</span></td>
-          <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+      chartACWRInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [{
+            label: 'ACWR Ratio',
+            data: [0.95, 1.05, 1.15, 1.02],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { min: 0.5, max: 2.0, grid: { color: 'rgba(200,200,200,0.1)' } },
+            x: { grid: { display: false } }
+          }
+        }
       });
-
-      loadAdminAuditLogs();
-    }
-
-    async function loadAdminAuditLogs() {
-      const logsTbody = document.getElementById("adminLogsTable");
-      logsTbody.innerHTML = `
-        <tr><td class="p-2.5">${new Date().toLocaleString()}</td><td class="p-2.5">${currentUser}</td><td class="p-2.5">System accessed admin console successfully.</td></tr>
-      `;
-    }
-
-    function viewUserDetail(username) {
-      document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
-      
-      const statsOverview = document.getElementById("userStatsOverview");
-      statsOverview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Total Workouts Logged</span><b class="text-sm">12 Sessions</b></div>
-        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Current Active Week</span><b class="text-sm">Week 3</b></div>
-        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Compliance Rate</span><b class="text-sm text-emerald-600">95%</b></div>
-      `;
-
-      const benchmarksList = document.getElementById("userBenchmarksList");
-      benchmarksList.innerHTML = `
-        <div class="p-2 themed-subcard rounded-lg text-xs"><b>Bench Press:</b> 65 kg</div>
-        <div class="p-2 themed-subcard rounded-lg text-xs"><b>Squat:</b> 90 kg</div>
-        <div class="p-2 themed-subcard rounded-lg text-xs"><b>Deadlift:</b> 110 kg</div>
-        <div class="p-2 themed-subcard rounded-lg text-xs"><b>OHP:</b> 45 kg</div>
-      `;
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
-      currentUser = null;
-      isAdmin = false;
-      
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
-      
-      switchAuthTab('login');
-      showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
