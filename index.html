@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="CoreGrip">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/128/10754/10754835.png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/10754/10754835.png">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,12 +29,12 @@
       "description": "CoreGrip - Enterprise-grade resistance training log and auto-progression tracking application.",
       "icons": [
         {
-          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "src": "https://cdn-icons-png.flaticon.com/128/10754/10754835.png",
           "sizes": "192x192",
           "type": "image/png"
         },
         {
-          "src": "https://cdn-icons-png.flaticon.com/512/5200/5200814.png",
+          "src": "https://cdn-icons-png.flaticon.com/128/10754/10754835.png",
           "sizes": "512x512",
           "type": "image/png"
         }
@@ -208,7 +208,7 @@
         </button>
 
         <!-- Desktop Sign Out Button -->
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs text-gray-300 hover:text-white hover:bg-blue-600 active:bg-blue-700 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold h-8">
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs text-gray-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 rounded-lg transition items-center gap-2 font-semibold h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
       </div>
@@ -222,7 +222,7 @@
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
-      <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer();" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-blue-600 flex items-center gap-2">
+      <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer();" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
@@ -2165,9 +2165,13 @@
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
+      
+      // Sembunyikan tombol Sign Out saat kembali ke tampilan Auth/Logout
       document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("signOutBtnHeader").classList.remove("md:flex");
       document.getElementById("mobileSignOutBtn").classList.add("hidden");
       document.getElementById("syncStatus").classList.add("hidden");
+      
       showToast("Successfully signed out.", "info");
     }
   </script>
