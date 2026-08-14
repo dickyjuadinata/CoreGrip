@@ -729,7 +729,9 @@
 
     function toggleMobileDrawer() {
       const drawer = document.getElementById("mobileDrawer");
-      drawer.classList.toggle("hidden");
+      if (drawer) {
+        drawer.classList.toggle("hidden");
+      }
     }
 
     function handleLogout() {
@@ -741,26 +743,25 @@
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
-
+      
       document.getElementById("headerNavTabs").classList.add("hidden");
       document.getElementById("signOutBtnHeader").classList.add("hidden");
-
-      document.getElementById("mobileNavWorkoutBtn").classList.add("hidden");
-      document.getElementById("mobileNavWorkoutBtn").classList.remove("flex");
-      document.getElementById("mobileNavAnalyticsBtn").classList.add("hidden");
-      document.getElementById("mobileNavAnalyticsBtn").classList.remove("flex");
-      document.getElementById("mobileSignOutBtn").classList.add("hidden");
-      document.getElementById("mobileSignOutBtn").classList.remove("flex");
-
       document.getElementById("syncStatus").classList.add("hidden");
-      document.getElementById("syncStatus").classList.remove("flex");
-
-      const drawer = document.getElementById("mobileDrawer");
-      if (!drawer.classList.contains("hidden")) {
-        drawer.classList.add("hidden");
-      }
-
+      
+      const mobileDrawer = document.getElementById("mobileDrawer");
+      if (mobileDrawer) mobileDrawer.classList.add("hidden");
+      
       showToast("Signed out successfully.", "info");
+    }
+
+    function closeUserDetail() {
+      const container = document.getElementById("adminUserDetailContainer");
+      if (container) container.classList.add("hidden");
+    }
+
+    function closeActionPopover() {
+      const popover = document.getElementById("actionPopover");
+      if (popover) popover.classList.add("hidden");
     }
 
     function calculateNextWeekLoadQB13(exercise, targetRepsStr, currentLoad, repsArr, catatan) {
