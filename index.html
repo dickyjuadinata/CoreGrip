@@ -13,7 +13,6 @@
   <meta name="apple-mobile-web-app-title" content="CoreGrip">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5200/5200814.png">
-  <link id="manifest-placeholder" rel="manifest">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -174,7 +173,7 @@
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative overflow-x-hidden w-full">
 
   <!-- Header & Navigasi Atas -->
-  <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
+  <header id="appHeader" class="hidden themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
         <div class="flex items-center space-x-2">
@@ -198,7 +197,7 @@
       </div>
       
       <div class="flex items-center space-x-3 h-full">
-        <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-white/10 px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
+        <p class="text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:underline transition bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg h-8 text-white font-medium" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
@@ -208,8 +207,8 @@
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
       </div>
     </div>
@@ -221,6 +220,9 @@
       </button>
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
+      </button>
+      <button id="signOutBtnDrawer" onclick="handleLogout(); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 flex items-center gap-2 transition">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
   </header>
@@ -1250,7 +1252,6 @@
       }
     }
 
-    /* Poin 1: Menampilkan Last Synced At agar waktunya muncul */
     function showSyncDetailModal() {
       const timeStr = lastSyncedTime ? lastSyncedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "Not synced yet";
       const statusStr = navigator.onLine ? "Online" : "Offline";
@@ -1466,11 +1467,8 @@
     }
 
     function showAppUI() {
+      document.getElementById("appHeader").classList.remove("hidden");
       document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("signOutBtnHeader").classList.remove("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("flex");
-      document.getElementById("syncStatus").classList.remove("hidden");
-      document.getElementById("syncStatus").classList.add("flex");
 
       if (isAdmin) {
         document.getElementById("adminSection").classList.remove("hidden");
@@ -1708,7 +1706,6 @@
       loadWorkoutData();
     }
 
-    /* Poin 2: Navigasi Atas */
     function switchAppTab(tab) {
       const workoutTab = document.getElementById("tabWorkout");
       const analyticsTab = document.getElementById("tabAnalytics");
@@ -2161,8 +2158,7 @@
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("hidden");
-      document.getElementById("syncStatus").classList.add("hidden");
+      document.getElementById("appHeader").classList.add("hidden");
       showToast("Successfully signed out.", "info");
     }
   </script>
