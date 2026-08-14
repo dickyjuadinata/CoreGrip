@@ -55,7 +55,6 @@
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
-    /* Skema Warna Light Mode Sesuai Permintaan */
     :root {
       --bg-page: #f9fafb;
       --bg-card: #ffffff;
@@ -74,7 +73,6 @@
       --table-header-text: #0066FF;
     }
 
-    /* Skema Warna Dark Mode Sesuai Permintaan */
     @media (prefers-color-scheme: dark) {
       :root {
         --bg-page: #0f172a;
@@ -172,7 +170,6 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative overflow-x-hidden w-full">
 
-  <!-- Header & Navigasi Atas -->
   <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
@@ -185,7 +182,6 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Hidden by default on login page) -->
         <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
@@ -197,25 +193,21 @@
       </div>
       
       <div class="flex items-center space-x-3 h-full">
-        <!-- Online Sync Button (Hidden by default on login page, shown after login) -->
         <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Desktop Sign Out Button (Transparent Background) -->
         <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-transparent hover:bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation -->
     <div id="mobileDrawer" class="hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -224,7 +216,6 @@
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
       <div class="border-t border-gray-800 my-1"></div>
-      <!-- Mobile Sign Out Button (Transparent Background inside Drawer) -->
       <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-red-300 bg-transparent hover:bg-white/10 border border-red-500/30 flex items-center gap-2 transition">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
@@ -361,12 +352,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" oninput="checkFormActivation()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" oninput="checkFormActivation()" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" disabled oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -394,22 +385,21 @@
               </div>
             </div>
 
-            <!-- Panel Superset Terbuka Sekaligus untuk Triceps Pressdown & Dumbbell Hammer Curl / Barbell Curl & Cable Overhead -->
             <div id="supersetContainerDual" class="hidden themed-subcard p-4 rounded-xl border border-blue-400/50 space-y-4">
               <div class="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
                 <i data-lucide="layers" class="w-4 h-4"></i> Superset Active: Dual Exercise Round Input
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Exercise 1 -->
+                <!-- Exercise 1 (Triceps Pressdowns) -->
                 <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border space-y-2">
                   <div class="flex justify-between items-center text-xs font-bold text-blue-600 dark:text-blue-400">
-                    <span id="supersetEx1Title">Exercise 1</span>
+                    <span id="supersetEx1Title">Triceps Pressdowns (Cable)</span>
                     <span id="supersetEx1Reps" class="text-[11px] themed-text-muted">Target: 8-10</span>
                   </div>
                   <div class="grid grid-cols-3 gap-2">
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                      <input type="number" inputmode="decimal" step="0.1" id="supersetEx1Load" oninput="onSupersetLoadInput(1)" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold">
+                      <input type="number" inputmode="decimal" step="0.1" id="supersetEx1Load" oninput="onSupersetLoadInput(1)" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="supersetEx1Set1">
                     </div>
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Side Load</label>
@@ -417,21 +407,21 @@
                     </div>
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Set 1 Reps</label>
-                      <input type="number" inputmode="numeric" step="1" id="supersetEx1Set1" oninput="handleSupersetInputNavigation(1)" placeholder="0" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold text-center">
+                      <input type="number" inputmode="numeric" step="1" id="supersetEx1Set1" oninput="onSupersetInputTyped(1)" placeholder="0" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold text-center enter-nav" data-next="supersetEx2Load">
                     </div>
                   </div>
                 </div>
 
-                <!-- Exercise 2 -->
+                <!-- Exercise 2 (Dumbbell Hammer Curl) -->
                 <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border space-y-2">
                   <div class="flex justify-between items-center text-xs font-bold text-blue-600 dark:text-blue-400">
-                    <span id="supersetEx2Title">Exercise 2</span>
+                    <span id="supersetEx2Title">Dumbbell Hammer Curl</span>
                     <span id="supersetEx2Reps" class="text-[11px] themed-text-muted">Target: 8-10</span>
                   </div>
                   <div class="grid grid-cols-3 gap-2">
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Load (kg)</label>
-                      <input type="number" inputmode="decimal" step="0.1" id="supersetEx2Load" oninput="onSupersetLoadInput(2)" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold">
+                      <input type="number" inputmode="decimal" step="0.1" id="supersetEx2Load" oninput="onSupersetLoadInput(2)" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="supersetEx2Set1">
                     </div>
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Side Load</label>
@@ -439,7 +429,7 @@
                     </div>
                     <div>
                       <label class="text-[10px] themed-text-muted block font-medium">Set 1 Reps</label>
-                      <input type="number" inputmode="numeric" step="1" id="supersetEx2Set1" onblur="checkSupersetCompletion()" placeholder="0" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold text-center">
+                      <input type="number" inputmode="numeric" step="1" id="supersetEx2Set1" oninput="onSupersetInputTyped(2)" placeholder="0" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-bold text-center enter-nav" data-next="btnSaveWorkout">
                     </div>
                   </div>
                 </div>
@@ -477,7 +467,6 @@
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
-            <!-- Countdown Timer Indicator Widget -->
             <div id="timerWidget" class="hidden bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-blue-700 dark:text-blue-300">
               <div class="flex items-center gap-2">
                 <i data-lucide="timer" class="w-4 h-4 animate-pulse"></i>
@@ -487,7 +476,7 @@
             </div>
 
             <div id="standardSetsContainer">
-              <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set (Kolom isi panduan rentang rep range sesuai exercise, misal barbell bench press, isi kolom preset yaitu 6-8 dst):</label>
+              <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span id="labelSet1" class="text-xs font-medium themed-text-muted block mb-1">Set 1 (6-8)</span>
@@ -679,25 +668,6 @@
     </div>
   </div>
 
-  <div id="actionPopover" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" onclick="closeActionPopover()">
-    <div id="actionPopoverMenu" class="absolute bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden w-64 transition-all duration-200" onclick="event.stopPropagation()">
-      <div class="p-1 space-y-1 text-xs font-semibold">
-        <button id="btnMenuEdit" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
-          <span class="text-base">✏️</span> Edit Exercise
-        </button>
-        <button id="btnMenuDeleteExercise" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/70 flex items-center gap-2.5 transition text-slate-700 dark:text-slate-200">
-          <span class="text-base">🗑️</span> Delete Exercise
-        </button>
-      </div>
-      <div class="border-t border-gray-200 dark:border-slate-700/80 my-0.5"></div>
-      <div class="p-1">
-        <button id="btnMenuDeleteSession" class="w-full text-left px-3.5 py-2.5 rounded-xl text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2.5 transition font-semibold">
-          <span class="text-base">🚨</span> Delete Entire Session
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
     <div class="themed-card max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modalCard">
       <div class="flex items-start gap-3">
@@ -736,14 +706,13 @@
     let activeRestTimer = null;
 
     const exercisePresets = {
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetDual: true, pairedWith: "Dumbbell Hammer Curl" },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetDual: true, pairedWith: "Triceps Pressdowns (Cable)" },
-      
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
       "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
       "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
       "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetDual: true, pairedWith: "Dumbbell Hammer Curl" },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetDual: true, pairedWith: "Triceps Pressdowns (Cable)" },
       
       "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
       "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
@@ -796,26 +765,9 @@
         bwInput.classList.remove("opacity-50", "cursor-not-allowed");
       } else {
         bwInput.disabled = true;
-        bwInput.classList.add("opacity-50", "cursor-not-allowed");
         bwInput.value = "";
+        bwInput.classList.add("opacity-50", "cursor-not-allowed");
       }
-
-      const bwVal = bwInput.value.trim();
-      const form = document.getElementById("formWorkout");
-      if (!form) return;
-      
-      const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
-      const isEnabled = (weekVal !== "" && bwVal !== "");
-      elements.forEach(el => {
-        if (el.id !== "inputProject" && el.id !== "inputBodyWeight") {
-          el.disabled = !isEnabled;
-          if (!isEnabled) {
-            el.classList.add("opacity-50", "cursor-not-allowed");
-          } else {
-            el.classList.remove("opacity-50", "cursor-not-allowed");
-          }
-        }
-      });
     }
 
     function toggleMobileDrawer(forceState) {
@@ -846,22 +798,27 @@
       }
     });
 
-    /* Pengecekan Superset Selesai & Timer Countdown Otomatis */
-    function handleSupersetInputNavigation(exNum) {
-      if (exNum === 1) {
-        const val = document.getElementById("supersetEx1Set1").value;
-        if (val !== "") {
-          document.getElementById("supersetEx2Set1").focus();
+    function onSupersetInputTyped(exerciseNum) {
+      if (exerciseNum === 1) {
+        document.getElementById("supersetEx2Load").focus();
+      } else if (exerciseNum === 2) {
+        const ex1Set1 = document.getElementById("supersetEx1Set1").value.trim();
+        const ex2Set1 = document.getElementById("supersetEx2Set1").value.trim();
+
+        if (ex1Set1 !== "" && ex2Set1 !== "") {
+          const currentExercise = document.getElementById("inputExercise").value;
+          const preset = exercisePresets[currentExercise];
+          let restSec = preset && preset.restSeconds !== undefined ? preset.restSeconds : 60;
+          startRestCountdown(restSec);
+          
+          // Auto sync / save setelah ketiga set selesai (diimplementasikan via auto submit form setelah timer/selesai input)
+          const form = document.getElementById("formWorkout");
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+          } else {
+            form.dispatchEvent(new Event('submit', { cancelable: true }));
+          }
         }
-      }
-    }
-
-    function checkSupersetCompletion() {
-      const ex1Set1 = document.getElementById("supersetEx1Set1").value.trim();
-      const ex2Set1 = document.getElementById("supersetEx2Set1").value.trim();
-
-      if (ex1Set1 !== "" && ex2Set1 !== "" && parseInt(ex1Set1, 10) >= 0 && parseInt(ex2Set1, 10) >= 0) {
-        startRestCountdown(60);
       }
     }
 
@@ -908,18 +865,7 @@
           clearInterval(activeRestTimer);
           widget.classList.add("hidden");
           showToast("Rest time finished! Entering Round 2 / Set 2 automatically.", "success", 4000);
-          triggerPushNotification("CoreGrip Rest Timer", "Rest time finished! Entering Round 2 / Set 2 automatically.");
-          
-          const currentEx = document.getElementById("inputExercise").value;
-          const preset = exercisePresets[currentEx];
-          if (preset && preset.supersetDual) {
-            document.getElementById("supersetEx1Set1").focus();
-          } else {
-            const set2Input = document.getElementById("inputSet2");
-            if (set2Input && !set2Input.disabled) {
-              set2Input.focus();
-            }
-          }
+          triggerPushNotification("CoreGrip Rest Timer", "Rest time finished! Entering Round 2 / Set 2.");
         }
       }, 1000);
     }
@@ -1932,12 +1878,7 @@
       renderWorkoutTable();
       prepareNextExerciseInSession(currentDaySession, currentBodyWeight, projInput, currentExercise);
 
-      if (preset && preset.supersetDual) {
-        showSpinner("Saving completed superset rounds (Penyimpanan ke sheet/sync dilakukan setelah ketiga set selesai)...");
-      } else {
-        showSpinner("Syncing exercise record to server...");
-      }
-      
+      showSpinner("Syncing exercise record to server per exercise sheet...");
       const res = await callApi({
         action: "saveData",
         username: currentUser,
@@ -1947,7 +1888,7 @@
       hideSpinner();
 
       if (res.status === "success") {
-        showToast("Workout record successfully saved & synced!", "success");
+        showToast("Workout record successfully saved & synced per exercise sheet!", "success");
         lastSyncedTime = new Date();
       } else {
         showToast("Saved locally. Server sync pending.", "warning");
@@ -2187,8 +2128,8 @@
         data: {
           labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
           datasets: [{
-            label: 'ACWR Index',
-            data: [0.9, 1.0, 1.15, 1.05],
+            label: 'ACWR Ratio',
+            data: [0.95, 1.05, 1.10, 1.00],
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 2,
@@ -2201,86 +2142,66 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            y: { min: 0.5, max: 2.0 }
+            y: { min: 0.5, max: 1.5 }
           }
         }
       });
     }
 
     async function loadAdminData() {
-      showSpinner("Loading admin console data...");
-      const res = await callApi({ action: "adminGetData" });
+      showSpinner("Loading admin data...");
+      const res = await callApi({ action: "adminGetUsers" });
       hideSpinner();
 
-      const usersBody = document.getElementById("adminUsersTable");
-      const logsBody = document.getElementById("adminLogsTable");
-      usersBody.innerHTML = "";
-      logsBody.innerHTML = "";
+      const tbody = document.getElementById("adminUsersTable");
+      tbody.innerHTML = "";
 
-      let users = res.users || [];
-      if (users.length === 0) {
-        const localList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-        users = localList.map(u => ({ username: u, status: "Active" }));
+      let usersList = [];
+      if (res && res.status === "success" && Array.isArray(res.users)) {
+        usersList = res.users;
+      } else {
+        usersList = JSON.parse(localStorage.getItem("registered_users_list") || "[]").map(u => ({ username: u, status: "Active" }));
       }
 
-      users.forEach(u => {
+      if (usersList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        return;
+      }
+
+      usersList.forEach(u => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         tr.innerHTML = `
           <td class="p-3 font-semibold text-xs">${u.username}</td>
-          <td class="p-3 text-xs"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">${u.status || 'Active'}</span></td>
+          <td class="p-3 text-xs"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 text-[10px] font-bold">Active</span></td>
           <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 text-xs font-semibold rounded-lg transition">View Profile</button>
+            <button onclick="viewUserProfile('${u.username}')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-100 text-blue-700 dark:bg-slate-700 dark:text-blue-300 hover:bg-blue-200 transition">View Profile</button>
           </td>
         `;
-        usersBody.appendChild(tr);
-      });
-
-      let logs = res.logs || [
-        { timestamp: new Date().toISOString(), username: currentUser || "admin", action: "System Initialized & Console Loaded" }
-      ];
-
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${new Date(l.timestamp || Date.now()).toLocaleString()}</td>
-          <td class="p-2.5 font-semibold">${l.username}</td>
-          <td class="p-2.5">${l.action}</td>
-        `;
-        logsBody.appendChild(tr);
+        tbody.appendChild(tr);
       });
       lucide.createIcons();
     }
 
-    async function viewUserDetail(username) {
+    async function viewUserProfile(username) {
       document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <span class="text-blue-600 dark:text-blue-400">${username}</span>`;
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Stats: ${username}`;
       
-      const statsOverview = document.getElementById("userStatsOverview");
-      statsOverview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-          <span class="themed-text-muted">Total Workouts Logged</span>
-          <p class="text-base font-bold">16 Sessions</p>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-          <span class="themed-text-muted">Compliance Rate</span>
-          <p class="text-base font-bold text-emerald-600">94.5%</p>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
-          <span class="themed-text-muted">Avg Session RPE</span>
-          <p class="text-base font-bold">8.2 / 10</p>
-        </div>
+      const overview = document.getElementById("userStatsOverview");
+      overview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Username</span><b>${username}</b></div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Account Status</span><b class="text-emerald-600">Active</b></div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">System Access</span><b>Standard User</b></div>
       `;
 
       const benchmarksList = document.getElementById("userBenchmarksList");
       benchmarksList.innerHTML = "";
-      const savedB = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
+      const bMarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || JSON.stringify(initialBenchmarkLoads));
       
-      Object.keys(savedB).forEach(ex => {
+      Object.keys(bMarks).forEach(ex => {
         const div = document.createElement("div");
-        div.className = "themed-input p-2 rounded-xl border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><b>${savedB[ex]} kg</b>`;
+        div.className = "themed-input p-2 rounded-xl border text-[11px]";
+        div.innerHTML = `<span class="themed-text-muted block truncate">${ex}</span><b>${bMarks[ex]} kg</b>`;
         benchmarksList.appendChild(div);
       });
       lucide.createIcons();
@@ -2296,18 +2217,15 @@
       localStorage.removeItem("workout_is_admin");
       currentUser = null;
       isAdmin = false;
-      workoutRows = [];
+      document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
       document.getElementById("mobileMenuBtn").className = "hidden";
-      toggleMobileDrawer(false);
-      showToast("Successfully signed out.", "info");
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden";
+      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
 </html>
-[cite: 1]```
