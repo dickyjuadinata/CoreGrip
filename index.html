@@ -207,8 +207,9 @@
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
+        <!-- Desktop Sign Out Button -->
+        <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden md:flex text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold shadow-sm h-8">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span>Sign Out</span>
         </button>
       </div>
     </div>
@@ -220,6 +221,9 @@
       </button>
       <button id="mobileNavAnalyticsBtn" onclick="switchAppTab('analytics'); toggleMobileDrawer();" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
+      </button>
+      <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer();" class="hidden w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 flex items-center gap-2">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
     </div>
   </header>
@@ -1249,7 +1253,7 @@
       }
     }
 
-    /* Poin 1: Menampilkan Last Synced At agar waktunya muncul */
+    /* Menampilkan Last Synced At agar waktunya muncul */
     function showSyncDetailModal() {
       const timeStr = lastSyncedTime ? lastSyncedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "Not synced yet";
       const statusStr = navigator.onLine ? "Online" : "Offline";
@@ -1467,7 +1471,8 @@
     function showAppUI() {
       document.getElementById("authSection").classList.add("hidden");
       document.getElementById("signOutBtnHeader").classList.remove("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("flex");
+      document.getElementById("signOutBtnHeader").classList.add("hidden", "md:flex");
+      document.getElementById("mobileSignOutBtn").classList.remove("hidden");
       document.getElementById("syncStatus").classList.remove("hidden");
       document.getElementById("syncStatus").classList.add("flex");
 
@@ -1707,7 +1712,7 @@
       loadWorkoutData();
     }
 
-    /* Poin 2: Navigasi Atas */
+    /* Navigasi Atas */
     function switchAppTab(tab) {
       const workoutTab = document.getElementById("tabWorkout");
       const analyticsTab = document.getElementById("tabAnalytics");
@@ -2161,6 +2166,7 @@
       document.getElementById("adminSection").classList.add("hidden");
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("signOutBtnHeader").classList.add("hidden");
+      document.getElementById("mobileSignOutBtn").classList.add("hidden");
       document.getElementById("syncStatus").classList.add("hidden");
       showToast("Successfully signed out.", "info");
     }
