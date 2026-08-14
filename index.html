@@ -366,7 +366,7 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails()" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -684,29 +684,29 @@
     let activeRestTimer = null;
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Mon - Upper A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 45-60 sec", restSeconds: 0, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetNext: true },
+      "Dumbbell Hammer Curl": { session: "Mon - Upper A", reps: "8-10", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION", supersetTarget: true },
       
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "Rest: 2-3 min", restSeconds: 180, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
       
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min", sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 2-3 min", restSeconds: 180, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Seated Dumbbell Press": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "Rest: 60-90 sec", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Barbell Curl": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "Rest: 0 min (Superset)", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
       
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "Rest: 3-5 min", restSeconds: 300, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "Rest: 1-1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "Rest: 45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
     let initialBenchmarkLoads = {
@@ -733,6 +733,25 @@
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
+
+    function checkFormActivation() {
+      const weekVal = document.getElementById("inputProject").value.trim();
+      const bwVal = document.getElementById("inputBodyWeight").value.trim();
+      const form = document.getElementById("formWorkout");
+      if (!form) return;
+      const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
+      const isEnabled = (weekVal !== "" && bwVal !== "");
+      elements.forEach(el => {
+        if (el.id !== "inputProject" && el.id !== "inputBodyWeight") {
+          el.disabled = !isEnabled;
+          if (!isEnabled) {
+            el.classList.add("opacity-50", "cursor-not-allowed");
+          } else {
+            el.classList.remove("opacity-50", "cursor-not-allowed");
+          }
+        }
+      });
+    }
 
     /* Fungsi Drawer Mobile yang diperbaiki */
     function toggleMobileDrawer(forceState) {
@@ -768,7 +787,20 @@
     function handleSetInputBlur(setNumber) {
       const inputVal = document.getElementById(`inputSet${setNumber}`).value.trim();
       if (inputVal !== "" && parseInt(inputVal, 10) >= 0) {
-        startRestCountdown(300); // Hardcoded 5 menit (300 detik)
+        const currentExercise = document.getElementById("inputExercise").value;
+        const preset = exercisePresets[currentExercise];
+        
+        // Jika exercise adalah Triceps Pressdowns (Cable), jangan jalankan timer karena superset dengan Dumbbell Hammer Curl
+        if (currentExercise === "Triceps Pressdowns (Cable)") {
+          showToast("Superset active: No rest until Dumbbell Hammer Curl is completed.", "info", 3000);
+          return;
+        }
+
+        let restSec = 300; // default 5 minutes
+        if (preset && preset.restSeconds !== undefined) {
+          restSec = preset.restSeconds;
+        }
+        startRestCountdown(restSec);
       }
     }
 
@@ -796,8 +828,8 @@
         if (remaining <= 0) {
           clearInterval(activeRestTimer);
           widget.classList.add("hidden");
-          showToast("Waktu istirahat selesai! Silakan lanjut ke set berikutnya.", "success", 4000);
-          triggerPushNotification("CoreGrip Rest Timer", "Waktu istirahat selesai! Waktunya set latihan berikutnya.");
+          showToast("Rest time finished! Please proceed to the next set.", "success", 4000);
+          triggerPushNotification("CoreGrip Rest Timer", "Rest time finished! Time for your next exercise set.");
         }
       }, 1000);
     }
@@ -1264,6 +1296,7 @@
       checkSession();
       registerServiceWorker();
       setupEnterNavigation();
+      checkFormActivation();
 
       window.addEventListener('online', handleNetworkChange);
       window.addEventListener('offline', handleNetworkChange);
@@ -1496,7 +1529,7 @@
 
       const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
-        await showModernAlert(`Username "${username}" sudah digunakan.`, "Pendaftaran Ditolak", "user-x");
+        await showModernAlert(`Username "${username}" is already taken.`, "Registration Denied", "user-x");
         return;
       }
 
@@ -1652,8 +1685,8 @@
       const weekVal = document.getElementById("inputProject").value.trim();
       const bwVal = document.getElementById("inputBodyWeight").value.trim();
       if (!weekVal || !bwVal) {
-        showToast("Kolom Week Number dan Body Weight wajib diisi!", "error", 4000);
-        await showModernAlert("Kolom Week Number dan Body Weight masih kosong. Harap isi kedua kolom tersebut untuk menyimpan record latihan.", "Validasi Gagal", "alert-circle");
+        showToast("Week Number and Body Weight columns are required!", "error", 4000);
+        await showModernAlert("Week Number and Body Weight columns are empty. Please fill in both columns to save the workout record.", "Validation Failed", "alert-circle");
         if (!weekVal) {
           document.getElementById("inputProject").focus();
         } else {
@@ -1812,11 +1845,13 @@
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      checkFormActivation();
     }
 
     function changeProjectFreetext() {
       const val = document.getElementById("inputProject").value.trim() || "0";
       currentProject = `Week ${val}`;
+      checkFormActivation();
       loadWorkoutData();
     }
 
@@ -2158,76 +2193,78 @@
         tr.innerHTML = `
           <td class="p-3 font-semibold text-xs">${u.user}</td>
           <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center flex items-center justify-center gap-2">
-            ${actionBtns}
-            <button onclick="deleteUserModal('${u.user}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition">Delete</button>
-          </td>
+          <td class="p-3 text-center">${actionBtns}</td>
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons();
     }
 
     function renderAdminLogs(logs) {
       const tbody = document.getElementById("adminLogsTable");
       tbody.innerHTML = "";
-
       if (logs.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
         return;
       }
-
-      logs.reverse().forEach(l => {
+      logs.forEach(l => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        const timeFormatted = new Date(l.time).toLocaleString();
-
         tr.innerHTML = `
-          <td class="p-2.5 themed-text-muted text-[11px]">${timeFormatted}</td>
-          <td class="p-2.5 font-semibold">${l.user}</td>
-          <td class="p-2.5">${l.activity}</td>
+          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.user || '-'}</td>
+          <td class="p-2.5">${l.activity || '-'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    async function approveUserModal(targetUser) {
-      const confirmed = await showModernConfirm(`Approve account registration for user "${targetUser}"?`, "Approve User", "user-check");
+    async function approveUserModal(username) {
+      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve User", "user-check");
       if (!confirmed) return;
 
-      showSpinner(`Approving user ${targetUser}...`);
-      const res = await callApi({ action: "approveUser", targetUser, adminUser: currentUser });
+      showSpinner("Approving user account...");
+      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser: username });
       hideSpinner();
 
       if (res.status === "success") {
-        showToast(res.message, "success");
+        showToast(`User ${username} approved successfully.`, "success");
         loadAdminData();
       } else {
-        showToast(res.message, "error");
+        showToast(res.message || "Failed to approve user.", "error");
       }
     }
 
-    async function deleteUserModal(targetUser) {
-      const confirmed = await showModernConfirm(`Delete user "${targetUser}" and all associated workout files?`, "Delete User", "user-x");
-      if (!confirmed) return;
-
-      showSpinner(`Deleting user ${targetUser}...`);
-      const res = await callApi({ action: "deleteUser", targetUser, adminUser: currentUser });
+    async function viewUserDetailModal(username) {
+      showSpinner(`Loading stats for ${username}...`);
+      const res = await callApi({ action: "getUserDetail", adminUser: currentUser, targetUser: username });
       hideSpinner();
 
       if (res.status === "success") {
-        showToast(res.message, "success");
-        loadAdminData();
-      } else {
-        showToast(res.message, "error");
-      }
-    }
+        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
+        
+        const overview = document.getElementById("userStatsOverview");
+        overview.innerHTML = `
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Status</span><b class="text-sm text-emerald-600">${res.statusUser || 'ACTIVE'}</b></div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Total Workouts Logged</span><b class="text-sm">${res.totalWorkouts || 0} Records</b></div>
+          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Account Created</span><b class="text-sm">${res.createdAt || 'N/A'}</b></div>
+        `;
 
-    function viewUserDetailModal(username) {
-      const container = document.getElementById("adminUserDetailContainer");
-      container.classList.remove("hidden");
-      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile: ${username}`;
-      window.scrollTo({ top: 0, behavior: "smooth" });
+        const benchmarksList = document.getElementById("userBenchmarksList");
+        benchmarksList.innerHTML = "";
+        const benchObj = res.benchmarks || {};
+        Object.keys(benchObj).forEach(k => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${k}</span><b class="text-sm">${benchObj[k]} kg</b>`;
+          benchmarksList.appendChild(div);
+        });
+
+        lucide.createIcons();
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } else {
+        showToast(res.message || "Failed to load user details.", "error");
+      }
     }
 
     function closeUserDetail() {
@@ -2239,10 +2276,15 @@
       isAdmin = false;
       localStorage.removeItem("workout_user");
       localStorage.removeItem("workout_is_admin");
-
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("headerNavTabs").className = "hidden";
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden";
+      switchAuthTab('login');
+      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
