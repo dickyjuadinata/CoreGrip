@@ -43,8 +43,11 @@
     const stringManifest = JSON.stringify(manifestData);
     const blobManifest = new Blob([stringManifest], {type: 'application/json'});
     const manifestURL = URL.createObjectURL(blobManifest);
-    document.getElementById('manifest-placeholder')?.setAttribute('href', manifestURL);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('manifest-placeholder')?.setAttribute('href', manifestURL);
+    });
   </script>
+  <link id="manifest-placeholder" rel="manifest">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -227,6 +230,7 @@
 
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
 
+    <!-- Auth Section -->
     <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
         <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
@@ -334,6 +338,7 @@
       </form>
     </div>
 
+    <!-- App Section -->
     <div id="appSection" class="hidden space-y-4 md:space-y-6 w-full max-w-full">
       <div class="themed-card rounded-2xl shadow-xl overflow-hidden w-full">
         
@@ -353,12 +358,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="" value="" placeholder="" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="1" value="1" placeholder="1" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -392,7 +397,7 @@
                   Primary Working Load (kg)
                   <span class="text-[10px] font-normal text-blue-600 dark:text-blue-400 block">*Auto-calculated / Custom load editable</span>
                 </label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
+                <input type="number" inputmode="decimal" step="0.1" id="inputWorkingLoad" oninput="onManualWorkingLoadInput()" placeholder="0" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet1">
               </div>
 
               <div id="warmupContainer" class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
@@ -430,19 +435,19 @@
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
                   <span id="labelSet1" class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
                   <span id="labelSet2" class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
                   <span id="labelSet3" class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
                   <span id="labelSet4" class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
@@ -537,6 +542,7 @@
       </div>
     </div>
 
+    <!-- Admin Section -->
     <div id="adminSection" class="hidden space-y-6 w-full max-w-full">
       <div class="themed-header p-6 rounded-2xl shadow-xl flex justify-between items-center flex-wrap gap-4">
         <div>
@@ -660,7 +666,7 @@
 
     let currentUser = null;
     let isAdmin = false;
-    let currentProject = ""; 
+    let currentProject = "Week 1"; 
     let workoutRows = [];
     let editIndex = -1;
     let originalBaseLoad = 0;
@@ -730,19 +736,8 @@
       const weekInput = document.getElementById("inputProject");
       const bwInput = document.getElementById("inputBodyWeight");
       const weekVal = weekInput ? weekInput.value.trim() : "";
-      
-      if (bwInput) {
-        if (weekVal !== "") {
-          bwInput.disabled = false;
-          bwInput.classList.remove("opacity-50", "cursor-not-allowed");
-        } else {
-          bwInput.disabled = true;
-          bwInput.classList.add("opacity-50", "cursor-not-allowed");
-          bwInput.value = "";
-        }
-      }
-
       const bwVal = bwInput ? bwInput.value.trim() : "";
+      
       const form = document.getElementById("formWorkout");
       if (!form) return;
       const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
@@ -911,6 +906,7 @@
 
     window.addEventListener("scroll", () => {
       const btn = document.getElementById("scrollToTopBtn");
+      if (!btn) return;
       if (window.scrollY > 300) {
         btn.classList.remove("opacity-0", "pointer-events-none", "translate-y-4");
         btn.classList.add("opacity-100", "translate-y-0");
@@ -1516,6 +1512,7 @@
         currentProject = savedProj || "Week 1";
         
         document.getElementById("authSection").classList.add("hidden");
+        document.getElementById("appSection").classList.remove("hidden");
         document.getElementById("headerNavTabs").style.display = "flex";
         document.getElementById("mobileMenuBtn").style.display = "block";
         document.getElementById("signOutBtnHeader").style.display = "flex";
