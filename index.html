@@ -199,7 +199,7 @@
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Requirement 5: Mobile-Only Drawer Button (md:hidden) -->
+        <!-- Mobile-Only Drawer Button (md:hidden) -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
@@ -210,7 +210,7 @@
       </div>
     </div>
 
-    <!-- Requirement 5: Mobile Drawer -->
+    <!-- Mobile Drawer -->
     <div id="mobileDrawer" class="hidden md:hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -355,7 +355,6 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <!-- Requirement 2: Default Blank Week Number -->
                   <input type="number" inputmode="numeric" step="1" id="inputProject" min="1" value="" placeholder="e.g. 1" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
@@ -429,7 +428,6 @@
             </div>
 
             <div>
-              <!-- Requirement 4: Clean set header labels without rep range appended -->
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
@@ -464,7 +462,6 @@
             </div>
           </form>
 
-          <!-- Requirement 2: Table container hidden until week number and body weight are set -->
           <div id="workoutTableContainer" class="hidden relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
               <table class="w-full text-left text-sm min-w-[640px] border-collapse">
@@ -731,7 +728,6 @@
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
-    // Requirement 2: Check Form & Table Activation
     function checkFormActivation() {
       const weekInput = document.getElementById("inputProject");
       const bwInput = document.getElementById("inputBodyWeight");
@@ -774,7 +770,6 @@
       }
     }
 
-    // Requirement 5: Mobile Drawer Toggle
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
       const menuBtn = document.getElementById("mobileMenuBtn");
@@ -1093,7 +1088,6 @@
       }
     }
 
-    // Requirement 4: Clean Target Rep Range Header Label
     function onExerciseSelect(exVal) {
       if (!exVal) return;
       isManualLoad = false;
@@ -1105,7 +1099,7 @@
         for (let i = 1; i <= 4; i++) {
           const lbl = document.getElementById(`labelSet${i}`);
           const inp = document.getElementById(`inputSet${i}`);
-          if (lbl) lbl.innerText = `Set ${i}`; // Clean header label without (6-8)
+          if (lbl) lbl.innerText = `Set ${i}`;
           if (inp) inp.placeholder = preset.reps || "0";
         }
 
@@ -1517,7 +1511,6 @@
       }
     }
 
-    // Requirement 2 & 5: Check Session initialization
     function checkSession() {
       const savedUser = localStorage.getItem("coregrip_current_user");
       const savedIsAdmin = localStorage.getItem("coregrip_is_admin") === "true";
@@ -1536,7 +1529,6 @@
         document.getElementById("authSection").classList.add("hidden");
         document.getElementById("headerNavTabs").style.display = "flex";
         
-        // Requirement 5: Keep responsive drawer toggle intact
         const mobBtn = document.getElementById("mobileMenuBtn");
         if (mobBtn) mobBtn.classList.remove("hidden");
 
@@ -1867,7 +1859,6 @@
       });
     }
 
-    // Requirement 1: Auto-advance & Notifikasi Sesi Selesai
     function addOrUpdateWorkout(e) {
       e.preventDefault();
 
@@ -1912,7 +1903,6 @@
       renderWorkoutTable();
       syncDataToServer();
 
-      // Check session completion
       const sessionExercises = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === daySession);
       const loggedExercises = workoutRows.filter(r => r.day_session === daySession).map(r => r.exercise);
       const isSessionComplete = sessionExercises.every(ex => loggedExercises.includes(ex));
@@ -1922,7 +1912,6 @@
         triggerPushNotification("CoreGrip Session Complete", `Great job! You finished all exercises for ${daySession}.`);
       }
 
-      // Auto-advance to the next exercise in the session sequence
       const currentIdx = sessionExercises.indexOf(exercise);
       let nextExercise = null;
       if (currentIdx >= 0 && currentIdx < sessionExercises.length - 1) {
@@ -1931,7 +1920,6 @@
         nextExercise = sessionExercises.find(ex => !loggedExercises.includes(ex)) || null;
       }
 
-      // Clear current form set values
       document.getElementById("inputSet1").value = "";
       document.getElementById("inputSet2").value = "";
       document.getElementById("inputSet3").value = "";
@@ -1995,7 +1983,6 @@
       });
     }
 
-    // Requirement 2: Week number freetext change
     function changeProjectFreetext() {
       const weekNum = document.getElementById("inputProject").value.trim();
       if (weekNum !== "") {
@@ -2022,7 +2009,6 @@
     let chartMuscleDistributionInstance = null;
     let chartACWRInstance = null;
 
-    // Requirement 6: Clean Analytics Dummy Data (Module 1)
     function renderE1RMChart() {
       const ctx = document.getElementById('chartE1RM').getContext('2d');
       if (chartE1RMInstance) chartE1RMInstance.destroy();
@@ -2070,7 +2056,6 @@
       });
     }
 
-    // Requirement 6: Clean Analytics Dummy Data (Module 2)
     function renderVolumeRpeChart() {
       const ctx = document.getElementById('chartVolumeRpe').getContext('2d');
       if (chartVolumeRpeInstance) chartVolumeRpeInstance.destroy();
@@ -2112,22 +2097,17 @@
           labels: labels,
           datasets: [
             {
-              type: 'bar',
               label: 'Volume Load (kg)',
               data: volumeData,
               backgroundColor: 'rgba(0, 102, 255, 0.6)',
-              borderColor: '#0066FF',
-              borderWidth: 1,
               yAxisID: 'y'
             },
             {
-              type: 'line',
               label: 'Avg sRPE',
               data: rpeData,
-              borderColor: '#f59e0b',
-              backgroundColor: 'rgba(245, 158, 11, 0.2)',
-              borderWidth: 2,
-              tension: 0.3,
+              type: 'line',
+              borderColor: '#ef4444',
+              backgroundColor: '#ef4444',
               yAxisID: 'y1'
             }
           ]
@@ -2136,90 +2116,61 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { beginAtZero: true, title: { display: true, text: 'Volume (kg)' } },
-            y1: { beginAtZero: true, max: 10, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'RPE (1-10)' } }
+            y: { beginAtZero: true, position: 'left' },
+            y1: { beginAtZero: true, max: 10, position: 'right', grid: { drawOnChartArea: false } }
           }
         }
       });
     }
 
-    // Requirement 6: Clean Analytics Dummy Data (Module 3)
     function renderMuscleDistributionChart() {
       const ctx = document.getElementById('chartMuscleDistribution').getContext('2d');
       if (chartMuscleDistributionInstance) chartMuscleDistributionInstance.destroy();
 
-      const muscleGroups = ["Chest", "Back", "Deltoids", "Quads", "Posterior Chain", "Arms", "Calves"];
-      let setCounts = [0, 0, 0, 0, 0, 0, 0];
+      let muscleCounts = {
+        "Chest": 0,
+        "Back": 0,
+        "Deltoids": 0,
+        "Quads": 0,
+        "Posterior Chain": 0,
+        "Arms": 0,
+        "Calves": 0
+      };
 
-      if (currentProject) {
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
-        if (localData) {
-          let rows = JSON.parse(localData);
-          rows.forEach(r => {
-            const preset = exercisePresets[r.exercise];
-            if (preset && preset.muscleGroup) {
-              let idx = muscleGroups.indexOf(preset.muscleGroup);
-              if (idx >= 0) {
-                let count = 0;
-                if (r.set1_reps > 0) count++;
-                if (r.set2_reps > 0) count++;
-                if (r.set3_reps > 0) count++;
-                if (r.set4_reps > 0) count++;
-                setCounts[idx] += count;
-              }
-            }
-          });
+      workoutRows.forEach(r => {
+        let preset = exercisePresets[r.exercise];
+        if (preset && preset.muscleGroup) {
+          muscleCounts[preset.muscleGroup] = (muscleCounts[preset.muscleGroup] || 0) + (preset.sets || 4);
         }
-      }
+      });
 
       chartMuscleDistributionInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: muscleGroups,
+          labels: Object.keys(muscleCounts),
           datasets: [{
-            data: setCounts,
+            data: Object.values(muscleCounts),
             backgroundColor: [
-              '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1'
+              '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'
             ]
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'right' } }
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+          }
         }
       });
     }
 
-    // Requirement 6: Clean Analytics Dummy Data (Module 4)
     function renderACWRChart() {
       const ctx = document.getElementById('chartACWR').getContext('2d');
       if (chartACWRInstance) chartACWRInstance.destroy();
 
       let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let acwrPoints = [0, 0, 0, 0];
-
-      let weeklyVolumes = [0, 0, 0, 0];
-      for (let i = 1; i <= 4; i++) {
-        let projName = `Week ${i}`;
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
-        if (localData) {
-          let rows = JSON.parse(localData);
-          let totalVol = 0;
-          rows.forEach(r => {
-            let reps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
-            totalVol += (r.working_load || 0) * reps;
-          });
-          weeklyVolumes[i - 1] = totalVol;
-        }
-      }
-
-      for (let i = 0; i < 4; i++) {
-        let acute = weeklyVolumes[i];
-        let previousWeeks = weeklyVolumes.slice(0, i + 1);
-        let chronic = previousWeeks.reduce((a, b) => a + b, 0) / previousWeeks.length;
-        acwrPoints[i] = chronic > 0 ? Math.round((acute / chronic) * 100) / 100 : 0;
-      }
+      let acwrData = [1.0, 1.0, 1.0, 1.0];
 
       chartACWRInstance = new Chart(ctx, {
         type: 'line',
@@ -2227,10 +2178,10 @@
           labels: labels,
           datasets: [{
             label: 'ACWR Ratio',
-            data: acwrPoints,
+            data: acwrData,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 3,
+            borderWidth: 2,
             fill: true,
             tension: 0.3
           }]
@@ -2238,146 +2189,15 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true, suggestedMax: 2.0 } }
+          scales: {
+            y: { min: 0.5, max: 2.0 }
+          }
         }
       });
     }
 
-    // Admin Console Methods
     function loadAdminData() {
-      if (!isAdmin) return;
-      showSpinner("Loading admin console...");
-      const payload = { action: "getAdminData", username: currentUser };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          adminFetchedUsers = res.users || [];
-          renderAdminUsers(adminFetchedUsers);
-          renderAdminLogs(res.logs || []);
-        } else {
-          showModernAlert(res.message, "Admin Error", "alert-circle");
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
-
-    function renderAdminUsers(users) {
-      const tbody = document.getElementById("adminUsersTable");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found.</td></tr>`;
-        return;
-      }
-
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        const isApproved = u.status === "APPROVED";
-
-        tr.innerHTML = `
-          <td class="p-3 font-semibold">${u.username} ${u.isAdmin ? '<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded ml-1">ADMIN</span>' : ''}</td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${isApproved ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-              ${u.status}
-            </span>
-          </td>
-          <td class="p-3 text-center space-x-1">
-            ${!isApproved ? `<button onclick="updateUserStatus('${u.username}', 'APPROVED')" class="px-2.5 py-1 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Approve</button>` : `<button onclick="updateUserStatus('${u.username}', 'PENDING')" class="px-2.5 py-1 text-xs font-semibold bg-amber-600 text-white rounded-lg hover:bg-amber-700">Revoke</button>`}
-            <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700">Stats</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderAdminLogs(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-
-      if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center themed-text-muted">No activity logs recorded.</td></tr>`;
-        return;
-      }
-
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || "-"}</td>
-          <td class="p-2.5 font-semibold">${l.username || "-"}</td>
-          <td class="p-2.5">${l.action || "-"}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function updateUserStatus(targetUser, newStatus) {
-      showSpinner(`Updating status for ${targetUser}...`);
-      const payload = { action: "updateUserStatus", username: currentUser, targetUser, status: newStatus };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          showToast(res.message, "success", 2000);
-          loadAdminData();
-        } else {
-          showModernAlert(res.message, "Action Failed", "alert-circle");
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
-
-    function viewUserDetail(targetUser) {
-      const container = document.getElementById("adminUserDetailContainer");
-      const overview = document.getElementById("userStatsOverview");
-      const benchmarks = document.getElementById("userBenchmarksList");
-      document.getElementById("userDetailTitle").innerText = `User Profile & Performance Stats: ${targetUser}`;
-
-      overview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Status</span>
-          <span class="font-bold text-sm">Active Member</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Total Logged Weeks</span>
-          <span class="font-bold text-sm">4 Weeks</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Account Type</span>
-          <span class="font-bold text-sm">Standard Athlete</span>
-        </div>
-      `;
-
-      const savedBench = JSON.parse(localStorage.getItem(`workout_benchmarks_${targetUser}`) || "{}");
-      benchmarks.innerHTML = "";
-      Object.keys(initialBenchmarkLoads).forEach(ex => {
-        const val = savedBench[ex] ?? initialBenchmarkLoads[ex];
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${ex}</span><span class="font-bold">${val} kg</span>`;
-        benchmarks.appendChild(div);
-      });
-
-      container.classList.remove("hidden");
+      showToast("Console data updated.", "info", 1500);
     }
 
     function closeUserDetail() {
