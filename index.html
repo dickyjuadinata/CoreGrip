@@ -2171,26 +2171,31 @@
               </button>
               ${!isAppr ? `
                 <button onclick="approveUserStatus('${u.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Approve User
+                  Approve
                 </button>
               ` : `
                 <button onclick="revokeUserStatus('${u.username}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Revoke Access
+                  Revoke
                 </button>
               `}
+              <button onclick="deleteUserAccount('${u.username}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
+                Delete
+              </button>
             </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
+      lucide.createIcons();
     }
 
     function renderAdminLogsTable(logs) {
       const tbody = document.getElementById("adminLogsTable");
+      if (!tbody) return;
       tbody.innerHTML = "";
 
       if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No system activity logs available.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
         return;
       }
 
@@ -2198,83 +2203,127 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
-          <td class="p-2.5 text-xs">${l.activity || '-'}</td>
+          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || new Date().toLocaleString()}</td>
+          <td class="p-2.5 font-semibold">${l.username || 'System'}</td>
+          <td class="p-2.5">${l.description || l.activity || ''}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     async function approveUserStatus(username) {
-      const confirmApprove = await showModernConfirm(`Approve account access for user "${username}"?`, "Approve User", "user-check");
+      const confirmApprove = await showModernConfirm(`Are you sure you want to approve user "${username}"?`, "Approve User", "user-check");
       if (!confirmApprove) return;
 
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Approved" });
+      showSpinner(`Approving user ${username}...`);
+      const res = await callApi({ action: "updateUserStatus", username, status: "Approved" });
       hideSpinner();
 
       const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
       localApprovals[username] = "Approved";
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      showToast(`User ${username} approved successfully!`, "success");
+      let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      regUsers = regUsers.map(u => {
+        if (typeof u === 'object' && u.username === username) u.status = "Approved";
+        return u;
+      });
+      localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
+
+      showToast(`User ${username} approved successfully.`, "success");
       loadAdminData();
     }
 
     async function revokeUserStatus(username) {
-      const confirmRevoke = await showModernConfirm(`Revoke access for user "${username}"?`, "Revoke Access", "user-x");
+      const confirmRevoke = await showModernConfirm(`Are you sure you want to revoke access for user "${username}"?`, "Revoke Access", "user-x");
       if (!confirmRevoke) return;
 
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Pending Approval" });
+      showSpinner(`Revoking access for ${username}...`);
+      const res = await callApi({ action: "updateUserStatus", username, status: "Pending Approval" });
       hideSpinner();
 
       const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
       localApprovals[username] = "Pending Approval";
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      showToast(`Access revoked for ${username}.`, "warning");
+      let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      regUsers = regUsers.map(u => {
+        if (typeof u === 'object' && u.username === username) u.status = "Pending Approval";
+        return u;
+      });
+      localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
+
+      showToast(`User ${username} access revoked.`, "warning");
+      loadAdminData();
+    }
+
+    async function deleteUserAccount(username) {
+      const confirmDel = await showModernConfirm(`Are you sure you want to permanently delete user "${username}" and all associated data?`, "Delete User", "trash-2");
+      if (!confirmDel) return;
+
+      showSpinner(`Deleting user ${username}...`);
+      const res = await callApi({ action: "deleteUser", username });
+      hideSpinner();
+
+      let localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      delete localApprovals[username];
+      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+      let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      regUsers = regUsers.filter(u => (typeof u === 'string' ? u : u.username) !== username);
+      localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
+
+      localStorage.removeItem(`workout_benchmarks_${username}`);
+
+      showToast(`User ${username} deleted successfully.`, "success");
       loadAdminData();
     }
 
     function viewUserDetail(username) {
       const container = document.getElementById("adminUserDetailContainer");
       const title = document.getElementById("userDetailTitle");
-      const stats = document.getElementById("userStatsOverview");
-      const benchs = document.getElementById("userBenchmarksList");
-
-      title.innerText = `User Profile & Stats: ${username}`;
-
-      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
-
-      stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Account Status</span><span class="font-bold text-sm text-emerald-600">Active / Verified</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Registered Benchmarks</span><span class="font-bold text-sm">${Object.keys(benchmarks).length} Exercises</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Primary Role</span><span class="font-bold text-sm">Standard Athlete</span></div>
-      `;
-
-      benchs.innerHTML = "";
-      const displayLifts = ["Barbell Bench Press", "Barbell Squats", "Barbell Conventional Deadlift", "Barbell Overhead Press"];
-
-      displayLifts.forEach(lift => {
-        const val = benchmarks[lift] ?? (initialBenchmarkLoads[lift] || 0);
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${lift}</span><span class="font-bold text-blue-600 dark:text-blue-400">${val} kg</span>`;
-        benchs.appendChild(div);
-      });
+      const statsOverview = document.getElementById("userStatsOverview");
+      const benchmarksList = document.getElementById("userBenchmarksList");
 
       container.classList.remove("hidden");
+      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Stats: <b>${username}</b>`;
+
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      
+      statsOverview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Account Status</span>
+          <span class="font-bold text-sm">Active / Approved</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Registered Benchmarks</span>
+          <span class="font-bold text-sm">${Object.keys(savedBenchmarks).length} Exercises</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Cloud Sync Status</span>
+          <span class="font-bold text-sm text-emerald-600">Synced</span>
+        </div>
+      `;
+
+      benchmarksList.innerHTML = "";
+      if (Object.keys(savedBenchmarks).length === 0) {
+        benchmarksList.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No specific baseline benchmarks recorded.</p>`;
+      } else {
+        Object.keys(savedBenchmarks).forEach(ex => {
+          const val = savedBenchmarks[ex];
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><b class="text-sm">${val} kg</b>`;
+          benchmarksList.appendChild(div);
+        });
+      }
+
       container.scrollIntoView({ behavior: 'smooth' });
+      lucide.createIcons();
     }
 
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function closeActionPopover() {
-      document.getElementById("actionPopover").classList.add("hidden");
     }
   </script>
 </body>
