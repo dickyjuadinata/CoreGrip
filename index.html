@@ -1652,6 +1652,169 @@
       lucide.createIcons();
     }
 
+    async function loadAdminData() {
+      showSpinner("Loading Admin Data...");
+      let users = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+
+      // Normalize user list format
+      adminFetchedUsers = users.map(u => {
+        const uname = typeof u === 'string' ? u : u.username;
+        const status = u.status || localApprovals[uname] || "Pending Approval";
+        return { username: uname, status: status };
+      });
+
+      renderAdminUsersTable();
+      renderAdminAuditLogs();
+      hideSpinner();
+    }
+
+    function renderAdminUsersTable() {
+      const tbody = document.getElementById("adminUsersTable");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (!adminFetchedUsers || adminFetchedUsers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+        return;
+      }
+
+      adminFetchedUsers.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        
+        const isApproved = u.status === "Approved";
+        const statusBadge = isApproved 
+          ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400">Approved</span>`
+          : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-400">Pending Approval</span>`;
+
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-xs">${u.username}</td>
+          <td class="p-3 text-xs">${statusBadge}</td>
+          <td class="p-3 text-center space-x-1">
+            ${!isApproved ? `<button onclick="approveUser('${u.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition shadow-sm">Approve</button>` : ''}
+            <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition shadow-sm">Details</button>
+            <button onclick="deleteUser('${u.username}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition shadow-sm">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function renderAdminAuditLogs() {
+      const logTbody = document.getElementById("adminLogsTable");
+      if (!logTbody) return;
+      logTbody.innerHTML = `
+        <tr>
+          <td class="p-2.5 text-xs">${new Date().toLocaleTimeString()}</td>
+          <td class="p-2.5 text-xs font-semibold">${currentUser}</td>
+          <td class="p-2.5 text-xs">Loaded Admin Management Console successfully.</td>
+        </tr>
+      `;
+    }
+
+    async function approveUser(username) {
+      const confirmApprove = await confirm(`Are you sure you want to approve user "${username}"?`);
+      if (!confirmApprove) return;
+
+      let users = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      users = users.map(u => {
+        const uname = typeof u === 'string' ? u : u.username;
+        if (uname === username) {
+          if (typeof u === 'object') u.status = "Approved";
+          else u = { username: uname, status: "Approved" };
+        }
+        return u;
+      });
+      localStorage.setItem("registered_users_list", JSON.stringify(users));
+
+      let localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      localApprovals[username] = "Approved";
+      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+      showToast(`User "${username}" approved successfully.`, "success");
+      loadAdminData();
+    }
+
+    async function deleteUser(username) {
+      const confirmDel = await showModernConfirm(`Are you sure you want to delete user "${username}"? All associated workout logs and data will be permanently deleted.`, "Delete User", "trash-2");
+      if (!confirmDel) return;
+
+      // 1. Remove from registered users list
+      let users = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      users = users.filter(u => (typeof u === 'string' ? u : u.username) !== username);
+      localStorage.setItem("registered_users_list", JSON.stringify(users));
+
+      // 2. Remove from approvals
+      let localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      delete localApprovals[username];
+      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+      // 3. Remove all user data (benchmarks & workout data across all weeks/projects)
+      localStorage.removeItem(`workout_benchmarks_${username}`);
+      
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(`workout_data_${username}`)) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+
+      showToast(`User "${username}" and all associated data have been deleted.`, "success");
+      loadAdminData();
+      closeUserDetail();
+    }
+
+    function viewUserDetail(username) {
+      const container = document.getElementById("adminUserDetailContainer");
+      const title = document.getElementById("userDetailTitle");
+      const statsOverview = document.getElementById("userStatsOverview");
+      const benchmarksList = document.getElementById("userBenchmarksList");
+
+      if (!container) return;
+      container.classList.remove("hidden");
+      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <span class="text-white">${username}</span>`;
+
+      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      
+      statsOverview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block">Account Username</span>
+          <span class="font-bold text-sm">${username}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block">Total Benchmarks Tracked</span>
+          <span class="font-bold text-sm">${Object.keys(benchmarks).length} Exercises</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border text-xs">
+          <span class="themed-text-muted block">Account Status</span>
+          <span class="font-bold text-sm text-emerald-600">Active / Approved</span>
+        </div>
+      `;
+
+      benchmarksList.innerHTML = "";
+      if (Object.keys(benchmarks).length === 0) {
+        benchmarksList.innerHTML = `<div class="col-span-4 text-xs themed-text-muted">No benchmark records found for this user.</div>`;
+      } else {
+        Object.entries(benchmarks).forEach(([ex, load]) => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2 rounded-lg border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><span class="font-bold">${load} kg</span>`;
+          benchmarksList.appendChild(div);
+        });
+      }
+      lucide.createIcons();
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeUserDetail() {
+      const container = document.getElementById("adminUserDetailContainer");
+      if (container) container.classList.add("hidden");
+    }
+
     async function loadWorkoutData() {
       if (!currentUser) return;
       if (!currentProject) {
@@ -2098,183 +2261,23 @@
         data: {
           labels: weeks,
           datasets: [{
-            label: 'ACWR Index',
+            label: 'ACWR Ratio',
             data: acwrData,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             fill: true,
-            tension: 0.2
+            tension: 0.3,
+            pointRadius: 5
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { min: 0.5, max: 1.8 }
+            y: { min: 0.5, max: 2.0 }
           }
         }
       });
-    }
-
-    async function loadAdminData() {
-      if (!isAdmin) return;
-      showSpinner("Fetching system user management data...");
-      const res = await callApi({ action: "getAdminUsers" });
-      hideSpinner();
-
-      if (res && res.status === "success" && Array.isArray(res.users)) {
-        adminFetchedUsers = res.users;
-        renderAdminUsersTable(adminFetchedUsers);
-        renderAdminLogsTable(res.logs || []);
-        lastSyncedTime = new Date();
-      } else {
-        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-        const regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-
-        let combined = regUsers.map(u => {
-          let name = typeof u === 'string' ? u : u.username;
-          return { username: name, status: localApprovals[name] || "Approved" };
-        });
-
-        if (!combined.some(u => u.username === "dicky")) {
-          combined.push({ username: "dicky", status: "Approved" });
-        }
-
-        adminFetchedUsers = combined;
-        renderAdminUsersTable(adminFetchedUsers);
-        renderAdminLogsTable([]);
-      }
-    }
-
-    function renderAdminUsersTable(users) {
-      const tbody = document.getElementById("adminUsersTable");
-      tbody.innerHTML = "";
-
-      if (!users || users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No users registered yet.</td></tr>`;
-        return;
-      }
-
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        const isAppr = u.status === "Approved";
-        const badgeClass = isAppr ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 border-emerald-300" : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 border-amber-300";
-
-        tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.username} ${u.username === currentUser ? '<span class="text-[10px] text-blue-500">(You)</span>' : ''}</td>
-          <td class="p-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded-full border ${badgeClass}">${u.status}</span></td>
-          <td class="p-3 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-slate-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition">
-                Inspect Profile
-              </button>
-              ${!isAppr ? `
-                <button onclick="approveUserStatus('${u.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Approve User
-                </button>
-              ` : `
-                <button onclick="revokeUserStatus('${u.username}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Revoke Access
-                </button>
-              `}
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderAdminLogsTable(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      tbody.innerHTML = "";
-
-      if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No system activity logs available.</td></tr>`;
-        return;
-      }
-
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
-          <td class="p-2.5 text-xs">${l.activity || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    async function approveUserStatus(username) {
-      const confirmApprove = await showModernConfirm(`Approve account access for user "${username}"?`, "Approve User", "user-check");
-      if (!confirmApprove) return;
-
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Approved" });
-      hideSpinner();
-
-      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-      localApprovals[username] = "Approved";
-      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
-
-      showToast(`User ${username} approved successfully!`, "success");
-      loadAdminData();
-    }
-
-    async function revokeUserStatus(username) {
-      const confirmRevoke = await showModernConfirm(`Revoke access for user "${username}"?`, "Revoke Access", "user-x");
-      if (!confirmRevoke) return;
-
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Pending Approval" });
-      hideSpinner();
-
-      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-      localApprovals[username] = "Pending Approval";
-      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
-
-      showToast(`Access revoked for ${username}.`, "warning");
-      loadAdminData();
-    }
-
-    function viewUserDetail(username) {
-      const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      const stats = document.getElementById("userStatsOverview");
-      const benchs = document.getElementById("userBenchmarksList");
-
-      title.innerText = `User Profile & Stats: ${username}`;
-
-      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
-
-      stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Account Status</span><span class="font-bold text-sm text-emerald-600">Active / Verified</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Registered Benchmarks</span><span class="font-bold text-sm">${Object.keys(benchmarks).length} Exercises</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Primary Role</span><span class="font-bold text-sm">Standard Athlete</span></div>
-      `;
-
-      benchs.innerHTML = "";
-      const displayLifts = ["Barbell Bench Press", "Barbell Squats", "Barbell Conventional Deadlift", "Barbell Overhead Press"];
-
-      displayLifts.forEach(lift => {
-        const val = benchmarks[lift] ?? (initialBenchmarkLoads[lift] || 0);
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${lift}</span><span class="font-bold text-blue-600 dark:text-blue-400">${val} kg</span>`;
-        benchs.appendChild(div);
-      });
-
-      container.classList.remove("hidden");
-      container.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function closeActionPopover() {
-      document.getElementById("actionPopover").classList.add("hidden");
     }
   </script>
 </body>
