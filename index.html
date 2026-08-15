@@ -243,7 +243,7 @@
           <input type="password" inputmode="numeric" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
         <button type="submit" id="btnLoginSubmit" class="w-full bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
-          Sign In to Portal
+          Sign In
         </button>
       </form>
 
@@ -2136,8 +2136,8 @@
           return { username: name, status: localApprovals[name] || "Approved" };
         });
 
-        if (!combined.some(u => u.username === "")) {
-          combined.push({ username: "", status: "" });
+        if (!combined.some(u => u.username === "dicky")) {
+          combined.push({ username: "dicky", status: "Approved" });
         }
 
         adminFetchedUsers = combined;
