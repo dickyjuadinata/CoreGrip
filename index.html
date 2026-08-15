@@ -682,6 +682,7 @@
     let lastSelectedSession = "";
     let lastBodyWeight = "";
     let activeRestTimer = null;
+    let adminFetchedUsers = [];
 
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
@@ -2187,67 +2188,158 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: true } },
-          scales: { y: { min: 0, max: 2.5 } }
+          plugins: { legend: { display: true } }
         }
       });
     }
 
+    /* Modul Admin Console & Manajemen User */
     async function loadAdminData() {
-      showSpinner("Loading admin dashboard console...");
-      const res = await callApi({ action: "getAdminData", username: currentUser });
+      showSpinner("Fetching system user profiles and audit logs...");
+      const res = await callApi({ action: "getAdminData" });
+      hideSpinner();
+
+      const usersTable = document.getElementById("adminUsersTable");
+      const logsTable = document.getElementById("adminLogsTable");
+      usersTable.innerHTML = "";
+      logsTable.innerHTML = "";
+
+      let usersList = [];
+      if (res && res.status === "success" && Array.isArray(res.users)) {
+        usersList = res.users;
+      } else {
+        const localRegistered = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+        usersList = localRegistered.map(uName => ({ username: uName, status: "Active" }));
+      }
+
+      adminFetchedUsers = usersList;
+
+      if (usersList.length === 0) {
+        usersTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
+      } else {
+        usersList.forEach((u, idx) => {
+          const uName = u.username || u.user || u.name || u.Username || "Unknown User";
+          const uStatus = u.status || u.Status || "Active";
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+          tr.innerHTML = `
+            <td class="p-3 font-semibold text-xs flex items-center gap-2">
+              <i data-lucide="user" class="w-4 h-4 text-blue-500"></i> ${uName}
+            </td>
+            <td class="p-3 text-xs">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${uStatus.toLowerCase() === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300' : 'bg-amber-100 text-amber-700'}">${uStatus}</span>
+            </td>
+            <td class="p-3 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="viewUserDetail(${idx})" class="px-2.5 py-1 text-[11px] font-semibold bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 rounded-lg transition">View Profile</button>
+                <button onclick="deleteUser('${uName}')" class="p-1 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-slate-700 dark:text-red-300 rounded-lg transition" title="Delete User"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              </div>
+            </td>
+          `;
+          usersTable.appendChild(tr);
+        });
+      }
+
+      let logsList = (res && Array.isArray(res.logs)) ? res.logs : [];
+      if (logsList.length === 0) {
+        logsTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No recent system logs recorded.</td></tr>`;
+      } else {
+        logsList.forEach(log => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+          tr.innerHTML = `
+            <td class="p-2.5 text-slate-500 text-[11px]">${log.timestamp || '-'}</td>
+            <td class="p-2.5 font-semibold">${log.username || '-'}</td>
+            <td class="p-2.5">${log.action || '-'}</td>
+          `;
+          logsTable.appendChild(tr);
+        });
+      }
+
+      lucide.createIcons();
+    }
+
+    function viewUserDetail(index) {
+      const u = adminFetchedUsers[index];
+      if (!u) return;
+      const uName = u.username || u.user || u.name || u.Username || "User";
+
+      const container = document.getElementById("adminUserDetailContainer");
+      document.getElementById("userDetailTitle").innerText = `User Profile: ${uName}`;
+
+      const benchMap = u.benchmarks || JSON.parse(localStorage.getItem(`workout_benchmarks_${uName}`) || "{}");
+      
+      const statsOverview = document.getElementById("userStatsOverview");
+      statsOverview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted font-medium block">Username</span>
+          <span class="font-bold text-sm text-blue-600 dark:text-blue-400">${uName}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted font-medium block">Status</span>
+          <span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">${u.status || 'Active'}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted font-medium block">Role</span>
+          <span class="font-bold text-sm">User</span>
+        </div>
+      `;
+
+      const benchmarksList = document.getElementById("userBenchmarksList");
+      benchmarksList.innerHTML = "";
+
+      Object.keys(initialBenchmarkLoads).forEach(ex => {
+        const loadVal = benchMap[ex] ?? initialBenchmarkLoads[ex];
+        const div = document.createElement("div");
+        div.className = "themed-subcard p-2 rounded-lg border text-xs";
+        div.innerHTML = `<span class="themed-text-muted text-[10px] block truncate" title="${ex}">${ex}</span><b class="text-sm">${loadVal} kg</b>`;
+        benchmarksList.appendChild(div);
+      });
+
+      container.classList.remove("hidden");
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    }
+
+    async function deleteUser(targetUser) {
+      const confirmed = await showModernConfirm(`Are you sure you want to delete user "${targetUser}"?`, "Delete User Account", "user-x");
+      if (!confirmed) return;
+
+      showSpinner(`Deleting user "${targetUser}"...`);
+      const res = await callApi({ action: "deleteUser", targetUser });
       hideSpinner();
 
       if (res.status === "success") {
-        renderAdminUsers(res.usersMeta || []);
-        renderAdminLogs(res.activityLogs || []);
-        lastSyncedTime = new Date();
+        let localRegistered = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+        localRegistered = localRegistered.filter(u => u.toLowerCase() !== targetUser.toLowerCase());
+        localStorage.setItem("registered_users_list", JSON.stringify(localRegistered));
+        
+        showToast(`User ${targetUser} deleted successfully.`, "success");
+        loadAdminData();
       } else {
-        showToast("Failed to load admin data.", "error");
+        await showModernAlert(res.message || "Failed to delete user.", "Error", "alert-circle");
       }
-    }
-
-    function renderAdminUsers(users) {
-      const tbody = document.getElementById("adminUsersTable");
-      tbody.innerHTML = "";
-
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
-        return;
-      }
-
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-
-        let statusBadge = u.status === "ACTIVE" 
-          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
-          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
-
-        tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.username}</td>
-          <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">View Stats</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
 
     function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
       currentUser = null;
       isAdmin = false;
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+
+      document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("syncStatus").classList.add("hidden");
       document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
       document.getElementById("mobileMenuBtn").className = "hidden";
-      showToast("Successfully signed out.", "info");
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden";
+
+      switchAuthTab('login');
+      showToast("Signed out successfully.", "info");
     }
   </script>
 </body>
