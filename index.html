@@ -490,6 +490,50 @@
           </div>
         </div>
 
+        /**
+ * Handler untuk Submit Registrasi & Assessment
+ */
+function submitRegister(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById("regUsername").value.trim();
+  const pin = document.getElementById("regPin").value.trim();
+
+  // Ambil data assessment (Contoh untuk Bench Press, menyesuaikan ID input Anda)
+  const assessmentData = {
+    bench: { load: document.getElementById("test_load_bench").value, reps: document.getElementById("test_reps_bench").value, rpe: document.getElementById("test_rpe_bench").value },
+    squat: { load: document.getElementById("test_load_squat").value, reps: document.getElementById("test_reps_squat").value, rpe: document.getElementById("test_rpe_squat").value },
+    lat: { load: document.getElementById("test_load_lat").value, reps: document.getElementById("test_reps_lat").value, rpe: document.getElementById("test_rpe_lat").value }
+  };
+
+  showSpinner("Mendaftarkan akun Anda...");
+
+  const payload = {
+    action: "register",
+    username: username,
+    pin: pin,
+    assessment: assessmentData
+  };
+
+  google.script.run
+    .withSuccessHandler(function(response) {
+      hideSpinner();
+      if (response.status === "success") {
+        showModernAlert(response.message, "Pendaftaran Berhasil", "check-circle");
+        // Reset form
+        document.getElementById("formRegister").reset();
+        switchAuthTab('login');
+      } else {
+        showModernAlert(response.message, "Gagal Mendaftar", "alert-triangle");
+      }
+    })
+    .withFailureHandler(function(err) {
+      hideSpinner();
+      showModernAlert("Terjadi kesalahan sistem: " + err, "Error", "alert-circle");
+    })
+    .doPost({ postData: { contents: JSON.stringify(payload) } });
+}
+
         <div id="tabAnalytics" class="p-4 md:p-6 space-y-6 hidden w-full max-w-full">
           <div id="analyticsAlerts" class="space-y-3"></div>
 
