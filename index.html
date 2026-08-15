@@ -55,6 +55,7 @@
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
+    /* Skema Warna Light Mode Sesuai Permintaan */
     :root {
       --bg-page: #f9fafb;
       --bg-card: #ffffff;
@@ -73,6 +74,7 @@
       --table-header-text: #0066FF;
     }
 
+    /* Skema Warna Dark Mode Sesuai Permintaan */
     @media (prefers-color-scheme: dark) {
       :root {
         --bg-page: #0f172a;
@@ -139,6 +141,9 @@
     html, body {
       overflow-x: hidden;
       max-width: 100vw;
+    }
+
+    html {
       scroll-behavior: smooth;
     }
 
@@ -167,6 +172,7 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative overflow-x-hidden w-full">
 
+  <!-- Header & Navigasi Atas -->
   <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
@@ -179,6 +185,7 @@
           </div>
         </div>
 
+        <!-- Desktop Navigation Tabs (Hidden by default on login page) -->
         <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
@@ -190,21 +197,25 @@
       </div>
       
       <div class="flex items-center space-x-3 h-full">
+        <!-- Online Sync Button (Hidden by default on login page, shown after login) -->
         <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
 
+        <!-- Mobile Hamburger Button -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
+        <!-- Desktop Sign Out Button (Transparent Background) -->
         <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-transparent hover:bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
+    <!-- Mobile Drawer Navigation -->
     <div id="mobileDrawer" class="hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -213,6 +224,7 @@
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
       <div class="border-t border-gray-800 my-1"></div>
+      <!-- Mobile Sign Out Button (Transparent Background inside Drawer) -->
       <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-red-300 bg-transparent hover:bg-white/10 border border-red-500/30 flex items-center gap-2 transition">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
@@ -413,6 +425,7 @@
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
+            <!-- Countdown Timer Indicator Widget -->
             <div id="timerWidget" class="hidden bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-blue-700 dark:text-blue-300">
               <div class="flex items-center gap-2">
                 <i data-lucide="timer" class="w-4 h-4 animate-pulse"></i>
@@ -793,7 +806,7 @@
           return;
         }
 
-        let restSec = 300; 
+        let restSec = 300;
         if (preset && preset.restSeconds !== undefined) {
           restSec = preset.restSeconds;
         }
@@ -2211,13 +2224,89 @@
       });
     }
 
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      tbody.innerHTML = "";
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        return;
+      }
+
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        tr.innerHTML = `
+          <td class="p-2.5 text-[11px] themed-text-muted font-mono">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
+          <td class="p-2.5 text-xs">${l.activity || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function viewUserDetail(username) {
+      showSpinner(`Loading profile statistics for ${username}...`);
+      const res = await callApi({ action: "getUserDetail", username: username, adminUser: currentUser });
+      hideSpinner();
+
+      if (res.status === "success") {
+        const container = document.getElementById("adminUserDetailContainer");
+        container.classList.remove("hidden");
+        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Stats: ${username}`;
+
+        const overview = document.getElementById("userStatsOverview");
+        overview.innerHTML = `
+          <div class="themed-subcard p-3.5 rounded-xl border">
+            <span class="text-[11px] themed-text-muted block">Total Workouts Logged</span>
+            <span class="text-lg font-bold text-blue-600 dark:text-blue-400">${res.stats?.totalWorkouts || 0}</span>
+          </div>
+          <div class="themed-subcard p-3.5 rounded-xl border">
+            <span class="text-[11px] themed-text-muted block">Account Status</span>
+            <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">${res.stats?.status || 'ACTIVE'}</span>
+          </div>
+          <div class="themed-subcard p-3.5 rounded-xl border">
+            <span class="text-[11px] themed-text-muted block">Last Active</span>
+            <span class="text-xs font-semibold">${res.stats?.lastActive || 'N/A'}</span>
+          </div>
+        `;
+
+        const benchmarksList = document.getElementById("userBenchmarksList");
+        benchmarksList.innerHTML = "";
+        const benchObj = res.benchmarks || {};
+        
+        Object.keys(benchObj).forEach(exercise => {
+          const loadVal = benchObj[exercise];
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
+          div.innerHTML = `<span class="block text-[10px] themed-text-muted truncate">${exercise}</span><span class="font-bold text-blue-600 dark:text-blue-400">${loadVal} kg</span>`;
+          benchmarksList.appendChild(div);
+        });
+
+        lucide.createIcons();
+        container.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        showToast("Failed to load user detail data.", "error");
+      }
+    }
+
+    function closeUserDetail() {
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    }
+
     function handleLogout() {
       localStorage.removeItem("workout_user");
       localStorage.removeItem("workout_is_admin");
       currentUser = null;
       isAdmin = false;
       document.getElementById("appSection").classList.add("hidden");
-      location.reload();
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("headerNavTabs").className = "hidden";
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      document.getElementById("syncStatus").classList.add("hidden");
+      showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
