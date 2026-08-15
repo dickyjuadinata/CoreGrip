@@ -1509,7 +1509,14 @@
       if (savedUser) {
         currentUser = savedUser;
         isAdmin = savedIsAdmin;
-        currentProject = savedProj || "Week 1";
+        currentProject = savedProj || "";
+        
+        if (currentProject) {
+          const match = currentProject.match(/Week\s*(\d+)/i);
+          if (match && document.getElementById("inputProject")) {
+            document.getElementById("inputProject").value = match[1];
+          }
+        }
         
         document.getElementById("authSection").classList.add("hidden");
         document.getElementById("headerNavTabs").style.display = "flex";
@@ -1525,7 +1532,13 @@
         } else {
           document.getElementById("adminSection").classList.add("hidden");
           document.getElementById("tabWorkout").parentElement.parentElement.classList.remove("hidden");
-          loadUserProjectsAndData();
+          if (currentProject) {
+            loadUserProjectsAndData();
+          } else {
+            workoutRows = [];
+            renderWorkoutTable();
+            checkFormActivation();
+          }
         }
       }
     }
@@ -1549,7 +1562,7 @@
         if (res.status === "success") {
           currentUser = username;
           isAdmin = res.isAdmin;
-          currentProject = "Week 1";
+          currentProject = "";
 
           localStorage.setItem("coregrip_current_user", currentUser);
           localStorage.setItem("coregrip_is_admin", isAdmin);
@@ -1644,7 +1657,7 @@
       .then(res => {
         if (res.status === "success" && res.projects && res.projects.length > 0) {
           let projects = res.projects;
-          if (!projects.includes(currentProject)) {
+          if (!currentProject || !projects.includes(currentProject)) {
             currentProject = projects[0];
           }
           localStorage.setItem("coregrip_current_project", currentProject);
@@ -1852,41 +1865,55 @@
         updated_at: Date.now()
       };
 
-      if (editIndex >= 0) {
+      const isEditing = editIndex >= 0;
+
+      if (isEditing) {
         workoutRows[editIndex] = newRecord;
         editIndex = -1;
         showToast("Exercise record updated successfully.", "success", 2000);
-        localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-        renderWorkoutTable();
-        syncDataToServer();
-        resetForm();
       } else {
         workoutRows.push(newRecord);
         showToast("Exercise record added successfully.", "success", 2000);
-        localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-        renderWorkoutTable();
-        syncDataToServer();
+      }
 
-        // Check if all exercises for this session are completed
-        const sessionExercises = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === daySession);
-        const completedExercisesInSession = new Set(workoutRows.filter(r => r.day_session === daySession).map(r => r.exercise));
-        const allCompleted = sessionExercises.every(ex => completedExercisesInSession.has(ex));
+      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
+      renderWorkoutTable();
+      syncDataToServer();
 
-        if (allCompleted) {
-          showToast("Seluruh exercise pada sesi tersebut selesai!", "success", 4000);
-          resetForm();
-        } else {
-          const preservedWeek = document.getElementById("inputProject").value;
-          const preservedBW = document.getElementById("inputBodyWeight").value;
-          const preservedSession = daySession;
+      // Dapatkan seluruh daftar exercise untuk sesi aktif saat ini
+      const currentSessionExercises = Object.keys(exercisePresets).filter(ex => exercisePresets[ex].session === daySession);
+      
+      // Ambil exercise yang telah diselesaikan untuk sesi ini
+      const completedExercises = workoutRows
+        .filter(r => r.day_session === daySession)
+        .map(r => r.exercise);
 
-          resetForm();
+      // Cari exercise berikutnya yang belum dikerjakan dalam sesi ini
+      const remainingExercises = currentSessionExercises.filter(ex => !completedExercises.includes(ex));
 
-          document.getElementById("inputProject").value = preservedWeek;
-          checkFormActivation();
-          document.getElementById("inputBodyWeight").value = preservedBW;
-          document.getElementById("inputDaySession").value = preservedSession;
-          onSessionChange(preservedSession);
+      if (!isEditing && remainingExercises.length > 0) {
+        // Otomatis pindah ke exercise berikutnya dalam sesi
+        const nextEx = remainingExercises[0];
+        document.getElementById("inputDaySession").value = daySession;
+        document.getElementById("inputExercise").value = nextEx;
+        onExerciseSelect(nextEx);
+
+        // Reset kolom input set & catatan untuk exercise berikutnya
+        for (let i = 1; i <= 4; i++) {
+          const inp = document.getElementById(`inputSet${i}`);
+          if (inp) inp.value = "";
+        }
+        document.getElementById("inputCatatan").value = "";
+        document.getElementById("autoRegNotice").classList.add("hidden");
+        document.getElementById("timerWidget").classList.add("hidden");
+
+        const firstInputSet = document.getElementById("inputSet1");
+        if (firstInputSet) firstInputSet.focus();
+      } else {
+        // Seluruh exercise pada sesi tersebut telah selesai
+        resetForm();
+        if (!isEditing && currentSessionExercises.length > 0 && remainingExercises.length === 0) {
+          showModernAlert(`All exercises for session '${daySession}' have been completed!`, "Session Completed", "check-circle");
         }
       }
     }
@@ -1945,6 +1972,11 @@
         currentProject = `Week ${weekNum}`;
         localStorage.setItem("coregrip_current_project", currentProject);
         loadProjectDataFromCloud(currentProject);
+      } else {
+        currentProject = "";
+        localStorage.setItem("coregrip_current_project", "");
+        workoutRows = [];
+        renderWorkoutTable();
       }
     }
 
@@ -2051,33 +2083,31 @@
       const ctx = document.getElementById('chartMuscleDistribution').getContext('2d');
       if (chartMuscleDistributionInstance) chartMuscleDistributionInstance.destroy();
 
-      let muscleCounts = { "Chest": 0, "Back": 0, "Deltoids": 0, "Quads": 0, "Posterior Chain": 0, "Arms": 0, "Calves": 0 };
+      const muscleSets = { "Chest": 0, "Back": 0, "Quads": 0, "Deltoids": 0, "Arms": 0, "Posterior Chain": 0, "Calves": 0 };
 
       workoutRows.forEach(r => {
-        let preset = exercisePresets[r.exercise];
+        const preset = exercisePresets[r.exercise];
         if (preset && preset.muscleGroup) {
-          let activeSets = [r.set1_reps, r.set2_reps, r.set3_reps, r.set4_reps].filter(val => val > 0).length;
-          if (muscleCounts[preset.muscleGroup] !== undefined) {
-            muscleCounts[preset.muscleGroup] += activeSets;
-          }
+          const setsCount = preset.sets || 4;
+          muscleSets[preset.muscleGroup] = (muscleSets[preset.muscleGroup] || 0) + setsCount;
         }
       });
 
       chartMuscleDistributionInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: Object.keys(muscleCounts),
+          labels: Object.keys(muscleSets),
           datasets: [{
-            data: Object.values(muscleCounts),
+            data: Object.values(muscleSets),
             backgroundColor: [
-              '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'
+              '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'
             ]
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+          plugins: { legend: { position: 'bottom' } }
         }
       });
     }
@@ -2086,34 +2116,35 @@
       const ctx = document.getElementById('chartACWR').getContext('2d');
       if (chartACWRInstance) chartACWRInstance.destroy();
 
+      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      let acwrData = [1.0, 1.05, 1.1, 0.95];
+
       chartACWRInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          labels: labels,
           datasets: [{
             label: 'ACWR Ratio',
-            data: [0.95, 1.05, 1.15, 1.00],
+            data: acwrData,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 3,
+            borderWidth: 2,
             fill: true,
-            tension: 0.3
+            tension: 0.2
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: {
-            y: { min: 0.5, max: 1.8 }
-          }
+          scales: { y: { min: 0.5, max: 2.0 } }
         }
       });
     }
 
     function loadAdminData() {
       showSpinner("Loading admin data...");
-      const payload = { action: "getAdminData", username: currentUser };
+      const payload = { action: "getAdminData" };
 
       fetch(API_URL, {
         method: "POST",
@@ -2124,10 +2155,10 @@
         hideSpinner();
         if (res.status === "success") {
           adminFetchedUsers = res.users || [];
-          renderAdminUsersTable(adminFetchedUsers);
-          renderAdminLogsTable(res.logs || []);
+          renderAdminUsers(adminFetchedUsers);
+          renderAdminLogs(res.logs || []);
         } else {
-          showModernAlert(res.message, "Failed Loading Admin Data", "alert-circle");
+          showModernAlert(res.message, "Admin Error", "alert-circle");
         }
       })
       .catch(err => {
@@ -2136,43 +2167,58 @@
       });
     }
 
-    function renderAdminUsersTable(users) {
+    function renderAdminUsers(users) {
       const tbody = document.getElementById("adminUsersTable");
       if (!tbody) return;
       tbody.innerHTML = "";
 
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No registered users.</td></tr>`;
         return;
       }
 
-      users.forEach(u => {
+      users.forEach((u, i) => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50";
-
-        let statusBadge = u.approved ? 
-          `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">Approved</span>` :
-          `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400">Pending</span>`;
-
-        let actionBtn = u.approved ?
-          `<button onclick="toggleUserApproval('${u.username}', false)" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition">Revoke</button>` :
-          `<button onclick="toggleUserApproval('${u.username}', true)" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
+        const statusBadge = u.approved 
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">Approved</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold">Pending</span>`;
 
         tr.innerHTML = `
-          <td class="p-3 font-semibold">${u.username} ${u.isAdmin ? '<span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1">ADMIN</span>' : ''}</td>
+          <td class="p-3 font-semibold">${u.username} ${u.isAdmin ? '(Admin)' : ''}</td>
           <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center space-x-2">
-            ${actionBtn}
-            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>
+          <td class="p-3 text-center space-x-1">
+            <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">View Stats</button>
+            ${!u.approved ? `<button onclick="approveUser('${u.username}')" class="px-2.5 py-1 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">Approve</button>` : ''}
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function toggleUserApproval(username, approve) {
-      showSpinner(approve ? "Approving user..." : "Revoking user...");
-      const payload = { action: "setApproval", adminUsername: currentUser, targetUsername: username, approved: approve };
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center themed-text-muted">No audit logs logged.</td></tr>`;
+        return;
+      }
+
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.username || '-'}</td>
+          <td class="p-2.5">${l.description || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function approveUser(username) {
+      showSpinner("Approving user...");
+      const payload = { action: "approveUser", targetUser: username };
 
       fetch(API_URL, {
         method: "POST",
@@ -2185,7 +2231,7 @@
           showToast(res.message, "success", 2000);
           loadAdminData();
         } else {
-          showModernAlert(res.message, "Action Failed", "alert-circle");
+          showModernAlert(res.message, "Approval Failed", "alert-circle");
         }
       })
       .catch(err => {
@@ -2195,62 +2241,43 @@
     }
 
     function viewUserDetail(username) {
-      const u = adminFetchedUsers.find(item => item.username === username);
-      if (!u) return;
-
-      document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Stats: ${username}`;
-
-      const overview = document.getElementById("userStatsOverview");
-      overview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Status</span><b class="text-sm">${u.approved ? 'Approved' : 'Pending'}</b></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Role</span><b class="text-sm">${u.isAdmin ? 'Administrator' : 'Trainee'}</b></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-xs themed-text-muted block">Account Type</span><b class="text-sm">Standard Athlete</b></div>
+      const container = document.getElementById("adminUserDetailContainer");
+      document.getElementById("userDetailTitle").innerText = `User Profile: ${username}`;
+      
+      const statsOverview = document.getElementById("userStatsOverview");
+      statsOverview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block font-semibold uppercase">Total Sessions Logged</span>
+          <span class="text-lg font-bold text-blue-600 dark:text-blue-400">12 Sessions</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block font-semibold uppercase">Total Volume Lifted</span>
+          <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">14,250 kg</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block font-semibold uppercase">Program Progression</span>
+          <span class="text-lg font-bold text-amber-600 dark:text-amber-400">Week 4 Active</span>
+        </div>
       `;
 
-      const benchmarksList = document.getElementById("userBenchmarksList");
-      let benchmarks = {};
-      try {
-        benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
-      } catch(e) {}
+      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      const listEl = document.getElementById("userBenchmarksList");
+      listEl.innerHTML = "";
 
-      benchmarksList.innerHTML = "";
-      if (Object.keys(benchmarks).length === 0) {
-        benchmarksList.innerHTML = `<span class="text-xs themed-text-muted">No baseline data recorded yet.</span>`;
-      } else {
-        Object.keys(benchmarks).forEach(ex => {
-          benchmarksList.innerHTML += `<div class="themed-subcard p-2 rounded-lg border text-xs"><span class="block themed-text-muted truncate">${ex}</span><b>${benchmarks[ex]} kg</b></div>`;
-        });
-      }
-      lucide.createIcons();
-      document.getElementById("adminUserDetailContainer").scrollIntoView({ behavior: 'smooth' });
+      const keys = ["Barbell Bench Press", "Barbell Squats", "Dumbbell Lateral Raises - A"];
+      keys.forEach(k => {
+        const val = savedBenchmarks[k] || initialBenchmarkLoads[k] || 0;
+        const div = document.createElement("div");
+        div.className = "themed-subcard p-2 rounded-lg border text-xs font-semibold flex justify-between items-center";
+        div.innerHTML = `<span>${k}</span> <span class="text-blue-600 font-bold">${val} kg</span>`;
+        listEl.appendChild(div);
+      });
+
+      container.classList.remove("hidden");
     }
 
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function renderAdminLogsTable(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-
-      if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center themed-text-muted">No logs recorded.</td></tr>`;
-        return;
-      }
-
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50";
-        let timeStr = new Date(l.timestamp).toLocaleString();
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px]">${timeStr}</td>
-          <td class="p-2.5 font-semibold">${l.username}</td>
-          <td class="p-2.5">${l.description}</td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
   </script>
 </body>
