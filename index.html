@@ -235,7 +235,7 @@
 
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 overflow-x-hidden">
 
-    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden">
+    <div id="authSection" class="max-w-xl mx-auto my-8 md:my-12 themed-card rounded-2xl shadow-xl overflow-hidden[cite: 1]">
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
         <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-3 px-2 font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition text-xs sm:text-sm text-center">Sign In</button>
         <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-3 px-2 font-bold themed-text-muted hover:text-blue-500 transition text-xs sm:text-sm text-center">Register & Assessment</button>
@@ -739,7 +739,6 @@
       const bwInput = document.getElementById("inputBodyWeight");
       const weekVal = weekInput ? weekInput.value.trim() : "";
       
-      // Kolom Body Weight hanya aktif setelah kolom Week Number diisi
       if (bwInput) {
         if (weekVal !== "") {
           bwInput.disabled = false;
@@ -768,7 +767,6 @@
       });
     }
 
-    /* Fungsi Drawer Mobile yang diperbaiki */
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
       const menuBtn = document.getElementById("mobileMenuBtn");
@@ -791,27 +789,24 @@
       }
     }
 
-    /* Penutupan otomatis drawer jika ukuran layar kembali ke desktop */
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) {
         toggleMobileDrawer(false);
       }
     });
 
-    /* Trigger Countdown Timer Otomatis dan Push Notification saat input set terisi */
     function handleSetInputBlur(setNumber) {
       const inputVal = document.getElementById(`inputSet${setNumber}`).value.trim();
       if (inputVal !== "" && parseInt(inputVal, 10) >= 0) {
         const currentExercise = document.getElementById("inputExercise").value;
         const preset = exercisePresets[currentExercise];
         
-        // Jika exercise adalah Triceps Pressdowns (Cable), jangan jalankan timer karena superset dengan Dumbbell Hammer Curl
         if (currentExercise === "Triceps Pressdowns (Cable)") {
           showToast("Superset active: No rest until Dumbbell Hammer Curl is completed.", "info", 3000);
           return;
         }
 
-        let restSec = 300; // default 5 minutes
+        let restSec = 300;
         if (preset && preset.restSeconds !== undefined) {
           restSec = preset.restSeconds;
         }
@@ -1098,7 +1093,6 @@
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
 
-        // Memperbarui label Set 1-4 dan placeholder input dengan label target rep range
         const repLabel = preset.reps ? ` (${preset.reps})` : "";
         for (let i = 1; i <= 4; i++) {
           const lbl = document.getElementById(`labelSet${i}`);
@@ -1705,7 +1699,6 @@
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
 
-      // Validasi aturan: Kolom week dan body weight wajib terisi
       const weekVal = document.getElementById("inputProject").value.trim();
       const bwVal = document.getElementById("inputBodyWeight").value.trim();
       if (!weekVal || !bwVal) {
@@ -1907,22 +1900,18 @@
         workoutTab.classList.remove("hidden");
         analyticsTab.classList.add("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
       } else {
         workoutTab.classList.add("hidden");
         analyticsTab.classList.remove("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
 
@@ -2160,14 +2149,14 @@
         let acute = weeklyVolumes[i]; 
         let startIdx = Math.max(0, i - 3);
         let chronicArr = weeklyVolumes.slice(startIdx, i + 1);
-        let chronic = chronicArr.reduce((a, b) => a + b, 0) / chronicArr.length;
-        
-        let ratio = chronic > 0 ? (acute / chronic) : 1.0;
-        acwrPoints.push(Math.round(ratio * 100) / 100);
+        let chronicSum = chronicArr.reduce((a, b) => a + b, 0);
+        let chronic = chronicArr.length > 0 ? chronicSum / chronicArr.length : 1;
+        let acwr = chronic > 0 ? acute / chronic : 1;
+        acwrPoints.push(Math.round(acwr * 100) / 100);
       }
 
       if (labels.length === 0) {
-        labels = ["No Data"];
+        labels = ["No Data Available"];
         acwrPoints = [0];
       }
 
@@ -2176,78 +2165,21 @@
         data: {
           labels: labels,
           datasets: [{
-            label: 'ACWR Ratio',
+            label: 'ACWR (Acute:Chronic Workload Ratio)',
             data: acwrPoints,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
             borderWidth: 2,
-            fill: true
+            fill: true,
+            tension: 0.3
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: true } },
-          scales: { y: { min: 0, max: 2.5 } }
+          plugins: { legend: { display: true } }
         }
       });
-    }
-
-    async function loadAdminData() {
-      showSpinner("Loading admin dashboard console...");
-      const res = await callApi({ action: "getAdminData", username: currentUser });
-      hideSpinner();
-
-      if (res.status === "success") {
-        renderAdminUsers(res.usersMeta || []);
-        renderAdminLogs(res.activityLogs || []);
-        lastSyncedTime = new Date();
-      } else {
-        showToast("Failed to load admin data.", "error");
-      }
-    }
-
-    function renderAdminUsers(users) {
-      const tbody = document.getElementById("adminUsersTable");
-      tbody.innerHTML = "";
-
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No registered users found.</td></tr>`;
-        return;
-      }
-
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-
-        let statusBadge = u.status === "ACTIVE" 
-          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
-          : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
-
-        tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.username}</td>
-          <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center">
-            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">View Stats</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
-      currentUser = null;
-      isAdmin = false;
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("syncStatus").classList.add("hidden");
-      document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
-      showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
