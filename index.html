@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[source: 1]<!DOCTYPE html>
 <html lang="en" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
@@ -2124,10 +2124,19 @@
 
       if (res && res.status === "success" && Array.isArray(res.users)) {
         adminFetchedUsers = res.users;
+        
+        // Update local approvals state from Master DB to remain synced
+        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+        adminFetchedUsers.forEach(u => {
+          localApprovals[u.username] = u.status;
+        });
+        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
         renderAdminUsersTable(adminFetchedUsers);
         renderAdminLogsTable(res.logs || []);
         lastSyncedTime = new Date();
       } else {
+        showToast("Failed to sync with master database. Loading offline cache...", "warning");
         const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
         const regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
 
@@ -2214,12 +2223,16 @@
       const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Approved" });
       hideSpinner();
 
-      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-      localApprovals[username] = "Approved";
-      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+      if (res && res.status === "success") {
+        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+        localApprovals[username] = "Approved";
+        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      showToast(`User ${username} approved successfully!`, "success");
-      loadAdminData();
+        showToast(`User ${username} approved successfully!`, "success");
+        loadAdminData();
+      } else {
+        showToast(res.message || "Failed to update user status on server.", "error");
+      }
     }
 
     async function revokeUserStatus(username) {
@@ -2230,12 +2243,16 @@
       const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Pending Approval" });
       hideSpinner();
 
-      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-      localApprovals[username] = "Pending Approval";
-      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+      if (res && res.status === "success") {
+        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+        localApprovals[username] = "Pending Approval";
+        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      showToast(`Access revoked for ${username}.`, "warning");
-      loadAdminData();
+        showToast(`Access revoked for ${username}.`, "warning");
+        loadAdminData();
+      } else {
+        showToast(res.message || "Failed to update user status on server.", "error");
+      }
     }
 
     function viewUserDetail(username) {
@@ -2244,26 +2261,41 @@
       const stats = document.getElementById("userStatsOverview");
       const benchs = document.getElementById("userBenchmarksList");
 
-      title.innerText = `User Profile & Stats: ${username}`;
-
-      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      title.innerText = `User Profile & Stats - ${username}`;
+      
+      const userObj = adminFetchedUsers.find(u => u.username === username) || { status: "Approved" };
 
       stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Account Status</span><span class="font-bold text-sm text-emerald-600">Active / Verified</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Registered Benchmarks</span><span class="font-bold text-sm">${Object.keys(benchmarks).length} Exercises</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Primary Role</span><span class="font-bold text-sm">Standard Athlete</span></div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block">Account Username</span>
+          <span class="font-bold text-sm">${username}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block">Access Status</span>
+          <span class="font-bold text-sm ${userObj.status === 'Approved' ? 'text-emerald-600' : 'text-amber-600'}">${userObj.status}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[10px] themed-text-muted block">System Role</span>
+          <span class="font-bold text-sm">${username === 'dicky' ? 'Administrator' : 'Standard User'}</span>
+        </div>
       `;
 
+      const userBenchmarks = userObj.benchmarks || JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
       benchs.innerHTML = "";
-      const displayLifts = ["Barbell Bench Press", "Barbell Squats", "Barbell Conventional Deadlift", "Barbell Overhead Press"];
 
-      displayLifts.forEach(lift => {
-        const val = benchmarks[lift] ?? (initialBenchmarkLoads[lift] || 0);
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${lift}</span><span class="font-bold text-blue-600 dark:text-blue-400">${val} kg</span>`;
-        benchs.appendChild(div);
-      });
+      const keys = Object.keys(userBenchmarks);
+      if (keys.length === 0) {
+        benchs.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No baseline benchmarks recorded.</p>`;
+      } else {
+        keys.forEach(k => {
+          benchs.innerHTML += `
+            <div class="themed-subcard p-2 rounded-lg border text-xs">
+              <span class="text-[10px] themed-text-muted block truncate">${k}</span>
+              <span class="font-bold text-blue-600 dark:text-blue-400">${userBenchmarks[k]} kg</span>
+            </div>
+          `;
+        });
+      }
 
       container.classList.remove("hidden");
       container.scrollIntoView({ behavior: 'smooth' });
@@ -2271,10 +2303,6 @@
 
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function closeActionPopover() {
-      document.getElementById("actionPopover").classList.add("hidden");
     }
   </script>
 </body>
