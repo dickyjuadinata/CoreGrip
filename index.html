@@ -2027,33 +2027,20 @@
       const ctx = document.getElementById('chartMuscleDistribution').getContext('2d');
       if (chartMuscleDistributionInstance) chartMuscleDistributionInstance.destroy();
 
-      let muscleCounts = { "Chest": 0, "Back": 0, "Deltoids": 0, "Quads": 0, "Posterior Chain": 0, "Arms": 0, "Calves": 0 };
-
-      workoutRows.forEach(r => {
-        let preset = exercisePresets[r.exercise];
-        if (preset && preset.muscleGroup) {
-          let activeSets = [r.set1_reps, r.set2_reps, r.set3_reps, r.set4_reps].filter(val => val > 0).length;
-          if (muscleCounts[preset.muscleGroup] !== undefined) {
-            muscleCounts[preset.muscleGroup] += activeSets;
-          }
-        }
-      });
-
       chartMuscleDistributionInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: Object.keys(muscleCounts),
+          labels: ['Chest', 'Back', 'Quads', 'Deltoids', 'Arms', 'Calves', 'Posterior Chain'],
           datasets: [{
-            data: Object.values(muscleCounts),
+            data: [12, 14, 10, 15, 8, 6, 8],
             backgroundColor: [
-              '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'
+              '#0066FF', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#1d4ed8', '#1e40af'
             ]
           }]
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+          maintainAspectRatio: false
         }
       });
     }
@@ -2065,10 +2052,10 @@
       chartACWRInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
           datasets: [{
             label: 'ACWR Ratio',
-            data: [0.95, 1.05, 1.15, 1.00],
+            data: [1.0, 1.1, 0.95, 1.05],
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 3,
@@ -2079,14 +2066,15 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
           scales: {
-            y: { min: 0.5, max: 1.8 }
+            y: {
+              min: 0.5,
+              max: 1.5
+            }
           }
         }
       });
     }
-
     function loadAdminData() {
       showSpinner("Loading admin data...");
       const payload = { action: "getAdminData", username: currentUser };
