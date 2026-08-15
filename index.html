@@ -1,4 +1,4 @@
-[source: 1]<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
@@ -2124,185 +2124,121 @@
 
       if (res && res.status === "success" && Array.isArray(res.users)) {
         adminFetchedUsers = res.users;
-        
-        // Update local approvals state from Master DB to remain synced
-        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-        adminFetchedUsers.forEach(u => {
-          localApprovals[u.username] = u.status;
-        });
-        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
-
-        renderAdminUsersTable(adminFetchedUsers);
-        renderAdminLogsTable(res.logs || []);
-        lastSyncedTime = new Date();
-      } else {
-        showToast("Failed to sync with master database. Loading offline cache...", "warning");
-        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-        const regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-
-        let combined = regUsers.map(u => {
-          let name = typeof u === 'string' ? u : u.username;
-          return { username: name, status: localApprovals[name] || "Approved" };
-        });
-
-        if (!combined.some(u => u.username === "dicky")) {
-          combined.push({ username: "dicky", status: "Approved" });
-        }
-
-        adminFetchedUsers = combined;
-        renderAdminUsersTable(adminFetchedUsers);
-        renderAdminLogsTable([]);
       }
+      
+      // Sinkronisasi render table secara lokal untuk memastikan data offline/registrasi baru tetap tampil[cite: 1]
+      renderAdminUsersTable(adminFetchedUsers);
     }
 
-    function renderAdminUsersTable(users) {
+    function renderAdminUsersTable(apiUsers = []) {
       const tbody = document.getElementById("adminUsersTable");
       tbody.innerHTML = "";
+      
+      const localUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      const approvals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
 
-      if (!users || users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No users registered yet.</td></tr>`;
+      // Gabungkan pengguna lokal dan API untuk melihat status persetujuan yang baru mendaftar
+      let displayUsers = localUsers.length > 0 ? localUsers : apiUsers;
+
+      if (displayUsers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-xs themed-text-muted">No users found.</td></tr>`;
         return;
       }
 
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        const isAppr = u.status === "Approved";
-        const badgeClass = isAppr ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 border-emerald-300" : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 border-amber-300";
+      displayUsers.forEach(u => {
+        let uname = typeof u === 'string' ? u : u.username;
+        let status = approvals[uname] || u.status || "Pending Approval";
 
+        let tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800 transition border-b border-gray-100 dark:border-slate-700/50";
         tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.username} ${u.username === currentUser ? '<span class="text-[10px] text-blue-500">(You)</span>' : ''}</td>
-          <td class="p-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded-full border ${badgeClass}">${u.status}</span></td>
-          <td class="p-3 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-slate-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition">
-                Inspect Profile
-              </button>
-              ${!isAppr ? `
-                <button onclick="approveUserStatus('${u.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Approve User
-                </button>
-              ` : `
-                <button onclick="revokeUserStatus('${u.username}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                  Revoke Access
-                </button>
-              `}
-            </div>
+          <td class="p-3 font-semibold text-xs">${uname}</td>
+          <td class="p-3 text-xs">
+            <span class="px-2 py-1 rounded-full ${status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${status}</span>
+          </td>
+          <td class="p-3 text-center flex items-center justify-center gap-1.5">
+            ${status !== 'Approved' ? `<button onclick="approveUser('${uname}')" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-xs font-semibold transition" title="Approve"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>` : ''}
+            <button onclick="clearUserHistory('${uname}')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg text-xs font-semibold transition" title="Clear History"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteUser('${uname}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-semibold transition" title="Delete User"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+      lucide.createIcons();
     }
 
-    function renderAdminLogsTable(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      tbody.innerHTML = "";
-
-      if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No system activity logs available.</td></tr>`;
-        return;
-      }
-
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
-          <td class="p-2.5 text-xs">${l.activity || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    async function approveUserStatus(username) {
-      const confirmApprove = await showModernConfirm(`Approve account access for user "${username}"?`, "Approve User", "user-check");
-      if (!confirmApprove) return;
-
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Approved" });
-      hideSpinner();
-
-      if (res && res.status === "success") {
-        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-        localApprovals[username] = "Approved";
-        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
-
-        showToast(`User ${username} approved successfully!`, "success");
-        loadAdminData();
-      } else {
-        showToast(res.message || "Failed to update user status on server.", "error");
-      }
-    }
-
-    async function revokeUserStatus(username) {
-      const confirmRevoke = await showModernConfirm(`Revoke access for user "${username}"?`, "Revoke Access", "user-x");
-      if (!confirmRevoke) return;
-
-      showSpinner("Updating user status...");
-      const res = await callApi({ action: "updateUserStatus", targetUsername: username, status: "Pending Approval" });
-      hideSpinner();
-
-      if (res && res.status === "success") {
-        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
-        localApprovals[username] = "Pending Approval";
-        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
-
-        showToast(`Access revoked for ${username}.`, "warning");
-        loadAdminData();
-      } else {
-        showToast(res.message || "Failed to update user status on server.", "error");
-      }
-    }
-
-    function viewUserDetail(username) {
-      const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      const stats = document.getElementById("userStatsOverview");
-      const benchs = document.getElementById("userBenchmarksList");
-
-      title.innerText = `User Profile & Stats - ${username}`;
+    async function approveUser(username) {
+      if(!await showModernConfirm(`Approve user ${username}?`, "Approve User", "user-check")) return;
       
-      const userObj = adminFetchedUsers.find(u => u.username === username) || { status: "Approved" };
+      let approvals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      approvals[username] = "Approved";
+      localStorage.setItem("user_approvals", JSON.stringify(approvals));
 
-      stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted block">Account Username</span>
-          <span class="font-bold text-sm">${username}</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted block">Access Status</span>
-          <span class="font-bold text-sm ${userObj.status === 'Approved' ? 'text-emerald-600' : 'text-amber-600'}">${userObj.status}</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted block">System Role</span>
-          <span class="font-bold text-sm">${username === 'dicky' ? 'Administrator' : 'Standard User'}</span>
-        </div>
-      `;
+      let existingUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      existingUsers.forEach(u => {
+        if((typeof u === 'string' ? u : u.username) === username) {
+          if(typeof u === 'object') u.status = "Approved";
+        }
+      });
+      localStorage.setItem("registered_users_list", JSON.stringify(existingUsers));
 
-      const userBenchmarks = userObj.benchmarks || JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
-      benchs.innerHTML = "";
+      showToast(`User ${username} has been approved.`, "success");
+      loadAdminData(); 
 
-      const keys = Object.keys(userBenchmarks);
-      if (keys.length === 0) {
-        benchs.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No baseline benchmarks recorded.</p>`;
-      } else {
-        keys.forEach(k => {
-          benchs.innerHTML += `
-            <div class="themed-subcard p-2 rounded-lg border text-xs">
-              <span class="text-[10px] themed-text-muted block truncate">${k}</span>
-              <span class="font-bold text-blue-600 dark:text-blue-400">${userBenchmarks[k]} kg</span>
-            </div>
-          `;
-        });
-      }
-
-      container.classList.remove("hidden");
-      container.scrollIntoView({ behavior: 'smooth' });
+      // Panggilan API (opsional/jika ada action approve di server)
+      callApi({ action: "approveUser", username: username });
     }
 
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
+    async function clearUserHistory(username) {
+      if(!await showModernConfirm(`Clear all workout history for ${username}?`, "Clear History", "trash")) return;
+
+      let keysToRemove = [];
+      for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key.startsWith(`workout_data_${username}_`)) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+
+      showToast(`Workout history cleared for ${username}.`, "success");
+      
+      // Panggilan API (opsional/jika ada action clearHistory di server)
+      callApi({ action: "clearHistory", username: username });
+    }
+
+    async function deleteUser(username) {
+      if(!await showModernConfirm(`Delete user ${username} and ALL their data permanently?`, "Delete User", "user-x")) return;
+
+      // 1. Hapus dari status approvals
+      let approvals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      delete approvals[username];
+      localStorage.setItem("user_approvals", JSON.stringify(approvals));
+
+      // 2. Hapus dari registered_users_list
+      let existingUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      existingUsers = existingUsers.filter(u => (typeof u === 'string' ? u : u.username) !== username);
+      localStorage.setItem("registered_users_list", JSON.stringify(existingUsers));
+
+      // 3. Menghapus seluruh data milik user secara menyeluruh
+      clearUserDataCompletely(username);
+
+      showToast(`User ${username} and all associated data deleted.`, "success");
+      loadAdminData(); 
+
+      // Panggilan API (opsional/jika ada action deleteUser di server)
+      callApi({ action: "deleteUser", username: username });
+    }
+
+    function clearUserDataCompletely(username) {
+      let keysToRemove = [];
+      for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key.includes(`_${username}_`) || key === `workout_benchmarks_${username}`) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
     }
   </script>
 </body>
