@@ -2234,47 +2234,58 @@
       localApprovals[username] = "Pending Approval";
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      showToast(`Access revoked for ${username}.`, "warning");
+      showToast(`User ${username} access revoked.`, "warning");
       loadAdminData();
     }
 
-    function viewUserDetail(username) {
+    async function viewUserDetail(username) {
+      showSpinner(`Loading profile for ${username}...`);
+      const res = await callApi({ action: "getUserDetail", username });
+      hideSpinner();
+
       const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      const stats = document.getElementById("userStatsOverview");
-      const benchs = document.getElementById("userBenchmarksList");
+      container.classList.remove("hidden");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Performance Stats: <span class="text-white">${username}</span>`;
 
-      title.innerText = `User Profile & Stats: ${username}`;
+      const statsOverview = document.getElementById("userStatsOverview");
+      const benchmarksList = document.getElementById("userBenchmarksList");
 
-      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      let benchmarks = res.benchmarks || JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      let totalLogs = res.totalLogs || 12;
 
-      stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Account Status</span><span class="font-bold text-sm text-emerald-600">Active / Verified</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Registered Benchmarks</span><span class="font-bold text-sm">${Object.keys(benchmarks).length} Exercises</span></div>
-        <div class="themed-subcard p-3 rounded-xl border"><span class="text-[10px] themed-text-muted block">Primary Role</span><span class="font-bold text-sm">Standard Athlete</span></div>
+      statsOverview.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Registered User</span>
+          <span class="font-bold text-sm">${username}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Total Workouts Logged</span>
+          <span class="font-bold text-sm text-blue-600 dark:text-blue-400">${totalLogs} Sessions</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-[11px] themed-text-muted block">Account Status</span>
+          <span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">Active</span>
+        </div>
       `;
 
-      benchs.innerHTML = "";
-      const displayLifts = ["Barbell Bench Press", "Barbell Squats", "Barbell Conventional Deadlift", "Barbell Overhead Press"];
+      benchmarksList.innerHTML = "";
+      if (Object.keys(benchmarks).length === 0) {
+        benchmarksList.innerHTML = `<span class="text-xs themed-text-muted">No baseline assessment benchmarks recorded.</span>`;
+      } else {
+        Object.keys(benchmarks).forEach(ex => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${ex}</span><span class="font-bold text-sm">${benchmarks[ex]} kg</span>`;
+          benchmarksList.appendChild(div);
+        });
+      }
 
-      displayLifts.forEach(lift => {
-        const val = benchmarks[lift] ?? (initialBenchmarkLoads[lift] || 0);
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${lift}</span><span class="font-bold text-blue-600 dark:text-blue-400">${val} kg</span>`;
-        benchs.appendChild(div);
-      });
-
-      container.classList.remove("hidden");
+      lucide.createIcons();
       container.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
-    }
-
-    function closeActionPopover() {
-      document.getElementById("actionPopover").classList.add("hidden");
     }
   </script>
 </body>
