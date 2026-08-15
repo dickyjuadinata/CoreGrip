@@ -361,12 +361,12 @@
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" onchange="changeProjectFreetext()" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="0" value="" placeholder="0" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input rounded-r-xl border text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputDaySession">
+                <input type="number" inputmode="decimal" step="0.1" id="inputBodyWeight" value="" placeholder="e.g., 70" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
               </div>
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
@@ -438,20 +438,20 @@
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
+                  <span id="labelSet1" class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
+                  <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="Set 1 Reps" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
+                  <span id="labelSet2" class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
+                  <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="Set 2 Reps" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
+                  <span id="labelSet3" class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
+                  <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="Set 3 Reps" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
+                  <span id="labelSet4" class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
+                  <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="Set 4 Reps" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
             </div>
@@ -735,8 +735,23 @@
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
     function checkFormActivation() {
-      const weekVal = document.getElementById("inputProject").value.trim();
-      const bwVal = document.getElementById("inputBodyWeight").value.trim();
+      const weekInput = document.getElementById("inputProject");
+      const bwInput = document.getElementById("inputBodyWeight");
+      const weekVal = weekInput ? weekInput.value.trim() : "";
+      
+      // Kolom Body Weight hanya aktif setelah kolom Week Number diisi
+      if (bwInput) {
+        if (weekVal !== "") {
+          bwInput.disabled = false;
+          bwInput.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          bwInput.disabled = true;
+          bwInput.classList.add("opacity-50", "cursor-not-allowed");
+          bwInput.value = "";
+        }
+      }
+
+      const bwVal = bwInput ? bwInput.value.trim() : "";
       const form = document.getElementById("formWorkout");
       if (!form) return;
       const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
@@ -1082,6 +1097,15 @@
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
+
+        // Memperbarui label Set 1-4 dan placeholder input dengan label target rep range
+        const repLabel = preset.reps ? ` (${preset.reps})` : "";
+        for (let i = 1; i <= 4; i++) {
+          const lbl = document.getElementById(`labelSet${i}`);
+          const inp = document.getElementById(`inputSet${i}`);
+          if (lbl) lbl.innerText = `Set ${i}${repLabel}`;
+          if (inp) inp.placeholder = preset.reps || "0";
+        }
 
         const totalSets = preset.sets || 4;
         for (let i = 1; i <= 4; i++) {
@@ -1779,6 +1803,13 @@
         document.getElementById("inputRestTime").value = "";
         document.getElementById("inputWorkingLoad").value = "0";
         document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+        
+        for (let i = 1; i <= 4; i++) {
+          const lbl = document.getElementById(`labelSet${i}`);
+          const inp = document.getElementById(`inputSet${i}`);
+          if (lbl) lbl.innerText = `Set ${i}`;
+          if (inp) inp.placeholder = "Set " + i + " Reps";
+        }
       }
 
       for (let i = 1; i <= 4; i++) {
@@ -1845,6 +1876,14 @@
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      
+      for (let i = 1; i <= 4; i++) {
+        const lbl = document.getElementById(`labelSet${i}`);
+        const inp = document.getElementById(`inputSet${i}`);
+        if (lbl) lbl.innerText = `Set ${i}`;
+        if (inp) inp.placeholder = "Set " + i + " Reps";
+      }
+
       checkFormActivation();
     }
 
@@ -2185,106 +2224,30 @@
           ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 text-xs font-semibold">ACTIVE</span>`
           : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 text-xs font-semibold">PENDING</span>`;
 
-        let actionBtns = `<button onclick="approveUserModal('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Approve</button>`;
-        if (u.status === "ACTIVE") {
-          actionBtns = `<button onclick="viewUserDetailModal('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">View Stats</button>`;
-        }
-
         tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.user}</td>
+          <td class="p-3 font-semibold text-xs">${u.username}</td>
           <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center">${actionBtns}</td>
+          <td class="p-3 text-center">
+            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">View Stats</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
-    }
-
-    function renderAdminLogs(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      tbody.innerHTML = "";
-      if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
-        return;
-      }
-      logs.forEach(l => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
-        tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold">${l.user || '-'}</td>
-          <td class="p-2.5">${l.activity || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    async function approveUserModal(username) {
-      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve User", "user-check");
-      if (!confirmed) return;
-
-      showSpinner("Approving user account...");
-      const res = await callApi({ action: "approveUser", adminUser: currentUser, targetUser: username });
-      hideSpinner();
-
-      if (res.status === "success") {
-        showToast(`User ${username} approved successfully.`, "success");
-        loadAdminData();
-      } else {
-        showToast(res.message || "Failed to approve user.", "error");
-      }
-    }
-
-    async function viewUserDetailModal(username) {
-      showSpinner(`Loading stats for ${username}...`);
-      const res = await callApi({ action: "getUserDetail", adminUser: currentUser, targetUser: username });
-      hideSpinner();
-
-      if (res.status === "success") {
-        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <b>${username}</b>`;
-        
-        const overview = document.getElementById("userStatsOverview");
-        overview.innerHTML = `
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Status</span><b class="text-sm text-emerald-600">${res.statusUser || 'ACTIVE'}</b></div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Total Workouts Logged</span><b class="text-sm">${res.totalWorkouts || 0} Records</b></div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs"><span class="themed-text-muted block">Account Created</span><b class="text-sm">${res.createdAt || 'N/A'}</b></div>
-        `;
-
-        const benchmarksList = document.getElementById("userBenchmarksList");
-        benchmarksList.innerHTML = "";
-        const benchObj = res.benchmarks || {};
-        Object.keys(benchObj).forEach(k => {
-          const div = document.createElement("div");
-          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
-          div.innerHTML = `<span class="themed-text-muted block text-[10px] truncate">${k}</span><b class="text-sm">${benchObj[k]} kg</b>`;
-          benchmarksList.appendChild(div);
-        });
-
-        lucide.createIcons();
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        showToast(res.message || "Failed to load user details.", "error");
-      }
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
 
     function handleLogout() {
-      currentUser = null;
-      isAdmin = false;
       localStorage.removeItem("workout_user");
       localStorage.removeItem("workout_is_admin");
-      document.getElementById("authSection").classList.remove("hidden");
+      currentUser = null;
+      isAdmin = false;
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("syncStatus").classList.add("hidden");
       document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
       document.getElementById("signOutBtnHeader").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
-      switchAuthTab('login');
-      showToast("Signed out successfully.", "info");
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      showToast("Successfully signed out.", "info");
     }
   </script>
 </body>
