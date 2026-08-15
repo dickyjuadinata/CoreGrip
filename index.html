@@ -2133,12 +2133,8 @@
 
         let combined = regUsers.map(u => {
           let name = typeof u === 'string' ? u : u.username;
-          return { username: name, status: localApprovals[name] || "Approved" };
+          return { username: name, status: localApprovals[name] || "Pending Approval" };
         });
-
-        if (!combined.some(u => u.username === "dicky")) {
-          combined.push({ username: "dicky", status: "Approved" });
-        }
 
         adminFetchedUsers = combined;
         renderAdminUsersTable(adminFetchedUsers);
@@ -2178,8 +2174,8 @@
                   Revoke
                 </button>
               `}
-              <button onclick="deleteUserAccount('${u.username}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
-                Delete
+              <button onclick="deleteUser('${u.username}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
+                Delete User
               </button>
             </div>
           </td>
@@ -2191,41 +2187,33 @@
 
     function renderAdminLogsTable(logs) {
       const tbody = document.getElementById("adminLogsTable");
-      if (!tbody) return;
       tbody.innerHTML = "";
-
       if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No recent system activity logs.</td></tr>`;
         return;
       }
-
       logs.forEach(l => {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || new Date().toLocaleString()}</td>
-          <td class="p-2.5 font-semibold">${l.username || 'System'}</td>
-          <td class="p-2.5">${l.description || l.activity || ''}</td>
+          <td class="p-2.5 font-mono text-[11px]">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.username || '-'}</td>
+          <td class="p-2.5">${l.description || '-'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     async function approveUserStatus(username) {
-      const confirmApprove = await showModernConfirm(`Are you sure you want to approve user "${username}"?`, "Approve User", "user-check");
-      if (!confirmApprove) return;
-
-      showSpinner(`Approving user ${username}...`);
-      const res = await callApi({ action: "updateUserStatus", username, status: "Approved" });
-      hideSpinner();
-
       const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
       localApprovals[username] = "Approved";
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
       let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       regUsers = regUsers.map(u => {
-        if (typeof u === 'object' && u.username === username) u.status = "Approved";
+        if ((typeof u === 'string' ? u : u.username) === username) {
+          return typeof u === 'string' ? { username: u, status: "Approved" } : { ...u, status: "Approved" };
+        }
         return u;
       });
       localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
@@ -2235,47 +2223,44 @@
     }
 
     async function revokeUserStatus(username) {
-      const confirmRevoke = await showModernConfirm(`Are you sure you want to revoke access for user "${username}"?`, "Revoke Access", "user-x");
-      if (!confirmRevoke) return;
-
-      showSpinner(`Revoking access for ${username}...`);
-      const res = await callApi({ action: "updateUserStatus", username, status: "Pending Approval" });
-      hideSpinner();
-
       const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
       localApprovals[username] = "Pending Approval";
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
       let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
       regUsers = regUsers.map(u => {
-        if (typeof u === 'object' && u.username === username) u.status = "Pending Approval";
+        if ((typeof u === 'string' ? u : u.username) === username) {
+          return typeof u === 'string' ? { username: u, status: "Pending Approval" } : { ...u, status: "Pending Approval" };
+        }
         return u;
       });
       localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
 
-      showToast(`User ${username} access revoked.`, "warning");
+      showToast(`User ${username} approval revoked.`, "warning");
       loadAdminData();
     }
 
-    async function deleteUserAccount(username) {
-      const confirmDel = await showModernConfirm(`Are you sure you want to permanently delete user "${username}" and all associated data?`, "Delete User", "trash-2");
-      if (!confirmDel) return;
+    async function deleteUser(username) {
+      const confirmDelete = await showModernConfirm(`Are you sure you want to delete user "${username}" and ALL their associated data? This action cannot be undone.`, "Delete User & Data", "trash-2");
+      if (!confirmDelete) return;
 
-      showSpinner(`Deleting user ${username}...`);
-      const res = await callApi({ action: "deleteUser", username });
-      hideSpinner();
+      // Remove from registered users list and approvals
+      let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      regUsers = regUsers.filter(u => (typeof u === 'string' ? u : u.username) !== username);
+      localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
 
       let localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
       delete localApprovals[username];
       localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
 
-      let regUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-      regUsers = regUsers.filter(u => (typeof u === 'string' ? u : u.username) !== username);
-      localStorage.setItem("registered_users_list", JSON.stringify(regUsers));
-
+      // Remove all user workout data and benchmarks from local storage
       localStorage.removeItem(`workout_benchmarks_${username}`);
+      for (let i = 1; i <= 10; i++) {
+        localStorage.removeItem(`workout_data_${username}_Week ${i}`);
+      }
 
-      showToast(`User ${username} deleted successfully.`, "success");
+      showToast(`User ${username} and all associated data deleted successfully.`, "success");
+      closeUserDetail();
       loadAdminData();
     }
 
@@ -2286,38 +2271,36 @@
       const benchmarksList = document.getElementById("userBenchmarksList");
 
       container.classList.remove("hidden");
-      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Stats: <b>${username}</b>`;
+      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: <span class="text-white">${username}</span>`;
 
-      const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      const benchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
       
       statsOverview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Account Status</span>
-          <span class="font-bold text-sm">Active / Approved</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Username</span>
+          <span class="font-bold text-sm mt-1 block">${username}</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Registered Benchmarks</span>
-          <span class="font-bold text-sm">${Object.keys(savedBenchmarks).length} Exercises</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Account Status</span>
+          <span class="font-bold text-sm mt-1 block text-emerald-500">Active / Registered</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[11px] themed-text-muted block">Cloud Sync Status</span>
-          <span class="font-bold text-sm text-emerald-600">Synced</span>
+        <div class="themed-subcard p-4 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Total Tracked Benchmarks</span>
+          <span class="font-bold text-sm mt-1 block">${Object.keys(benchmarks).length} Exercises</span>
         </div>
       `;
 
       benchmarksList.innerHTML = "";
-      if (Object.keys(savedBenchmarks).length === 0) {
-        benchmarksList.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No specific baseline benchmarks recorded.</p>`;
+      if (Object.keys(benchmarks).length === 0) {
+        benchmarksList.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No baseline benchmark records found for this user.</p>`;
       } else {
-        Object.keys(savedBenchmarks).forEach(ex => {
-          const val = savedBenchmarks[ex];
+        Object.entries(benchmarks).forEach(([ex, load]) => {
           const div = document.createElement("div");
-          div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
-          div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><b class="text-sm">${val} kg</b>`;
+          div.className = "themed-subcard p-3 rounded-xl border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><span class="font-bold text-sm">${load} kg</span>`;
           benchmarksList.appendChild(div);
         });
       }
-
       container.scrollIntoView({ behavior: 'smooth' });
       lucide.createIcons();
     }
