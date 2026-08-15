@@ -55,7 +55,6 @@
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
-    /* Skema Warna Light Mode Sesuai Permintaan */
     :root {
       --bg-page: #f9fafb;
       --bg-card: #ffffff;
@@ -74,7 +73,6 @@
       --table-header-text: #0066FF;
     }
 
-    /* Skema Warna Dark Mode Sesuai Permintaan */
     @media (prefers-color-scheme: dark) {
       :root {
         --bg-page: #0f172a;
@@ -172,7 +170,7 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative overflow-x-hidden w-full">
 
-  <!-- Header & Navigasi Atas -->
+  <!-- Header & Navigation -->
   <header class="themed-header border-b border-gray-800 shadow-sm sticky top-0 z-40 w-full transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center w-full h-14">
       <div class="flex items-center space-x-6">
@@ -185,7 +183,6 @@
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Hidden by default on login page) -->
         <nav id="headerNavTabs" class="hidden items-center space-x-1">
           <button id="navWorkoutBtn" onclick="switchAppTab('workout')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2">
             <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> Workout Log
@@ -197,25 +194,21 @@
       </div>
       
       <div class="flex items-center space-x-3 h-full">
-        <!-- Online Sync Button (Hidden by default on login page, shown after login) -->
         <p class="hidden text-xs opacity-90 items-center gap-1.5 cursor-pointer hover:bg-white/10 transition bg-transparent px-3 py-1.5 rounded-lg border border-white/20 h-8 text-white" id="syncStatus" onclick="showSyncDetailModal()">
           <span id="statusIndicator" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400"></span>
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <!-- Mobile Hamburger Button -->
         <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Desktop Sign Out Button (Transparent Background) -->
         <button id="signOutBtnHeader" onclick="handleLogout()" class="hidden text-xs bg-transparent hover:bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg transition items-center gap-1.5 active:scale-95 font-semibold h-8">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation -->
     <div id="mobileDrawer" class="hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
@@ -224,7 +217,6 @@
         <i data-lucide="line-chart" class="w-4 h-4"></i> Performance Analytics
       </button>
       <div class="border-t border-gray-800 my-1"></div>
-      <!-- Mobile Sign Out Button (Transparent Background inside Drawer) -->
       <button id="mobileSignOutBtn" onclick="handleLogout(); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-red-400 hover:text-red-300 bg-transparent hover:bg-white/10 border border-red-500/30 flex items-center gap-2 transition">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
       </button>
@@ -337,7 +329,7 @@
         </div>
 
         <button type="submit" id="btnRegisterSubmit" class="w-full bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
-          Submit & Create Account
+          Submit & Request Account
         </button>
       </form>
     </div>
@@ -425,7 +417,6 @@
               <span id="autoRegText">Target rep threshold not met. Working load automatically deloaded.</span>
             </div>
 
-            <!-- Countdown Timer Indicator Widget -->
             <div id="timerWidget" class="hidden bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-blue-700 dark:text-blue-300">
               <div class="flex items-center gap-2">
                 <i data-lucide="timer" class="w-4 h-4 animate-pulse"></i>
@@ -559,7 +550,7 @@
 
       <div class="themed-card p-6 rounded-2xl shadow-xl space-y-4 w-full">
         <h3 class="font-bold text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
-          <i data-lucide="users" class="w-4 h-4"></i> User Management & Profiles
+          <i data-lucide="users" class="w-4 h-4"></i> User Management & Approvals
         </h3>
         <div class="overflow-x-auto w-full">
           <table class="w-full text-sm text-left">
@@ -740,7 +731,6 @@
       const bwInput = document.getElementById("inputBodyWeight");
       const weekVal = weekInput ? weekInput.value.trim() : "";
       
-      // Kolom Body Weight hanya aktif setelah kolom Week Number diisi
       if (bwInput) {
         if (weekVal !== "") {
           bwInput.disabled = false;
@@ -769,7 +759,6 @@
       });
     }
 
-    /* Fungsi Drawer Mobile yang diperbaiki */
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
       const menuBtn = document.getElementById("mobileMenuBtn");
@@ -792,27 +781,24 @@
       }
     }
 
-    /* Penutupan otomatis drawer jika ukuran layar kembali ke desktop */
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) {
         toggleMobileDrawer(false);
       }
     });
 
-    /* Trigger Countdown Timer Otomatis dan Push Notification saat input set terisi */
     function handleSetInputBlur(setNumber) {
       const inputVal = document.getElementById(`inputSet${setNumber}`).value.trim();
       if (inputVal !== "" && parseInt(inputVal, 10) >= 0) {
         const currentExercise = document.getElementById("inputExercise").value;
         const preset = exercisePresets[currentExercise];
         
-        // Jika exercise adalah Triceps Pressdowns (Cable), jangan jalankan timer karena superset dengan Dumbbell Hammer Curl
         if (currentExercise === "Triceps Pressdowns (Cable)") {
           showToast("Superset active: No rest until Dumbbell Hammer Curl is completed.", "info", 3000);
           return;
         }
 
-        let restSec = 300; // default 5 minutes
+        let restSec = 300;
         if (preset && preset.restSeconds !== undefined) {
           restSec = preset.restSeconds;
         }
@@ -844,8 +830,8 @@
         if (remaining <= 0) {
           clearInterval(activeRestTimer);
           widget.classList.add("hidden");
-          showToast("Rest time finished! Please proceed to the next set.", "success", 4000);
-          triggerPushNotification("CoreGrip Rest Timer", "Rest time finished! Time for your next exercise set.");
+          showToast("Rest interval finished! Please proceed to the next set.", "success", 4000);
+          triggerPushNotification("CoreGrip Rest Timer", "Rest interval finished! Time for your next exercise set.");
         }
       }, 1000);
     }
@@ -1099,7 +1085,6 @@
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
 
-        // Memperbarui label Set 1-4 dan placeholder input dengan label target rep range
         const repLabel = preset.reps ? ` (${preset.reps})` : "";
         for (let i = 1; i <= 4; i++) {
           const lbl = document.getElementById(`labelSet${i}`);
@@ -1500,6 +1485,20 @@
       }
     }
 
+    function handleLogout() {
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("headerNavTabs").className = "hidden";
+      document.getElementById("syncStatus").className = "hidden";
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      showToast("Signed out successfully.", "info");
+    }
+
     async function callApi(payload) {
       try {
         const res = await fetch(API_URL, {
@@ -1530,6 +1529,14 @@
       hideSpinner();
 
       if (res.status === "success" || res.authenticated) {
+        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+        const status = res.status_user || localApprovals[username] || "Pending Approval";
+
+        if (status === "Pending Approval" && !res.isAdmin) {
+          await showModernAlert("Your account registration is pending admin approval. Please wait until an administrator approves your account.", "Access Restricted", "clock");
+          return;
+        }
+
         currentUser = username;
         isAdmin = res.isAdmin || false;
         localStorage.setItem("workout_user", currentUser);
@@ -1552,8 +1559,8 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      const existingUserList = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-      if (existingUserList.some(u => u.toLowerCase() === username.toLowerCase())) {
+      const existingUsers = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      if (existingUsers.some(u => (typeof u === 'string' ? u : u.username).toLowerCase() === username.toLowerCase())) {
         await showModernAlert(`Username "${username}" is already taken.`, "Registration Denied", "user-x");
         return;
       }
@@ -1598,16 +1605,21 @@
       userBenchmarks["Dumbbell Bulgarian Split Squat"] = mround2_5(assessedSquat * 0.375);
       userBenchmarks["Standing Barbell Calf Raises - B"] = mround2_5(assessedSquat * 0.60);
 
-      showSpinner("Registering user & setting up initial load baseline...");
-      const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks });
+      showSpinner("Submitting user registration...");
+      const res = await callApi({ action: "register", username, pin, benchmarks: userBenchmarks, status: "Pending Approval" });
       hideSpinner();
 
-      if (res.status === "success") {
-        existingUserList.push(username);
-        localStorage.setItem("registered_users_list", JSON.stringify(existingUserList));
+      if (res.status === "success" || res.message?.includes("success")) {
+        const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+        localApprovals[username] = "Pending Approval";
+        localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+        existingUsers.push({ username: username, status: "Pending Approval" });
+        localStorage.setItem("registered_users_list", JSON.stringify(existingUsers));
         localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+
         lastSyncedTime = new Date();
-        await showModernAlert((res.message || "Registration successful!"), "Registration Completed", "check-circle");
+        await showModernAlert("Registration request submitted! Your account requires admin approval prior to activation.", "Approval Pending", "clock");
         switchAuthTab('login');
       } else {
         await showModernAlert(res.message || "Registration failed.", "Error", "alert-circle");
@@ -1706,12 +1718,11 @@
     async function addOrUpdateWorkout(e) {
       e.preventDefault();
 
-      // Validasi aturan: Kolom week dan body weight wajib terisi
       const weekVal = document.getElementById("inputProject").value.trim();
       const bwVal = document.getElementById("inputBodyWeight").value.trim();
       if (!weekVal || !bwVal) {
-        showToast("Week Number and Body Weight columns are required!", "error", 4000);
-        await showModernAlert("Week Number and Body Weight columns are empty. Please fill in both columns to save the workout record.", "Validation Failed", "alert-circle");
+        showToast("Week Number and Body Weight fields are required!", "error", 4000);
+        await showModernAlert("Week Number and Body Weight fields are empty. Please fill in both fields to save the workout record.", "Validation Failed", "alert-circle");
         if (!weekVal) {
           document.getElementById("inputProject").focus();
         } else {
@@ -1908,22 +1919,18 @@
         workoutTab.classList.remove("hidden");
         analyticsTab.classList.add("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
       } else {
         workoutTab.classList.add("hidden");
         analyticsTab.classList.remove("hidden");
 
-        // Styling desktop buttons
         navWorkoutBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         navAnalyticsBtn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition text-white bg-blue-600 flex items-center gap-2";
 
-        // Styling mobile buttons
         mobileNavWorkoutBtn.className = "w-full text-left px-4 py-2 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2";
         mobileNavAnalyticsBtn.className = "w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2";
 
@@ -2193,7 +2200,6 @@
       });
     }
 
-    /* Modul Admin Console & Manajemen User */
     async function loadAdminData() {
       showSpinner("Fetching system user profiles and audit logs...");
       const res = await callApi({ action: "getAdminData" });
@@ -2205,11 +2211,18 @@
       logsTable.innerHTML = "";
 
       let usersList = [];
+      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+
       if (res && res.status === "success" && Array.isArray(res.users)) {
         usersList = res.users;
       } else {
         const localRegistered = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-        usersList = localRegistered.map(uName => ({ username: uName, status: "Active" }));
+        usersList = localRegistered.map(u => {
+          if (typeof u === 'string') {
+            return { username: u, status: localApprovals[u] || "Pending Approval" };
+          }
+          return u;
+        });
       }
 
       adminFetchedUsers = usersList;
@@ -2219,7 +2232,15 @@
       } else {
         usersList.forEach((u, idx) => {
           const uName = u.username || u.user || u.name || u.Username || "Unknown User";
-          const uStatus = u.status || u.Status || "Active";
+          const uStatus = localApprovals[uName] || u.status || u.Status || "Pending Approval";
+
+          let statusBadgeClass = "bg-amber-100 text-amber-700 border-amber-300";
+          if (uStatus.toLowerCase() === 'active' || uStatus.toLowerCase() === 'approved') {
+            statusBadgeClass = "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border-emerald-300";
+          } else if (uStatus.toLowerCase() === 'rejected') {
+            statusBadgeClass = "bg-red-100 text-red-700 border-red-300";
+          }
+
           const tr = document.createElement("tr");
           tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
           tr.innerHTML = `
@@ -2227,10 +2248,12 @@
               <i data-lucide="user" class="w-4 h-4 text-blue-500"></i> ${uName}
             </td>
             <td class="p-3 text-xs">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${uStatus.toLowerCase() === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300' : 'bg-amber-100 text-amber-700'}">${uStatus}</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${statusBadgeClass}">${uStatus}</span>
             </td>
             <td class="p-3 text-center">
               <div class="flex items-center justify-center gap-1.5">
+                ${uStatus !== 'Active' ? `<button onclick="approveUser('${uName}')" class="px-2 py-1 text-[11px] font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 rounded-lg transition" title="Approve User">Approve</button>` : ''}
+                ${uStatus === 'Pending Approval' ? `<button onclick="rejectUser('${uName}')" class="px-2 py-1 text-[11px] font-semibold bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg transition" title="Reject User">Reject</button>` : ''}
                 <button onclick="viewUserDetail(${idx})" class="px-2.5 py-1 text-[11px] font-semibold bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 rounded-lg transition">View Profile</button>
                 <button onclick="deleteUser('${uName}')" class="p-1 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-slate-700 dark:text-red-300 rounded-lg transition" title="Delete User"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
               </div>
@@ -2248,98 +2271,119 @@
           const tr = document.createElement("tr");
           tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
           tr.innerHTML = `
-            <td class="p-2.5 text-slate-500 text-[11px]">${log.timestamp || '-'}</td>
-            <td class="p-2.5 font-semibold">${log.username || '-'}</td>
-            <td class="p-2.5">${log.action || '-'}</td>
+            <td class="p-2.5 text-gray-500 dark:text-gray-400 font-mono text-[11px]">${log.timestamp || log.Date || "-"}</td>
+            <td class="p-2.5 font-semibold text-xs">${log.user || log.Username || "System"}</td>
+            <td class="p-2.5 text-xs">${log.activity || log.Action || "-"}</td>
           `;
           logsTable.appendChild(tr);
         });
       }
-
       lucide.createIcons();
     }
 
+    async function approveUser(username) {
+      const confirmed = await showModernConfirm(`Approve access for user "${username}"?`, "Approve Account", "user-check");
+      if (!confirmed) return;
+
+      showSpinner(`Approving user ${username}...`);
+      const res = await callApi({ action: "approveUser", username: username, status: "Active" });
+      hideSpinner();
+
+      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      localApprovals[username] = "Active";
+      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+      showToast(`User ${username} approved successfully!`, "success");
+      loadAdminData();
+    }
+
+    async function rejectUser(username) {
+      const confirmed = await showModernConfirm(`Reject access request for user "${username}"?`, "Reject Account", "user-x");
+      if (!confirmed) return;
+
+      showSpinner(`Rejecting user ${username}...`);
+      const res = await callApi({ action: "approveUser", username: username, status: "Rejected" });
+      hideSpinner();
+
+      const localApprovals = JSON.parse(localStorage.getItem("user_approvals") || "{}");
+      localApprovals[username] = "Rejected";
+      localStorage.setItem("user_approvals", JSON.stringify(localApprovals));
+
+      showToast(`User ${username} access rejected.`, "warning");
+      loadAdminData();
+    }
+
     function viewUserDetail(index) {
-      const u = adminFetchedUsers[index];
-      if (!u) return;
-      const uName = u.username || u.user || u.name || u.Username || "User";
+      const user = adminFetchedUsers[index];
+      if (!user) return;
 
-      const container = document.getElementById("adminUserDetailContainer");
-      document.getElementById("userDetailTitle").innerText = `User Profile: ${uName}`;
+      const username = user.username || user.user || user.name || "Unknown";
+      const detailContainer = document.getElementById("adminUserDetailContainer");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Lift Benchmarks: ${username}`;
 
-      const benchMap = u.benchmarks || JSON.parse(localStorage.getItem(`workout_benchmarks_${uName}`) || "{}");
-      
-      const statsOverview = document.getElementById("userStatsOverview");
-      statsOverview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted font-medium block">Username</span>
-          <span class="font-bold text-sm text-blue-600 dark:text-blue-400">${uName}</span>
+      const userBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
+      const benchListEl = document.getElementById("userBenchmarksList");
+      benchListEl.innerHTML = "";
+
+      const benchmarkKeys = Object.keys(userBenchmarks);
+      if (benchmarkKeys.length === 0) {
+        benchListEl.innerHTML = `<p class="text-xs themed-text-muted col-span-4">No custom benchmarks configured.</p>`;
+      } else {
+        benchmarkKeys.forEach(exKey => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2 rounded-xl border text-xs";
+          div.innerHTML = `
+            <span class="text-[10px] themed-text-muted block font-medium truncate" title="${exKey}">${exKey}</span>
+            <span class="font-bold text-sm text-blue-600 dark:text-blue-400">${userBenchmarks[exKey]} kg</span>
+          `;
+          benchListEl.appendChild(div);
+        });
+      }
+
+      const statsEl = document.getElementById("userStatsOverview");
+      statsEl.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+          <span class="themed-text-muted block text-[11px]">User Identity</span>
+          <span class="font-bold text-sm block">${username}</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted font-medium block">Status</span>
-          <span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">${u.status || 'Active'}</span>
+        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+          <span class="themed-text-muted block text-[11px]">Account Status</span>
+          <span class="font-bold text-sm block text-emerald-600 dark:text-emerald-400">${user.status || "Active"}</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-[10px] themed-text-muted font-medium block">Role</span>
-          <span class="font-bold text-sm">User</span>
+        <div class="themed-subcard p-3 rounded-xl border text-xs space-y-1">
+          <span class="themed-text-muted block text-[11px]">Evaluated Benchmarks</span>
+          <span class="font-bold text-sm block">${benchmarkKeys.length} Lifts Recorded</span>
         </div>
       `;
 
-      const benchmarksList = document.getElementById("userBenchmarksList");
-      benchmarksList.innerHTML = "";
-
-      Object.keys(initialBenchmarkLoads).forEach(ex => {
-        const loadVal = benchMap[ex] ?? initialBenchmarkLoads[ex];
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2 rounded-lg border text-xs";
-        div.innerHTML = `<span class="themed-text-muted text-[10px] block truncate" title="${ex}">${ex}</span><b class="text-sm">${loadVal} kg</b>`;
-        benchmarksList.appendChild(div);
-      });
-
-      container.classList.remove("hidden");
-      container.scrollIntoView({ behavior: 'smooth' });
+      detailContainer.classList.remove("hidden");
+      lucide.createIcons();
+      detailContainer.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
 
-    async function deleteUser(targetUser) {
-      const confirmed = await showModernConfirm(`Are you sure you want to delete user "${targetUser}"?`, "Delete User Account", "user-x");
+    async function deleteUser(username) {
+      const confirmed = await showModernConfirm(`Are you sure you want to delete user "${username}" from system records?`, "Delete User", "user-x");
       if (!confirmed) return;
 
-      showSpinner(`Deleting user "${targetUser}"...`);
-      const res = await callApi({ action: "deleteUser", targetUser });
+      showSpinner(`Deleting user ${username}...`);
+      const res = await callApi({ action: "deleteUser", username: username });
       hideSpinner();
 
-      if (res.status === "success") {
-        let localRegistered = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
-        localRegistered = localRegistered.filter(u => u.toLowerCase() !== targetUser.toLowerCase());
-        localStorage.setItem("registered_users_list", JSON.stringify(localRegistered));
-        
-        showToast(`User ${targetUser} deleted successfully.`, "success");
-        loadAdminData();
-      } else {
-        await showModernAlert(res.message || "Failed to delete user.", "Error", "alert-circle");
-      }
+      let localRegistered = JSON.parse(localStorage.getItem("registered_users_list") || "[]");
+      localRegistered = localRegistered.filter(u => (typeof u === 'string' ? u : u.username) !== username);
+      localStorage.setItem("registered_users_list", JSON.stringify(localRegistered));
+      localStorage.removeItem(`workout_benchmarks_${username}`);
+
+      showToast(`User ${username} deleted successfully.`, "success");
+      loadAdminData();
     }
 
-    function handleLogout() {
-      currentUser = null;
-      isAdmin = false;
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
-
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("headerNavTabs").className = "hidden";
-      document.getElementById("mobileMenuBtn").className = "hidden";
-      document.getElementById("signOutBtnHeader").className = "hidden";
-      document.getElementById("syncStatus").className = "hidden";
-
-      switchAuthTab('login');
-      showToast("Signed out successfully.", "info");
+    function closeActionPopover() {
+      document.getElementById("actionPopover").classList.add("hidden");
     }
   </script>
 </body>
