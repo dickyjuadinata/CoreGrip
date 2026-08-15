@@ -251,7 +251,7 @@
           <input type="password" inputmode="numeric" id="loginPin" required placeholder="Enter your PIN" class="w-full px-4 py-2.5 rounded-xl themed-input border focus:ring-2 focus:outline-none enter-nav" data-next="btnLoginSubmit">
         </div>
         <button type="submit" id="btnLoginSubmit" class="w-full bg-[#0066FF] dark:bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-500/30 active:scale-[0.98] text-sm">
-          Sign In
+          Sign In to
         </button>
       </form>
 
@@ -438,19 +438,19 @@
               <label class="block text-xs font-semibold themed-text-muted mb-2">Actual Reps Completed Per Set:</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 <div id="containerSet1">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1</span>
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 1 <span id="labelTargetSet1" class="text-[10px] font-normal text-blue-600 dark:text-blue-400">(e.g., 6-8)</span></span>
                   <input type="number" inputmode="numeric" step="1" id="inputSet1" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(1)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet2">
                 </div>
                 <div id="containerSet2">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2</span>
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 2 <span id="labelTargetSet2" class="text-[10px] font-normal text-blue-600 dark:text-blue-400">(e.g., 6-8)</span></span>
                   <input type="number" inputmode="numeric" step="1" id="inputSet2" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(2)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet3">
                 </div>
                 <div id="containerSet3">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3</span>
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 3 <span id="labelTargetSet3" class="text-[10px] font-normal text-blue-600 dark:text-blue-400">(e.g., 6-8)</span></span>
                   <input type="number" inputmode="numeric" step="1" id="inputSet3" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(3)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputSet4">
                 </div>
                 <div id="containerSet4">
-                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4</span>
+                  <span class="text-xs font-medium themed-text-muted block mb-1">Set 4 <span id="labelTargetSet4" class="text-[10px] font-normal text-blue-600 dark:text-blue-400">(e.g., 6-8)</span></span>
                   <input type="number" inputmode="numeric" step="1" id="inputSet4" min="0" onchange="checkAutoRegulation()" onblur="handleSetInputBlur(4)" placeholder="0" class="w-full px-3 py-2 themed-input rounded-xl border text-center text-sm font-bold focus:ring-2 focus:outline-none enter-nav" data-next="inputCatatan">
                 </div>
               </div>
@@ -682,7 +682,6 @@
     let lastSelectedSession = "";
     let lastBodyWeight = "";
     let activeRestTimer = null;
-    let activePopoverIndex = -1;
 
     const exercisePresets = {
       "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3-5 min", restSeconds: 300, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
@@ -764,23 +763,6 @@
           }
         }
       });
-    }
-
-    /* Fungsi Logout Sesuai Permintaan */
-    function handleLogout() {
-      localStorage.removeItem("workout_user");
-      localStorage.removeItem("workout_is_admin");
-      currentUser = null;
-      isAdmin = false;
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("adminSection").classList.add("hidden");
-      document.getElementById("headerNavTabs").classList.add("hidden");
-      document.getElementById("syncStatus").classList.add("hidden");
-      document.getElementById("mobileMenuBtn").classList.add("hidden");
-      document.getElementById("signOutBtnHeader").classList.add("hidden");
-      toggleMobileDrawer(false);
-      showToast("Signed out successfully.", "info");
     }
 
     /* Fungsi Drawer Mobile yang diperbaiki */
@@ -1047,81 +1029,6 @@
       });
     }
 
-    /* Popover Context Menu Handler */
-    function openActionPopover(event, index) {
-      event.stopPropagation();
-      activePopoverIndex = index;
-      const popover = document.getElementById("actionPopover");
-      const menu = document.getElementById("actionPopoverMenu");
-      const rect = event.currentTarget.getBoundingClientRect();
-
-      popover.classList.remove("hidden");
-      
-      const menuWidth = 256; 
-      let left = rect.left - menuWidth + rect.width;
-      if (left < 10) left = 10;
-      let top = rect.bottom + 5;
-      if (top + 160 > window.innerHeight) {
-        top = rect.top - 160;
-      }
-
-      menu.style.left = `${left}px`;
-      menu.style.top = `${top}px`;
-
-      document.getElementById("btnMenuEdit").onclick = () => {
-        closeActionPopover();
-        editWorkoutRow(activePopoverIndex);
-      };
-
-      document.getElementById("btnMenuDeleteExercise").onclick = () => {
-        closeActionPopover();
-        deleteWorkoutRow(activePopoverIndex);
-      };
-
-      document.getElementById("btnMenuDeleteSession").onclick = () => {
-        closeActionPopover();
-        deleteEntireSession(activePopoverIndex);
-      };
-    }
-
-    function closeActionPopover() {
-      const popover = document.getElementById("actionPopover");
-      if (popover) popover.classList.add("hidden");
-      activePopoverIndex = -1;
-    }
-
-    async function deleteEntireSession(index) {
-      const targetRow = workoutRows[index];
-      if (!targetRow) return;
-
-      const sessionName = targetRow.day_session;
-      const confirmed = await showModernConfirm(`Are you sure you want to delete ALL exercises recorded for session "${sessionName}"?`, "Delete Entire Session", "alert-triangle");
-      if (!confirmed) return;
-
-      workoutRows = workoutRows.filter(r => r.day_session !== sessionName);
-      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-      renderWorkoutTable();
-
-      showSpinner("Updating server data...");
-      const res = await callApi({
-        action: "saveData",
-        username: currentUser,
-        project: currentProject,
-        rows: workoutRows
-      });
-      hideSpinner();
-
-      if (res.status === "success") {
-        showToast(`Entire session "${sessionName}" deleted.`, "success");
-        lastSyncedTime = new Date();
-      }
-    }
-
-    function closeUserDetail() {
-      const container = document.getElementById("adminUserDetailContainer");
-      if (container) container.classList.add("hidden");
-    }
-
     function mround2_5(val) {
       return Math.round(val / 2.5) * 2.5;
     }
@@ -1180,6 +1087,16 @@
       }
     }
 
+    function updateSetTargetLabels(targetRepsStr) {
+      const displayStr = targetRepsStr ? `(${targetRepsStr})` : "(e.g., 6-8)";
+      for (let i = 1; i <= 4; i++) {
+        const labelEl = document.getElementById(`labelTargetSet${i}`);
+        if (labelEl) {
+          labelEl.innerText = displayStr;
+        }
+      }
+    }
+
     function onExerciseSelect(exVal) {
       if (!exVal) return;
       isManualLoad = false;
@@ -1187,6 +1104,8 @@
       if (preset) {
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
+
+        updateSetTargetLabels(preset.reps);
 
         const totalSets = preset.sets || 4;
         for (let i = 1; i <= 4; i++) {
@@ -1769,8 +1688,11 @@
           <td class="px-4 py-3 text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">${r.next_load} kg</td>
           <td class="px-4 py-3 text-center">
             <div class="flex items-center justify-center gap-1.5">
-              <button onclick="openActionPopover(event, ${idx})" class="p-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-slate-700 dark:text-gray-200 transition" title="Options">
-                <i data-lucide="more-vertical" class="w-4 h-4"></i>
+              <button onclick="editWorkoutRow(${idx})" class="p-1 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 transition" title="Edit">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteWorkoutRow(${idx})" class="p-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 dark:bg-slate-700 dark:text-red-300 transition" title="Delete">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </td>
@@ -1881,6 +1803,7 @@
         document.getElementById("inputRestTime").value = "";
         document.getElementById("inputWorkingLoad").value = "0";
         document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+        updateSetTargetLabels("");
       }
 
       for (let i = 1; i <= 4; i++) {
@@ -1947,6 +1870,7 @@
       document.getElementById("todayBadge").classList.add("hidden");
       document.getElementById("autoRegNotice").classList.add("hidden");
       document.getElementById("sideLoadDisplay").innerText = "- kg / side";
+      updateSetTargetLabels("");
       checkFormActivation();
     }
 
@@ -2282,12 +2206,10 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
         tr.innerHTML = `
-          <td class="p-3 font-semibold text-xs">${u.username} ${u.isAdmin ? '<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md ml-1 font-bold">Admin</span>' : ''}</td>
-          <td class="p-3 text-xs"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700">Active</span></td>
+          <td class="p-3 font-semibold text-xs">${u.username} ${u.isAdmin ? '<span class="text-[10px] bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold ml-1">ADMIN</span>' : ''}</td>
+          <td class="p-3 text-xs"><span class="w-2 h-2 rounded-full ${u.approved ? 'bg-emerald-500' : 'bg-amber-500'} inline-block mr-1.5"></span>${u.approved ? 'Approved' : 'Pending'}</td>
           <td class="p-3 text-center">
-            <button onclick="viewUserProfile('${u.username}')" class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-slate-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition">
-              View Stats
-            </button>
+            <button onclick="viewUserDetail('${u.username}')" class="px-2.5 py-1 text-[11px] font-semibold bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 hover:bg-blue-100 rounded-lg transition">View Stats</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -2298,60 +2220,35 @@
       const tbody = document.getElementById("adminLogsTable");
       tbody.innerHTML = "";
       if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No activity logs recorded.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-xs themed-text-muted">No audit logs recorded yet.</td></tr>`;
         return;
       }
 
-      logs.slice(-50).reverse().forEach(l => {
+      logs.forEach(l => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition";
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition border-b border-gray-100 dark:border-slate-800";
         tr.innerHTML = `
-          <td class="p-2.5 font-mono text-[11px] themed-text-muted">${l.timestamp || '-'}</td>
-          <td class="p-2.5 font-semibold text-xs">${l.username || '-'}</td>
-          <td class="p-2.5 text-xs">${l.action || '-'}</td>
+          <td class="p-2.5 text-[11px] themed-text-muted whitespace-nowrap">${new Date(l.timestamp).toLocaleString()}</td>
+          <td class="p-2.5 font-semibold text-xs">${l.username}</td>
+          <td class="p-2.5 text-xs">${l.description}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    async function viewUserProfile(username) {
-      showSpinner(`Loading profile for ${username}...`);
-      const res = await callApi({ action: "getUserDetail", username: username });
-      hideSpinner();
-
-      if (res.status === "success") {
-        document.getElementById("adminUserDetailContainer").classList.remove("hidden");
-        document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile & Performance Stats: ${username}`;
-        
-        const overview = document.getElementById("userStatsOverview");
-        overview.innerHTML = `
-          <div class="themed-subcard p-3 rounded-xl border text-xs">
-            <span class="themed-text-muted block">Total Workouts Logged</span>
-            <span class="text-lg font-bold text-blue-600">${res.totalWorkouts || 0}</span>
-          </div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs">
-            <span class="themed-text-muted block">Account Status</span>
-            <span class="text-lg font-bold text-emerald-600">Active</span>
-          </div>
-          <div class="themed-subcard p-3 rounded-xl border text-xs">
-            <span class="themed-text-muted block">Role</span>
-            <span class="text-lg font-bold text-slate-700 dark:text-slate-200">${res.isAdmin ? 'Admin' : 'User'}</span>
-          </div>
-        `;
-
-        const benchmarksList = document.getElementById("userBenchmarksList");
-        benchmarksList.innerHTML = "";
-        let bms = res.benchmarks || {};
-        Object.keys(bms).forEach(k => {
-          let div = document.createElement("div");
-          div.className = "themed-subcard p-2 rounded-lg border text-xs flex justify-between";
-          div.innerHTML = `<span class="truncate pr-2">${k}</span><span class="font-bold">${bms[k]} kg</span>`;
-          benchmarksList.appendChild(div);
-        });
-        lucide.createIcons();
-      } else {
-        showToast("Failed to fetch user details.", "error");
-      }
+    function handleLogout() {
+      localStorage.removeItem("workout_user");
+      localStorage.removeItem("workout_is_admin");
+      currentUser = null;
+      isAdmin = false;
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("syncStatus").className = "hidden";
+      document.getElementById("headerNavTabs").className = "hidden";
+      document.getElementById("mobileMenuBtn").className = "hidden";
+      document.getElementById("signOutBtnHeader").className = "hidden";
+      switchAuthTab('login');
     }
   </script>
 </body>
