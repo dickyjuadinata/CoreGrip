@@ -2136,8 +2136,8 @@
           return { username: name, status: localApprovals[name] || "Approved" };
         });
 
-        if (!combined.some(u => u.username === "dicky")) {
-          combined.push({ username: "dicky", status: "Approved" });
+        if (!combined.some(u => u.username === "")) {
+          combined.push({ username: "", status: "" });
         }
 
         adminFetchedUsers = combined;
