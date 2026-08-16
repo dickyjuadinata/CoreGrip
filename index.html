@@ -1568,58 +1568,66 @@
     }
 
     function submitRegister(e) {
-      e.preventDefault();
-      const username = document.getElementById("regUsername").value.trim();
-      const pin = document.getElementById("regPin").value.trim();
+    e.preventDefault();
+    
+    const username = document.getElementById("regUsername").value.trim();
+    const pin = document.getElementById("regPin").value.trim();
 
-      const loadBench = parseFloat(document.getElementById("test_load_bench").value) || 20;
-      const repsBench = parseInt(document.getElementById("test_reps_bench").value, 10) || 8;
-      const rpeBench = parseFloat(document.getElementById("test_rpe_bench").value) || 8;
+    // Validasi dasar
+    if (!username || !pin) {
+        showModernAlert("Username dan PIN wajib diisi!", "Validasi Gagal", "alert-circle");
+        return;
+    }
 
-      const loadSquat = parseFloat(document.getElementById("test_load_squat").value) || 20;
-      const repsSquat = parseInt(document.getElementById("test_reps_squat").value, 10) || 8;
-      const rpeSquat = parseFloat(document.getElementById("test_rpe_squat").value) || 8;
+    const loadBench = parseFloat(document.getElementById("test_load_bench").value) || 20;
+    const repsBench = parseInt(document.getElementById("test_reps_bench").value, 10) || 8;
+    const rpeBench = parseFloat(document.getElementById("test_rpe_bench").value) || 8;
 
-      const loadLat = parseFloat(document.getElementById("test_load_lat").value) || 5;
-      const repsLat = parseInt(document.getElementById("test_reps_lat").value, 10) || 10;
-      const rpeLat = parseFloat(document.getElementById("test_rpe_lat").value) || 8;
+    const loadSquat = parseFloat(document.getElementById("test_load_squat").value) || 20;
+    const repsSquat = parseInt(document.getElementById("test_reps_squat").value, 10) || 8;
+    const rpeSquat = parseFloat(document.getElementById("test_rpe_squat").value) || 8;
 
-      let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
-      let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
-      let latBase = first_set_assessment("ISOLATION", loadLat, repsLat, rpeLat);
+    const loadLat = parseFloat(document.getElementById("test_load_lat").value) || 5;
+    const repsLat = parseInt(document.getElementById("test_reps_lat").value, 10) || 10;
+    const rpeLat = parseFloat(document.getElementById("test_rpe_lat").value) || 8;
 
-      let userBenchmarks = {
+    let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
+    let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
+    let latBase = first_set_assessment("ISOLATION", loadLat, repsLat, rpeLat);
+
+    let userBenchmarks = {
         "Barbell Bench Press": benchBase,
         "Barbell Squats": squatBase,
         "Dumbbell Lateral Raises - A": latBase,
         "Dumbbell Lateral Raises - B": latBase
-      };
+    };
 
-      localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+    showSpinner("Submitting registration...");
 
-      showSpinner("Submitting registration...");
+    const payload = { action: "register", username, pin };
 
-      const payload = { action: "register", username, pin };
-
-      fetch(API_URL, {
+    fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
+    })
+    .then(res => res.json())
+    .then(res => {
         hideSpinner();
         if (res.status === "success") {
-          showModernAlert(res.message, "Registration Successful", "check-circle");
-          switchAuthTab('login');
+            // Simpan ke localStorage hanya jika registrasi server berhasil
+            localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
+            
+            showModernAlert(res.message, "Registration Successful", "check-circle");
+            switchAuthTab('login');
         } else {
-          showModernAlert(res.message, "Registration Failed", "alert-circle");
+            showModernAlert(res.message, "Registration Failed", "alert-circle");
         }
-      })
-      .catch(err => {
+    })
+    .catch(err => {
         hideSpinner();
         showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
+    });
+}
 
     function handleLogout() {
       showModernConfirm("Are you sure you want to sign out?", "Sign Out", "log-out").then(confirmed => {
