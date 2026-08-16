@@ -701,28 +701,35 @@
       "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "45-60 sec", restSeconds: 60, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
     };
 
-    let initialBenchmarkLoads = {
-      "Barbell Bench Press": 20.0,
-      "Chest Supported Dumbbell Row": 20.0,
-      "Bodyweight Pull-Ups": 0.0,
-      "Barbell Overhead Press": 12.5,
-      "Dumbbell Lateral Raises - A": 5.0,
-      "Triceps Pressdowns (Cable)": 7.5,
-      "Dumbbell Hammer Curl": 7.5,
-      "Barbell Squats": 20.0,
-      "Barbell Romanian Deadlifts": 17.5,
-      "Standing Barbell Calf Raises - A": 12.5,
-      "Incline Dumbbell Press": 12.5,
-      "Bent-over Barbell Row": 20.0,
-      "Seated Dumbbell Press": 10.0,
-      "Face Pulls (Cable)": 10.0,
-      "Dumbbell Lateral Raises - B": 5.0,
-      "Barbell Curl": 7.5,
-      "Cable Overhead Triceps Extension": 7.5,
-      "Barbell Conventional Deadlift": 25.0,
-      "Dumbbell Bulgarian Split Squat": 7.5,
-      "Standing Barbell Calf Raises - B": 12.5
-    };
+    // Ganti objek initialBenchmarkLoads statis dengan fungsi kalkulasi dinamis
+function calculateInitialBenchmarks(testedBenchmarks) {
+  let calculatedLoads = {};
+  
+  // Ambil hasil tes utama sebagai acuan dasar
+  const baseBench = testedBenchmarks["Barbell Bench Press"] || 20.0;
+  const baseSquat = testedBenchmarks["Barbell Squats"] || 20.0;
+  const baseLat = testedBenchmarks["Dumbbell Lateral Raises - A"] || 5.0;
+
+  // Turunkan beban latihan lain secara proporsional (bukan hardcoded)
+  Object.keys(exercisePresets).forEach(exercise => {
+    const preset = exercisePresets[exercise];
+    
+    if (exercise.includes("Bench Press")) {
+      calculatedLoads[exercise] = baseBench;
+    } else if (exercise.includes("Squat") || exercise.includes("Deadlift")) {
+      calculatedLoads[exercise] = baseSquat;
+    } else if (preset.muscleGroup === "Back" && preset.type === "COMPOUND") {
+      calculatedLoads[exercise] = mround2_5(baseSquat * 0.75);
+    } else if (preset.muscleGroup === "Deltoids" && preset.type === "ISOLATION") {
+      calculatedLoads[exercise] = baseLat;
+    } else {
+      // Default kalkulasi aman untuk isolasi/pendukung lainnya
+      calculatedLoads[exercise] = preset.type === "COMPOUND" ? mround2_5(baseBench * 0.5) : 7.5;
+    }
+  });
+
+  return calculatedLoads;
+}
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
