@@ -702,26 +702,26 @@
     };
 
     let initialBenchmarkLoads = {
-      "Barbell Bench Press": 20.0,
-      "Chest Supported Dumbbell Row": 20.0,
-      "Bodyweight Pull-Ups": 0.0,
-      "Barbell Overhead Press": 12.5,
-      "Dumbbell Lateral Raises - A": 5.0,
-      "Triceps Pressdowns (Cable)": 7.5,
-      "Dumbbell Hammer Curl": 7.5,
-      "Barbell Squats": 20.0,
-      "Barbell Romanian Deadlifts": 17.5,
-      "Standing Barbell Calf Raises - A": 12.5,
-      "Incline Dumbbell Press": 12.5,
-      "Bent-over Barbell Row": 20.0,
-      "Seated Dumbbell Press": 10.0,
-      "Face Pulls (Cable)": 10.0,
-      "Dumbbell Lateral Raises - B": 5.0,
-      "Barbell Curl": 7.5,
-      "Cable Overhead Triceps Extension": 7.5,
-      "Barbell Conventional Deadlift": 25.0,
-      "Dumbbell Bulgarian Split Squat": 7.5,
-      "Standing Barbell Calf Raises - B": 12.5
+      "Barbell Bench Press": ,
+      "Chest Supported Dumbbell Row": ,
+      "Bodyweight Pull-Ups": ,
+      "Barbell Overhead Press": ,
+      "Dumbbell Lateral Raises - A": ,
+      "Triceps Pressdowns (Cable)": ,
+      "Dumbbell Hammer Curl": ,
+      "Barbell Squats": ,
+      "Barbell Romanian Deadlifts": ,
+      "Standing Barbell Calf Raises - A": ,
+      "Incline Dumbbell Press": ,
+      "Bent-over Barbell Row": ,
+      "Seated Dumbbell Press": ,
+      "Face Pulls (Cable)": ,
+      "Dumbbell Lateral Raises - B": ,
+      "Barbell Curl": ,
+      "Cable Overhead Triceps Extension": ,
+      "Barbell Conventional Deadlift": ,
+      "Dumbbell Bulgarian Split Squat": ,
+      "Standing Barbell Calf Raises - B": 
     };
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
@@ -1142,7 +1142,9 @@
 
     function get4WeeksHistoryLoad(exerciseName, currentProj) {
       const savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
-      const defaultLoad = savedBenchmarks[exerciseName] ?? (initialBenchmarkLoads[exerciseName] ?? 20);
+      
+      // Mengambil dari benchmark hasil kalkulasi dinamis pengguna, dengan fallback minimal 20 atau 0
+      const defaultLoad = savedBenchmarks[exerciseName] ?? 20.0;
 
       if (!currentProj) return defaultLoad;
       
@@ -1163,6 +1165,12 @@
           }
         }
       }
+
+      let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
+      if (currentMatch) return currentMatch.working_load;
+
+      return defaultLoad;
+    }
 
       let currentMatch = workoutRows.find(r => r.exercise === exerciseName);
       if (currentMatch) return currentMatch.working_load;
@@ -1572,6 +1580,7 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
+      // Ambil input asesmen dari form registrasi
       const loadBench = parseFloat(document.getElementById("test_load_bench").value) || 20;
       const repsBench = parseInt(document.getElementById("test_reps_bench").value, 10) || 8;
       const rpeBench = parseFloat(document.getElementById("test_rpe_bench").value) || 8;
@@ -1584,16 +1593,30 @@
       const repsLat = parseInt(document.getElementById("test_reps_lat").value, 10) || 10;
       const rpeLat = parseFloat(document.getElementById("test_rpe_lat").value) || 8;
 
+      // Kalkulasi dinamis berdasarkan first_set_assessment
       let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
       let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
       let latBase = first_set_assessment("ISOLATION", loadLat, repsLat, rpeLat);
 
-      let userBenchmarks = {
-        "Barbell Bench Press": benchBase,
-        "Barbell Squats": squatBase,
-        "Dumbbell Lateral Raises - A": latBase,
-        "Dumbbell Lateral Raises - B": latBase
-      };
+      // Pemetaan dinamis ke seluruh exercisePresets agar tidak ada yang hardcoded mati
+      let userBenchmarks = {};
+      Object.keys(exercisePresets).forEach(ex => {
+        const preset = exercisePresets[ex];
+        if (preset.muscleGroup === "Chest" || preset.muscleGroup === "Back" || preset.muscleGroup === "Deltoids") {
+          userBenchmarks[ex] = preset.type === "COMPOUND" ? benchBase : latBase;
+        } else if (preset.muscleGroup === "Quads" || preset.muscleGroup === "Posterior Chain") {
+          userBenchmarks[ex] = squatBase;
+        } else {
+          // Default untuk Arms, Calves, dll. menggunakan basis isolasi/compound terdekat
+          userBenchmarks[ex] = preset.type === "COMPOUND" ? squatBase : latBase;
+        }
+      });
+
+      // Timpa secara spesifik jika ada nilai asesmen utama
+      userBenchmarks["Barbell Bench Press"] = benchBase;
+      userBenchmarks["Barbell Squats"] = squatBase;
+      userBenchmarks["Dumbbell Lateral Raises - A"] = latBase;
+      userBenchmarks["Dumbbell Lateral Raises - B"] = latBase;
 
       localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
 
