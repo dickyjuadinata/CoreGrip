@@ -199,7 +199,7 @@
           <span id="statusText">Online · Synced</span>
         </p>
 
-        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
+        <button id="mobileMenuBtn" onclick="toggleMobileDrawer()" class="hidden md:hidden text-white p-2 rounded-lg hover:bg-white/10 focus:outline-none">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
@@ -209,7 +209,7 @@
       </div>
     </div>
 
-    <div id="mobileDrawer" class="hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
+    <div id="mobileDrawer" class="hidden md:hidden border-t border-gray-800 bg-[#161B26] px-4 py-3 space-y-2 transition-all duration-300">
       <button id="mobileNavWorkoutBtn" onclick="switchAppTab('workout'); toggleMobileDrawer(false);" class="w-full text-left px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-4 h-4"></i> Workout Log
       </button>
@@ -460,7 +460,7 @@
             </div>
           </form>
 
-          <div class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full">
+          <div id="workoutTableWrapper" class="relative themed-card border rounded-2xl shadow-xl overflow-hidden w-full max-w-full hidden">
             <div class="overflow-x-auto max-h-[500px] custom-scrollbar relative w-full">
               <table class="w-full text-left text-sm min-w-[640px] border-collapse">
                 <thead class="themed-table-header text-xs font-semibold sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-slate-800">
@@ -730,6 +730,7 @@
       const weekInput = document.getElementById("inputProject");
       const bwInput = document.getElementById("inputBodyWeight");
       const weekVal = weekInput ? weekInput.value.trim() : "";
+      const tableWrapper = document.getElementById("workoutTableWrapper");
       
       if (bwInput) {
         if (weekVal !== "") {
@@ -747,6 +748,15 @@
       if (!form) return;
       const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
       const isEnabled = (weekVal !== "" && bwVal !== "");
+      
+      if (tableWrapper) {
+        if (isEnabled) {
+          tableWrapper.classList.remove("hidden");
+        } else {
+          tableWrapper.classList.add("hidden");
+        }
+      }
+
       elements.forEach(el => {
         if (el.id !== "inputProject" && el.id !== "inputBodyWeight") {
           el.disabled = !isEnabled;
@@ -1085,11 +1095,10 @@
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
 
-        const repLabel = preset.reps ? ` (${preset.reps})` : "";
         for (let i = 1; i <= 4; i++) {
           const lbl = document.getElementById(`labelSet${i}`);
           const inp = document.getElementById(`inputSet${i}`);
-          if (lbl) lbl.innerText = `Set ${i}${repLabel}`;
+          if (lbl) lbl.innerText = `Set ${i}`;
           if (inp) inp.placeholder = preset.reps || "0";
         }
 
@@ -1504,12 +1513,12 @@
     function checkSession() {
       const savedUser = localStorage.getItem("coregrip_current_user");
       const savedIsAdmin = localStorage.getItem("coregrip_is_admin") === "true";
-      const savedProj = localStorage.getItem("coregrip_current_project");
+      const savedProj = localStorage.getItem("coregrip_current_project";
 
       if (savedUser) {
         currentUser = savedUser;
         isAdmin = savedIsAdmin;
-        currentProject = savedProj || "Week 1";
+        currentProject = savedProj || "";
         
         document.getElementById("authSection").classList.add("hidden");
         document.getElementById("headerNavTabs").style.display = "flex";
@@ -1525,7 +1534,13 @@
         } else {
           document.getElementById("adminSection").classList.add("hidden");
           document.getElementById("tabWorkout").parentElement.parentElement.classList.remove("hidden");
-          loadUserProjectsAndData();
+          if (currentProject) {
+            document.getElementById("inputProject").value = currentProject.replace(/Week\s*/i, "");
+          }
+          checkFormActivation();
+          if (currentProject) {
+            loadUserProjectsAndData();
+          }
         }
       }
     }
@@ -1549,7 +1564,7 @@
         if (res.status === "success") {
           currentUser = username;
           isAdmin = res.isAdmin;
-          currentProject = "Week 1";
+          currentProject = "";
 
           localStorage.setItem("coregrip_current_user", currentUser);
           localStorage.setItem("coregrip_is_admin", isAdmin);
@@ -1644,27 +1659,37 @@
       .then(res => {
         if (res.status === "success" && res.projects && res.projects.length > 0) {
           let projects = res.projects;
-          if (!projects.includes(currentProject)) {
+          if (!currentProject || !projects.includes(currentProject)) {
             currentProject = projects[0];
           }
           localStorage.setItem("coregrip_current_project", currentProject);
           loadProjectDataFromCloud(currentProject);
         } else {
-          loadProjectDataFromCloud(currentProject);
+          if (currentProject) {
+            loadProjectDataFromCloud(currentProject);
+          } else {
+            hideSpinner();
+          }
         }
       })
       .catch(err => {
         console.error("Failed to load user projects from cloud, loading local fallback:", err);
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
-        if (localData) {
-          workoutRows = JSON.parse(localData);
-          renderWorkoutTable();
+        if (currentProject) {
+          let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
+          if (localData) {
+            workoutRows = JSON.parse(localData);
+            renderWorkoutTable();
+          }
         }
         hideSpinner();
       });
     }
 
     function loadProjectDataFromCloud(proj) {
+      if (!proj) {
+        hideSpinner();
+        return;
+      }
       const payload = { action: "getData", username: currentUser, project: proj };
 
       fetch(API_URL, {
@@ -1864,11 +1889,31 @@
       localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
       renderWorkoutTable();
       syncDataToServer();
-      resetForm();
+
+      // Auto-advance exercise & session completion check
+      const currentSessionExercises = Array.from(document.getElementById("inputExercise").options)
+        .map(opt => opt.value)
+        .filter(val => val !== "");
+      
+      const loggedExercisesInSession = workoutRows
+        .filter(r => r.day_session === daySession)
+        .map(r => r.exercise);
+
+      const remainingExercises = currentSessionExercises.filter(ex => !loggedExercisesInSession.includes(ex));
+
+      if (remainingExercises.length > 0) {
+        document.getElementById("inputExercise").value = remainingExercises[0];
+        onExerciseSelect(remainingExercises[0]);
+      } else {
+        showToast(`Session '${daySession}' completed successfully!`, "success", 4000);
+        resetForm();
+      }
     }
 
     function resetForm() {
       document.getElementById("formWorkout").reset();
+      document.getElementById("inputProject").value = "";
+      document.getElementById("inputBodyWeight").value = "";
       document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
       document.getElementById("inputTargetReps").value = "";
       document.getElementById("inputRestTime").value = "";
@@ -1921,6 +1966,11 @@
         currentProject = `Week ${weekNum}`;
         localStorage.setItem("coregrip_current_project", currentProject);
         loadProjectDataFromCloud(currentProject);
+      } else {
+        currentProject = "";
+        localStorage.removeItem("coregrip_current_project");
+        workoutRows = [];
+        renderWorkoutTable();
       }
     }
 
@@ -1941,10 +1991,10 @@
       if (chartE1RMInstance) chartE1RMInstance.destroy();
 
       const exerciseFilter = document.getElementById("analyticsExerciseFilter").value;
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let dataPoints = [0, 0, 0, 0];
+      let labels = [];
+      let dataPoints = [];
 
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= 20; i++) {
         let projName = `Week ${i}`;
         let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
         if (localData) {
@@ -1954,7 +2004,8 @@
             let maxReps = Math.max(match.set1_reps, match.set2_reps, match.set3_reps, match.set4_reps);
             if (maxReps > 0 && match.working_load > 0) {
               let e1rm = match.working_load * (1 + (maxReps / 30));
-              dataPoints[i - 1] = Math.round(e1rm * 10) / 10;
+              labels.push(projName);
+              dataPoints.push(Math.round(e1rm * 10) / 10);
             }
           }
         }
@@ -1987,20 +2038,27 @@
       const ctx = document.getElementById('chartVolumeRpe').getContext('2d');
       if (chartVolumeRpeInstance) chartVolumeRpeInstance.destroy();
 
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let volumeData = [0, 0, 0, 0];
+      let labels = [];
+      let volumeData = [];
 
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= 20; i++) {
         let projName = `Week ${i}`;
         let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
         if (localData) {
           let rows = JSON.parse(localData);
           let totalVol = 0;
+          let hasData = false;
           rows.forEach(r => {
             let totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
+            if (totalReps > 0 || r.working_load > 0) {
+              hasData = true;
+            }
             totalVol += (r.working_load || 0) * totalReps;
           });
-          volumeData[i - 1] = totalVol;
+          if (hasData) {
+            labels.push(projName);
+            volumeData.push(totalVol);
+          }
         }
       }
 
@@ -2062,13 +2120,28 @@
       const ctx = document.getElementById('chartACWR').getContext('2d');
       if (chartACWRInstance) chartACWRInstance.destroy();
 
+      let labels = [];
+      let acwrData = [];
+
+      for (let i = 1; i <= 20; i++) {
+        let projName = `Week ${i}`;
+        let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
+        if (localData) {
+          let rows = JSON.parse(localData);
+          if (rows.length > 0) {
+            labels.push(projName);
+            acwrData.push(1.0);
+          }
+        }
+      }
+
       chartACWRInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+          labels: labels,
           datasets: [{
             label: 'ACWR Ratio',
-            data: [0.95, 1.05, 1.15, 1.00],
+            data: acwrData,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 3,
@@ -2080,198 +2153,11 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: {
-            y: { min: 0.5, max: 1.8 }
-          }
+          scales: { y: { min: 0, max: 2.0 } }
         }
       });
-    }
-
-    function loadAdminData() {
-      showSpinner("Loading admin data...");
-      const payload = { action: "getAdminData", username: currentUser };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          adminFetchedUsers = res.usersData || [];
-          renderAdminUsers(res.usersMeta || []);
-          renderAdminLogs(res.activityLogs || []);
-        } else {
-          showModernAlert(res.message, "Admin Error", "alert-circle");
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        showModernAlert("Failed to load admin data: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
-
-    function renderAdminUsers(usersMeta) {
-      const tbody = document.getElementById("adminUsersTable");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-
-      if (usersMeta.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No registered users found.</td></tr>`;
-        return;
-      }
-
-      usersMeta.forEach(u => {
-        const tr = document.createElement("tr");
-        let statusBadge = u.status === "ACTIVE" 
-          ? `<span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 rounded-full">ACTIVE</span>`
-          : `<span class="px-2.5 py-1 text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 rounded-full">PENDING</span>`;
-
-        let actionBtn = u.status === "PENDING"
-          ? `<button onclick="approveUser('${u.user}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm">Approve</button>`
-          : `<button onclick="viewUserDetail('${u.user}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm">View Profile</button>`;
-
-        tr.innerHTML = `
-          <td class="p-3 font-semibold">${u.user}</td>
-          <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-center space-x-2">
-            ${actionBtn}
-            <button onclick="deleteUser('${u.user}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold shadow-sm">Delete</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderAdminLogs(logs) {
-      const tbody = document.getElementById("adminLogsTable");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-
-      if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center themed-text-muted">No activity logs recorded.</td></tr>`;
-        return;
-      }
-
-      logs.reverse().forEach(l => {
-        const tr = document.createElement("tr");
-        const timeFormatted = new Date(l.time).toLocaleString();
-        tr.innerHTML = `
-          <td class="p-2.5 themed-text-muted">${timeFormatted}</td>
-          <td class="p-2.5 font-semibold">${l.user}</td>
-          <td class="p-2.5">${l.activity}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function approveUser(targetUser) {
-      showSpinner(`Approving user ${targetUser}...`);
-      const payload = { action: "approveUser", targetUser: targetUser, adminUser: currentUser };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          showToast(res.message, "success", 2500);
-          loadAdminData();
-        } else {
-          showModernAlert(res.message, "Approval Failed", "alert-circle");
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
-
-    function deleteUser(targetUser) {
-      showModernConfirm(`Are you sure you want to delete user '${targetUser}' and all their data?`, "Delete User", "trash-2").then(confirmed => {
-        if (confirmed) {
-          showSpinner(`Deleting user ${targetUser}...`);
-          const payload = { action: "deleteUser", targetUser: targetUser, adminUser: currentUser };
-
-          fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-          })
-          .then(res => res.json())
-          .then(res => {
-            hideSpinner();
-            if (res.status === "success") {
-              showToast(res.message, "success", 2500);
-              loadAdminData();
-            } else {
-              showModernAlert(res.message, "Delete Failed", "alert-circle");
-            }
-          })
-          .catch(err => {
-            hideSpinner();
-            showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-          });
-        }
-      });
-    }
-
-    function viewUserDetail(username) {
-      const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      const overview = document.getElementById("userStatsOverview");
-      const benchmarksList = document.getElementById("userBenchmarksList");
-
-      container.classList.remove("hidden");
-      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Stats: ${username}`;
-
-      let userEntries = adminFetchedUsers.filter(u => u.user.toLowerCase() === username.toLowerCase());
-      let totalProjects = userEntries.length;
-      let totalSetsLogged = 0;
-
-      userEntries.forEach(e => {
-        e.rows.forEach(r => {
-          if (r.set1_reps > 0) totalSetsLogged++;
-          if (r.set2_reps > 0) totalSetsLogged++;
-          if (r.set3_reps > 0) totalSetsLogged++;
-          if (r.set4_reps > 0) totalSetsLogged++;
-        });
-      });
-
-      overview.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Active Projects</span>
-          <span class="text-lg font-bold text-blue-600 dark:text-blue-400">${totalProjects}</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Total Sets Logged</span>
-          <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">${totalSetsLogged}</span>
-        </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Account Status</span>
-          <span class="text-lg font-bold">ACTIVE</span>
-        </div>
-      `;
-
-      let savedBenchmarks = JSON.parse(localStorage.getItem(`workout_benchmarks_${username}`) || "{}");
-      benchmarksList.innerHTML = "";
-
-      Object.keys(savedBenchmarks).forEach(ex => {
-        const div = document.createElement("div");
-        div.className = "themed-subcard p-2.5 rounded-xl border text-xs";
-        div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><b class="text-sm">${savedBenchmarks[ex]} kg</b>`;
-        benchmarksList.appendChild(div);
-      });
-
-      lucide.createIcons();
-      container.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeUserDetail() {
-      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
   </script>
 </body>
 </html>
+```[cite: 1]
