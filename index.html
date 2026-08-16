@@ -1530,654 +1530,148 @@
       }
     }
 
-    function submitLogin(e) {
-      e.preventDefault();
-      const username = document.getElementById("loginUsername").value.trim();
-      const pin = document.getElementById("loginPin").value.trim();
-
-      showSpinner("Authenticating...");
-
-      const payload = { action: "login", username, pin };
-
+    function loadAdminData() {
+      showSpinner("Loading Admin Data...");
       fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "getAdminData" })
       })
-      .then(res => res.json())
-      .then(res => {
+      .then(response => response.json())
+      .then(result => {
         hideSpinner();
-        if (res.status === "success") {
-          currentUser = username;
-          isAdmin = res.isAdmin;
-          currentProject = "Week 1";
-
-          localStorage.setItem("coregrip_current_user", currentUser);
-          localStorage.setItem("coregrip_is_admin", isAdmin);
-          localStorage.setItem("coregrip_current_project", currentProject);
-
-          showToast(res.message, "success", 2500);
-          checkSession();
+        if (result.status === "success") {
+          adminFetchedUsers = result.users || [];
+          renderAdminUsers(adminFetchedUsers);
+          renderAdminLogs(result.logs || []);
         } else {
-          showModernAlert(res.message, "Authentication Failed", "alert-circle");
+          showToast(result.message || "Failed to load admin data.", "error");
         }
       })
       .catch(err => {
         hideSpinner();
-        showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
+        console.error(err);
+        showToast("Network error while loading admin data.", "error");
       });
     }
 
-    function submitRegister(e) {
-      e.preventDefault();
-      const username = document.getElementById("regUsername").value.trim();
-      const pin = document.getElementById("regPin").value.trim();
-
-      const loadBench = parseFloat(document.getElementById("test_load_bench").value) || 20;
-      const repsBench = parseInt(document.getElementById("test_reps_bench").value, 10) || 8;
-      const rpeBench = parseFloat(document.getElementById("test_rpe_bench").value) || 8;
-
-      const loadSquat = parseFloat(document.getElementById("test_load_squat").value) || 20;
-      const repsSquat = parseInt(document.getElementById("test_reps_squat").value, 10) || 8;
-      const rpeSquat = parseFloat(document.getElementById("test_rpe_squat").value) || 8;
-
-      const loadLat = parseFloat(document.getElementById("test_load_lat").value) || 5;
-      const repsLat = parseInt(document.getElementById("test_reps_lat").value, 10) || 10;
-      const rpeLat = parseFloat(document.getElementById("test_rpe_lat").value) || 8;
-
-      let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
-      let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
-      let latBase = first_set_assessment("ISOLATION", loadLat, repsLat, rpeLat);
-
-      let userBenchmarks = {
-        "Barbell Bench Press": benchBase,
-        "Barbell Squats": squatBase,
-        "Dumbbell Lateral Raises - A": latBase,
-        "Dumbbell Lateral Raises - B": latBase
-      };
-
-      localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
-
-      showSpinner("Submitting registration...");
-
-      const payload = { action: "register", username, pin };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          showModernAlert(res.message, "Registration Successful", "check-circle");
-          switchAuthTab('login');
-        } else {
-          showModernAlert(res.message, "Registration Failed", "alert-circle");
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        showModernAlert("Network error: " + err.toString(), "Connection Error", "alert-circle");
-      });
-    }
-
-    function handleLogout() {
-      showModernConfirm("Are you sure you want to sign out?", "Sign Out", "log-out").then(confirmed => {
-        if (confirmed) {
-          localStorage.removeItem("coregrip_current_user");
-          localStorage.removeItem("coregrip_is_admin");
-          localStorage.removeItem("coregrip_current_project");
-          location.reload();
-        }
-      });
-    }
-
-    function loadUserProjectsAndData() {
-      showSpinner("Loading user workout data...");
-      const payload = { action: "getUserProjects", username: currentUser };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === "success" && res.projects && res.projects.length > 0) {
-          let projects = res.projects;
-          if (!projects.includes(currentProject)) {
-            currentProject = projects[0];
-          }
-          localStorage.setItem("coregrip_current_project", currentProject);
-          loadProjectDataFromCloud(currentProject);
-        } else {
-          loadProjectDataFromCloud(currentProject);
-        }
-      })
-      .catch(err => {
-        console.error("Failed to load user projects from cloud, loading local fallback:", err);
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
-        if (localData) {
-          workoutRows = JSON.parse(localData);
-          renderWorkoutTable();
-        }
-        hideSpinner();
-      });
-    }
-
-    function loadProjectDataFromCloud(proj) {
-      const payload = { action: "getData", username: currentUser, project: proj };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideSpinner();
-        if (res.status === "success") {
-          workoutRows = res.rows || [];
-          localStorage.setItem(`workout_data_${currentUser}_${proj}`, JSON.stringify(workoutRows));
-          renderWorkoutTable();
-        } else {
-          let localData = localStorage.getItem(`workout_data_${currentUser}_${proj}`);
-          if (localData) {
-            workoutRows = JSON.parse(localData);
-            renderWorkoutTable();
-          }
-        }
-      })
-      .catch(err => {
-        hideSpinner();
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${proj}`);
-        if (localData) {
-          workoutRows = JSON.parse(localData);
-          renderWorkoutTable();
-        }
-      });
-    }
-
-    function renderWorkoutTable() {
-      const tbody = document.getElementById("workoutTableBody");
+    function renderAdminUsers(users) {
+      const tbody = document.getElementById("adminUsersTable");
       if (!tbody) return;
       tbody.innerHTML = "";
 
-      if (workoutRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center themed-text-muted">No workout records found for this program. Log your first exercise above!</td></tr>`;
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found.</td></tr>`;
         return;
       }
 
-      workoutRows.forEach((r, idx) => {
+      users.forEach(u => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors";
-
-        let sideWeight = calculateSideWeight(r.exercise, r.working_load);
-        let sideText = `${r.working_load} kg`;
-        const exLower = (r.exercise || "").toLowerCase();
-        if (exLower.includes("barbell") || exLower.includes("dumbbell")) {
-          sideText = `${r.working_load} kg <span class="text-[11px] themed-text-muted">(${sideWeight}k/side)</span>`;
-        }
-
+        tr.className = "border-b border-gray-200 dark:border-slate-800";
         tr.innerHTML = `
-          <td class="px-4 py-3 font-semibold">${r.day_session || "-"}</td>
-          <td class="px-4 py-3 font-medium text-blue-600 dark:text-blue-400">${r.exercise || "-"}</td>
-          <td class="px-4 py-3 text-center">${r.target_reps || "-"}</td>
-          <td class="px-4 py-3 text-right font-bold">${sideText}</td>
-          <td class="px-4 py-3 text-center font-mono text-xs">[${r.set1_reps}, ${r.set2_reps}, ${r.set3_reps}, ${r.set4_reps}]</td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-600 dark:text-emerald-400">${r.next_load || r.working_load} kg</td>
-          <td class="px-4 py-3 text-center">
-            <button onclick="openActionPopover(event, ${idx})" class="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition">
-              <i data-lucide="more-vertical" class="w-4 h-4"></i>
-            </button>
+          <td class="p-3 font-semibold">${u.username}</td>
+          <td class="p-3">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${u.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-400'}">
+              ${u.status}
+            </span>
+          </td>
+          <td class="p-3 text-center space-x-2">
+            ${u.status !== 'APPROVED' ? `<button onclick="approveUser('${u.username}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold">Approve</button>` : ''}
+            <button onclick="viewUserDetail('${u.username}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold">View Stats</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons();
     }
 
-    let activePopoverIndex = -1;
+    function renderAdminLogs(logs) {
+      const tbody = document.getElementById("adminLogsTable");
+      if (!tbody) return;
+      tbody.innerHTML = "";
 
-    function openActionPopover(e, idx) {
-      e.stopPropagation();
-      activePopoverIndex = idx;
-      const popover = document.getElementById("actionPopover");
-      const menu = document.getElementById("actionPopoverMenu");
-
-      const rect = e.currentTarget.getBoundingClientRect();
-      popover.classList.remove("hidden");
-
-      const topPos = rect.bottom + window.scrollY + 5;
-      const leftPos = Math.min(rect.left + window.scrollX - 150, window.innerWidth - 270);
-
-      menu.style.top = `${topPos}px`;
-      menu.style.left = `${Math.max(10, leftPos)}px`;
-
-      document.getElementById("btnMenuEdit").onclick = () => {
-        closeActionPopover();
-        editWorkoutRecord(activePopoverIndex);
-      };
-
-      document.getElementById("btnMenuDeleteExercise").onclick = () => {
-        closeActionPopover();
-        deleteWorkoutRecord(activePopoverIndex);
-      };
-
-      document.getElementById("btnMenuDeleteSession").onclick = () => {
-        closeActionPopover();
-        deleteEntireSessionRecord(activePopoverIndex);
-      };
-    }
-
-    function closeActionPopover() {
-      document.getElementById("actionPopover").classList.add("hidden");
-    }
-
-    function editWorkoutRecord(idx) {
-      const r = workoutRows[idx];
-      if (!r) return;
-
-      editIndex = idx;
-      document.getElementById("inputDaySession").value = r.day_session;
-      onSessionChange(r.day_session);
-      document.getElementById("inputExercise").value = r.exercise;
-      onExerciseSelect(r.exercise);
-
-      document.getElementById("inputWorkingLoad").value = r.working_load;
-      document.getElementById("inputSet1").value = r.set1_reps;
-      document.getElementById("inputSet2").value = r.set2_reps;
-      document.getElementById("inputSet3").value = r.set3_reps;
-      document.getElementById("inputSet4").value = r.set4_reps;
-      document.getElementById("inputCatatan").value = r.catatan || "";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast("Loaded record for editing.", "info", 2000);
-    }
-
-    function deleteWorkoutRecord(idx) {
-      showModernConfirm("Are you sure you want to delete this exercise record?", "Delete Exercise", "trash-2").then(confirmed => {
-        if (confirmed) {
-          workoutRows.splice(idx, 1);
-          localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-          renderWorkoutTable();
-          syncDataToServer();
-          showToast("Exercise deleted successfully.", "success", 2000);
-        }
-      });
-    }
-
-    function deleteEntireSessionRecord(idx) {
-      const r = workoutRows[idx];
-      if (!r) return;
-      const sessionName = r.day_session;
-
-      showModernConfirm(`Are you sure you want to delete the entire session '${sessionName}'?`, "Delete Session", "alert-triangle").then(confirmed => {
-        if (confirmed) {
-          workoutRows = workoutRows.filter(item => item.day_session !== sessionName);
-          localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-          renderWorkoutTable();
-          syncDataToServer();
-          showToast(`Session '${sessionName}' deleted successfully.`, "success", 2000);
-        }
-      });
-    }
-
-    function addOrUpdateWorkout(e) {
-      e.preventDefault();
-
-      const daySession = document.getElementById("inputDaySession").value;
-      const exercise = document.getElementById("inputExercise").value;
-      const targetReps = document.getElementById("inputTargetReps").value;
-      const workingLoad = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
-      
-      const set1 = parseInt(document.getElementById("inputSet1").value, 10) || 0;
-      const set2 = parseInt(document.getElementById("inputSet2").value, 10) || 0;
-      const set3 = parseInt(document.getElementById("inputSet3").value, 10) || 0;
-      const set4 = parseInt(document.getElementById("inputSet4").value, 10) || 0;
-      const catatan = document.getElementById("inputCatatan").value.trim();
-
-      const repsArr = [set1, set2, set3, set4];
-      const nextLoad = calculateNextWeekLoadQB13(exercise, targetReps, workingLoad, repsArr, catatan);
-
-      const newRecord = {
-        day_session: daySession,
-        exercise: exercise,
-        target_reps: targetReps,
-        working_load: workingLoad,
-        set1_reps: set1,
-        set2_reps: set2,
-        set3_reps: set3,
-        set4_reps: set4,
-        next_load: nextLoad,
-        catatan: catatan,
-        updated_at: Date.now()
-      };
-
-      if (editIndex >= 0) {
-        workoutRows[editIndex] = newRecord;
-        editIndex = -1;
-        showToast("Exercise record updated successfully.", "success", 2000);
-      } else {
-        workoutRows.push(newRecord);
-        showToast("Exercise record added successfully.", "success", 2000);
-      }
-
-      localStorage.setItem(`workout_data_${currentUser}_${currentProject}`, JSON.stringify(workoutRows));
-      renderWorkoutTable();
-      syncDataToServer();
-      resetForm();
-    }
-
-    function resetForm() {
-      document.getElementById("formWorkout").reset();
-      document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
-      document.getElementById("inputTargetReps").value = "";
-      document.getElementById("inputRestTime").value = "";
-      document.getElementById("sideLoadDisplay").innerText = "- kg / side";
-      document.getElementById("sideLoadFormulaNotice").innerText = "*Calculated automatically based on implement type";
-      document.getElementById("autoRegNotice").classList.add("hidden");
-      document.getElementById("timerWidget").classList.add("hidden");
-      document.getElementById("todayBadge").classList.add("hidden");
-      editIndex = -1;
-      isManualLoad = false;
-      checkFormActivation();
-    }
-
-    function syncDataToServer() {
-      if (!navigator.onLine) {
-        pendingQueueCount++;
-        updateOnlineStatus();
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center themed-text-muted">No audit logs available.</td></tr>`;
         return;
       }
 
-      const payload = {
-        action: "saveData",
-        username: currentUser,
-        project: currentProject,
-        rows: workoutRows
-      };
+      logs.forEach(l => {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-gray-200 dark:border-slate-800/60";
+        tr.innerHTML = `
+          <td class="p-2.5 themed-text-muted whitespace-nowrap">${l.timestamp || '-'}</td>
+          <td class="p-2.5 font-semibold">${l.username || '-'}</td>
+          <td class="p-2.5">${l.activity || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
+    function approveUser(username) {
+      showSpinner("Approving user...");
       fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "approveUser", username: username })
       })
       .then(res => res.json())
       .then(res => {
+        hideSpinner();
         if (res.status === "success") {
-          lastSyncedTime = new Date();
-          pendingQueueCount = 0;
-          updateOnlineStatus();
-        }
-      })
-      .catch(err => {
-        console.error("Cloud sync failed:", err);
-        pendingQueueCount++;
-        updateOnlineStatus();
-      });
-    }
-
-    function changeProjectFreetext() {
-      const weekNum = document.getElementById("inputProject").value.trim();
-      if (weekNum !== "") {
-        currentProject = `Week ${weekNum}`;
-        localStorage.setItem("coregrip_current_project", currentProject);
-        loadProjectDataFromCloud(currentProject);
-      }
-    }
-
-    function renderAnalyticsDashboard() {
-      renderE1RMChart();
-      renderVolumeRpeChart();
-      renderMuscleDistributionChart();
-      renderACWRChart();
-    }
-
-    let chartE1RMInstance = null;
-    let chartVolumeRpeInstance = null;
-    let chartMuscleDistributionInstance = null;
-    let chartACWRInstance = null;
-
-    function renderE1RMChart() {
-      const ctx = document.getElementById('chartE1RM').getContext('2d');
-      if (chartE1RMInstance) chartE1RMInstance.destroy();
-
-      const exerciseFilter = document.getElementById("analyticsExerciseFilter").value;
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let dataPoints = [0, 0, 0, 0];
-
-      for (let i = 1; i <= 4; i++) {
-        let projName = `Week ${i}`;
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
-        if (localData) {
-          let rows = JSON.parse(localData);
-          let match = rows.find(r => r.exercise === exerciseFilter);
-          if (match) {
-            let maxReps = Math.max(match.set1_reps, match.set2_reps, match.set3_reps, match.set4_reps);
-            if (maxReps > 0 && match.working_load > 0) {
-              let e1rm = match.working_load * (1 + (maxReps / 30));
-              dataPoints[i - 1] = Math.round(e1rm * 10) / 10;
-            }
-          }
-        }
-      }
-
-      chartE1RMInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `${exerciseFilter} e1RM (kg)`,
-            data: dataPoints,
-            borderColor: '#0066FF',
-            backgroundColor: 'rgba(0, 102, 255, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: false } }
-        }
-      });
-    }
-
-    function renderVolumeRpeChart() {
-      const ctx = document.getElementById('chartVolumeRpe').getContext('2d');
-      if (chartVolumeRpeInstance) chartVolumeRpeInstance.destroy();
-
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let volumeData = [0, 0, 0, 0];
-
-      for (let i = 1; i <= 4; i++) {
-        let projName = `Week ${i}`;
-        let localData = localStorage.getItem(`workout_data_${currentUser}_${projName}`);
-        if (localData) {
-          let rows = JSON.parse(localData);
-          let totalVol = 0;
-          rows.forEach(r => {
-            let totalReps = (r.set1_reps || 0) + (r.set2_reps || 0) + (r.set3_reps || 0) + (r.set4_reps || 0);
-            totalVol += (r.working_load || 0) * totalReps;
-          });
-          volumeData[i - 1] = totalVol;
-        }
-      }
-
-      chartVolumeRpeInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Total Volume Load (kg)',
-            data: volumeData,
-            backgroundColor: '#3b82f6',
-            borderRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    function renderMuscleDistributionChart() {
-      const ctx = document.getElementById('chartMuscleDistribution').getContext('2d');
-      if (chartMuscleDistributionInstance) chartMuscleDistributionInstance.destroy();
-
-      let muscleCounts = { "Chest": 0, "Back": 0, "Deltoids": 0, "Quads": 0, "Posterior Chain": 0, "Arms": 0, "Calves": 0 };
-
-      workoutRows.forEach(r => {
-        let preset = exercisePresets[r.exercise];
-        if (preset && preset.muscleGroup) {
-          let activeSets = [r.set1_reps, r.set2_reps, r.set3_reps, r.set4_reps].filter(val => val > 0).length;
-          if (muscleCounts[preset.muscleGroup] !== undefined) {
-            muscleCounts[preset.muscleGroup] += activeSets;
-          }
-        }
-      });
-
-      chartMuscleDistributionInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(muscleCounts),
-          datasets: [{
-            data: Object.values(muscleCounts),
-            backgroundColor: [
-              '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'
-            ]
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
-        }
-      });
-    }
-
-    function renderACWRChart() {
-      const ctx = document.getElementById('chartACWR').getContext('2d');
-      if (chartACWRInstance) chartACWRInstance.destroy();
-
-      let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      let acwrData = [1.0, 1.05, 1.1, 1.15]; 
-
-      chartACWRInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'ACWR',
-            data: acwrData,
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { y: { min: 0, max: 2 } }
-        }
-      });
-    }
-
-    function loadAdminData() {
-      const tbody = document.getElementById("adminUsersTable");
-      if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">Loading users...</td></tr>`;
-      }
-      
-      const logBody = document.getElementById("adminLogsTable");
-      if (logBody) {
-        logBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No audit logs available.</td></tr>`;
-      }
-
-      const payload = { action: "getAdminData", username: currentUser };
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === "success") {
-          adminFetchedUsers = res.users || [];
-          if (tbody) {
-            if (adminFetchedUsers.length === 0) {
-              tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found.</td></tr>`;
-            } else {
-              tbody.innerHTML = "";
-              adminFetchedUsers.forEach((u, idx) => {
-                const tr = document.createElement("tr");
-                tr.className = "border-b border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50";
-                tr.innerHTML = `
-                  <td class="p-3 font-semibold">${u.username}</td>
-                  <td class="p-3"><span class="px-2 py-1 rounded text-xs ${u.approved ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${u.approved ? 'Approved' : 'Pending'}</span></td>
-                  <td class="p-3 text-center">
-                    <button onclick="viewUserDetail(${idx})" class="px-3 py-1 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700">View Details</button>
-                  </td>
-                `;
-                tbody.appendChild(tr);
-              });
-            }
-          }
+          showToast(`User ${username} approved successfully.`, "success");
+          loadAdminData();
         } else {
-          if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Failed to load admin data: ${res.message || 'Unknown error'}</td></tr>`;
-          }
+          showToast(res.message || "Failed to approve user.", "error");
         }
       })
       .catch(err => {
-        if (tbody) {
-          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Connection error: ${err.message}</td></tr>`;
-        }
+        hideSpinner();
+        console.error(err);
+        showToast("Network error approving user.", "error");
       });
     }
 
-    function viewUserDetail(idx) {
-      const u = adminFetchedUsers[idx];
-      if (!u) return;
+    function viewUserDetail(username) {
+      const userObj = adminFetchedUsers.find(u => u.username === username);
+      if (!userObj) return;
 
-      const container = document.getElementById("adminUserDetailContainer");
-      const title = document.getElementById("userDetailTitle");
-      const stats = document.getElementById("userStatsOverview");
-      const benchmarks = document.getElementById("userBenchmarksList");
+      document.getElementById("adminUserDetailContainer").classList.remove("hidden");
+      document.getElementById("userDetailTitle").innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> Profile & Stats: ${username}`;
 
-      container.classList.remove("hidden");
-      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile: ${u.username}`;
-
-      stats.innerHTML = `
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Status</span>
-          <span class="font-bold text-sm">${u.approved ? 'Approved' : 'Pending Approval'}</span>
+      const statsDiv = document.getElementById("userStatsOverview");
+      statsDiv.innerHTML = `
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Status</span>
+          <span class="text-sm font-bold mt-1 block">${userObj.status}</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Role</span>
-          <span class="font-bold text-sm">${u.isAdmin ? 'Admin' : 'Member'}</span>
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Registered Date</span>
+          <span class="text-sm font-bold mt-1 block">${userObj.created_at || '-'}</span>
         </div>
-        <div class="themed-subcard p-3 rounded-xl border">
-          <span class="text-xs themed-text-muted block">Total Records</span>
-          <span class="font-bold text-sm">${u.totalRecords || 0}</span>
+        <div class="themed-subcard p-3.5 rounded-xl border">
+          <span class="text-xs themed-text-muted block font-medium">Total Workouts Logged</span>
+          <span class="text-sm font-bold mt-1 block">${userObj.total_workouts || 0}</span>
         </div>
       `;
 
-      benchmarks.innerHTML = `<p class="text-xs themed-text-muted col-span-full">No benchmark data recorded yet.</p>`;
+      const benchmarksList = document.getElementById("userBenchmarksList");
+      benchmarksList.innerHTML = "";
+      
+      let benchmarks = userObj.benchmarks || {};
+      if (Object.keys(benchmarks).length === 0) {
+        benchmarksList.innerHTML = `<span class="text-xs themed-text-muted col-span-full">No benchmark data available.</span>`;
+      } else {
+        Object.keys(benchmarks).forEach(ex => {
+          const div = document.createElement("div");
+          div.className = "themed-subcard p-2.5 rounded-lg border text-xs";
+          div.innerHTML = `<span class="themed-text-muted block text-[10px]">${ex}</span><span class="font-bold">${benchmarks[ex]} kg</span>`;
+          benchmarksList.appendChild(div);
+        });
+      }
       lucide.createIcons();
-      container.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeUserDetail() {
-      const container = document.getElementById("adminUserDetailContainer");
-      if (container) {
-        container.classList.add("hidden");
-      }
+      document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
   </script>
 </body>
