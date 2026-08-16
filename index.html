@@ -1580,43 +1580,41 @@
       const username = document.getElementById("regUsername").value.trim();
       const pin = document.getElementById("regPin").value.trim();
 
-      // Ambil input asesmen dari form registrasi
-      const loadBench = parseFloat(document.getElementById("test_load_bench").value) || 20;
-      const repsBench = parseInt(document.getElementById("test_reps_bench").value, 10) || 8;
-      const rpeBench = parseFloat(document.getElementById("test_rpe_bench").value) || 8;
+      if (!username || !pin) {
+        showModernAlert("Username and PIN cannot be empty!", "Registration Failed", "alert-circle");
+        return;
+      }
 
-      const loadSquat = parseFloat(document.getElementById("test_load_squat").value) || 20;
-      const repsSquat = parseInt(document.getElementById("test_reps_squat").value, 10) || 8;
-      const rpeSquat = parseFloat(document.getElementById("test_rpe_squat").value) || 8;
+      // Ambil input asesmen dengan aman (pastikan fallback angka valid)
+      const loadBench = parseFloat(document.getElementById("test_load_bench")?.value) || 20;
+      const repsBench = parseInt(document.getElementById("test_reps_bench")?.value, 10) || 8;
+      const rpeBench = parseFloat(document.getElementById("test_rpe_bench")?.value) || 8;
 
-      const loadLat = parseFloat(document.getElementById("test_load_lat").value) || 5;
-      const repsLat = parseInt(document.getElementById("test_reps_lat").value, 10) || 10;
-      const rpeLat = parseFloat(document.getElementById("test_rpe_lat").value) || 8;
+      const loadSquat = parseFloat(document.getElementById("test_load_squat")?.value) || 20;
+      const repsSquat = parseInt(document.getElementById("test_reps_squat")?.value, 10) || 8;
+      const rpeSquat = parseFloat(document.getElementById("test_rpe_squat")?.value) || 8;
+
+      const loadLat = parseFloat(document.getElementById("test_load_lat")?.value) || 5;
+      const repsLat = parseInt(document.getElementById("test_reps_lat")?.value, 10) || 10;
+      const rpeLat = parseFloat(document.getElementById("test_rpe_lat")?.value) || 8;
 
       // Kalkulasi dinamis berdasarkan first_set_assessment
       let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
       let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
       let latBase = first_set_assessment("ISOLATION", loadLat, repsLat, rpeLat);
 
-      // Pemetaan dinamis ke seluruh exercisePresets agar tidak ada yang hardcoded mati
-      let userBenchmarks = {};
-      Object.keys(exercisePresets).forEach(ex => {
-        const preset = exercisePresets[ex];
-        if (preset.muscleGroup === "Chest" || preset.muscleGroup === "Back" || preset.muscleGroup === "Deltoids") {
-          userBenchmarks[ex] = preset.type === "COMPOUND" ? benchBase : latBase;
-        } else if (preset.muscleGroup === "Quads" || preset.muscleGroup === "Posterior Chain") {
-          userBenchmarks[ex] = squatBase;
-        } else {
-          // Default untuk Arms, Calves, dll. menggunakan basis isolasi/compound terdekat
-          userBenchmarks[ex] = preset.type === "COMPOUND" ? squatBase : latBase;
-        }
-      });
+      // Pastikan hasil kalkulasi berupa angka valid (bukan NaN)
+      if (isNaN(benchBase)) benchBase = 20;
+      if (isNaN(squatBase)) squatBase = 20;
+      if (isNaN(latBase)) latBase = 5;
 
-      // Timpa secara spesifik jika ada nilai asesmen utama
-      userBenchmarks["Barbell Bench Press"] = benchBase;
-      userBenchmarks["Barbell Squats"] = squatBase;
-      userBenchmarks["Dumbbell Lateral Raises - A"] = latBase;
-      userBenchmarks["Dumbbell Lateral Raises - B"] = latBase;
+      // Simpan benchmark standar yang diperlukan saja untuk mencegah korupsi data lokal
+      let userBenchmarks = {
+        "Barbell Bench Press": benchBase,
+        "Barbell Squats": squatBase,
+        "Dumbbell Lateral Raises - A": latBase,
+        "Dumbbell Lateral Raises - B": latBase
+      };
 
       localStorage.setItem(`workout_benchmarks_${username}`, JSON.stringify(userBenchmarks));
 
