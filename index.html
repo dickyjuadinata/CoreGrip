@@ -1673,6 +1673,15 @@
     function closeUserDetail() {
       document.getElementById("adminUserDetailContainer").classList.add("hidden");
     }
+
+    function handleLogout() {
+      localStorage.removeItem("coregrip_current_user");
+      localStorage.removeItem("coregrip_is_admin");
+      localStorage.removeItem("coregrip_current_project");
+      currentUser = null;
+      isAdmin = false;
+      window.location.reload();
+    }
   </script>
 </body>
 </html>
