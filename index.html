@@ -2063,7 +2063,6 @@
       if (chartACWRInstance) chartACWRInstance.destroy();
 
       let labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-      // Placeholder untuk data ACWR sebagai demonstrasi chart
       let acwrData = [1.0, 1.05, 1.1, 1.15]; 
 
       chartACWRInstance = new Chart(ctx, {
@@ -2089,17 +2088,89 @@
       });
     }
 
-    // Fungsi Admin (Placeholder untuk menghindari referensi gagal dalam HTML)
     function loadAdminData() {
       const tbody = document.getElementById("adminUsersTable");
       if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found or admin API not connected.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">Loading users...</td></tr>`;
       }
       
       const logBody = document.getElementById("adminLogsTable");
       if (logBody) {
-         logBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No audit logs available.</td></tr>`;
+        logBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No audit logs available.</td></tr>`;
       }
+
+      const payload = { action: "getAdminData", username: currentUser };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "success") {
+          adminFetchedUsers = res.users || [];
+          if (tbody) {
+            if (adminFetchedUsers.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center themed-text-muted">No users found.</td></tr>`;
+            } else {
+              tbody.innerHTML = "";
+              adminFetchedUsers.forEach((u, idx) => {
+                const tr = document.createElement("tr");
+                tr.className = "border-b border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50";
+                tr.innerHTML = `
+                  <td class="p-3 font-semibold">${u.username}</td>
+                  <td class="p-3"><span class="px-2 py-1 rounded text-xs ${u.approved ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${u.approved ? 'Approved' : 'Pending'}</span></td>
+                  <td class="p-3 text-center">
+                    <button onclick="viewUserDetail(${idx})" class="px-3 py-1 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700">View Details</button>
+                  </td>
+                `;
+                tbody.appendChild(tr);
+              });
+            }
+          }
+        } else {
+          if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Failed to load admin data: ${res.message || 'Unknown error'}</td></tr>`;
+          }
+        }
+      })
+      .catch(err => {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Connection error: ${err.message}</td></tr>`;
+        }
+      });
+    }
+
+    function viewUserDetail(idx) {
+      const u = adminFetchedUsers[idx];
+      if (!u) return;
+
+      const container = document.getElementById("adminUserDetailContainer");
+      const title = document.getElementById("userDetailTitle");
+      const stats = document.getElementById("userStatsOverview");
+      const benchmarks = document.getElementById("userBenchmarksList");
+
+      container.classList.remove("hidden");
+      title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> User Profile: ${u.username}`;
+
+      stats.innerHTML = `
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Status</span>
+          <span class="font-bold text-sm">${u.approved ? 'Approved' : 'Pending Approval'}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Role</span>
+          <span class="font-bold text-sm">${u.isAdmin ? 'Admin' : 'Member'}</span>
+        </div>
+        <div class="themed-subcard p-3 rounded-xl border">
+          <span class="text-xs themed-text-muted block">Total Records</span>
+          <span class="font-bold text-sm">${u.totalRecords || 0}</span>
+        </div>
+      `;
+
+      benchmarks.innerHTML = `<p class="text-xs themed-text-muted col-span-full">No benchmark data recorded yet.</p>`;
+      lucide.createIcons();
+      container.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeUserDetail() {
