@@ -161,9 +161,6 @@
       background: var(--accent-primary); 
     }
     
-    /* Responsive authenticated header:
-       Desktop/PC = navbar + header sign-out, no drawer/hamburger.
-       Mobile = hamburger/drawer only; no external sign-out button. */
     @media (min-width: 768px) {
       body.authenticated #headerNavTabs { display: flex !important; }
       body.authenticated #mobileMenuBtn { display: none !important; }
@@ -309,11 +306,10 @@
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
-                  <input type="text" inputmode="decimal" data-decimal-input="true" step="0.1" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_squat">
+                  <input type="text" inputmode="decimal" data-decimal-input="true" step="0.1" id="test_rpe_bench" placeholder="1-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_load_pull">
                 </div>
               </div>
             </div>
-
 
             <div class="themed-subcard p-3 rounded-xl border space-y-2">
               <div class="flex justify-between items-center text-xs">
@@ -326,7 +322,7 @@
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">Reps</label>
-                  <input type="number" inputmode="numeric" step="1" id="test_reps_pull" placeholder="10-12" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_pull">
+                  <input type="number" inputmode="numeric" step="1" id="test_reps_pull" placeholder="8-10" class="w-full px-2 py-1 themed-input border rounded-lg text-xs font-semibold enter-nav" data-next="test_rpe_pull">
                 </div>
                 <div>
                   <label class="text-[10px] themed-text-muted block font-medium">RPE</label>
@@ -377,22 +373,29 @@
               </span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-3 sm:gap-4">
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Week Number</label>
                 <div class="flex items-center">
                   <span class="bg-gray-200 dark:bg-slate-700 px-3 py-2 rounded-l-xl text-sm font-semibold border border-r-0 border-gray-300 dark:border-slate-600">Week</span>
-                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="1" max="52" value="" placeholder="" list="weekNumberOptions" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input border-r-0 text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputBodyWeight">
+                  <input type="number" inputmode="numeric" step="1" id="inputProject" min="1" max="52" value="" placeholder="" list="weekNumberOptions" oninput="checkFormActivation(); changeProjectFreetext();" class="w-full px-3 py-2 themed-input border-r-0 text-sm font-semibold focus:ring-2 focus:outline-none enter-nav" data-next="inputAvgBodyWeight">
                   <button type="button" id="btnDeleteWeek" onclick="deleteSelectedWeek()" title="Delete selected Week" class="hidden px-2.5 py-2 themed-input border border-l-0 rounded-r-xl text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 transition" aria-label="Delete selected week">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                   </button>
                   <datalist id="weekNumberOptions"></datalist>
                 </div>
               </div>
+
               <div>
-                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Body Weight (kg)</label>
-                <input type="text" inputmode="decimal" data-decimal-input="true" step="any" id="inputBodyWeight" value="" placeholder="" min="0" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Avg. Body Weight (kg)</label>
+                <input type="text" inputmode="decimal" data-decimal-input="true" step="any" id="inputAvgBodyWeight" value="" placeholder="e.g. 65.5" disabled oninput="calculateLoadDetails(); checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputWaist">
               </div>
+
+              <div>
+                <label class="block text-xs font-semibold themed-text-muted mb-1.5">Waist (cm)</label>
+                <input type="text" inputmode="decimal" data-decimal-input="true" step="any" id="inputWaist" value="" placeholder="e.g. 80.0" disabled oninput="checkFormActivation();" class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav opacity-50 cursor-not-allowed" data-next="inputDaySession">
+              </div>
+
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Training Session</label>
                 <select id="inputDaySession" onchange="onSessionChange(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputExercise">
@@ -403,16 +406,19 @@
                   <option value="Fri - Lower B">Fri - Lower B</option>
                 </select>
               </div>
+
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Exercise Name</label>
                 <select id="inputExercise" onchange="onExerciseSelect(this.value)" required class="w-full px-3 py-2 themed-input rounded-xl border text-sm focus:ring-2 focus:outline-none enter-nav" data-next="inputWorkingLoad">
                   <option value="">-- Select Session First --</option>
                 </select>
               </div>
+
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Target Rep Range</label>
                 <input type="text" id="inputTargetReps" readonly required class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
               </div>
+
               <div>
                 <label class="block text-xs font-semibold themed-text-muted mb-1.5">Rest Interval Target</label>
                 <input type="text" id="inputRestTime" readonly class="w-full px-3 py-2 themed-input opacity-75 rounded-xl border text-sm font-semibold focus:outline-none cursor-not-allowed">
@@ -527,7 +533,7 @@
                 <select id="analyticsExerciseFilter" onchange="renderAnalyticsDashboard()" class="text-xs themed-input border rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2">
                   <option value="Barbell Bench Press">Barbell Bench Press</option>
                   <option value="Barbell Squats">Barbell Squats</option>
-                  <option value="Barbell Conventional Deadlift">Barbell Conventional Deadlift</option>
+                  <option value="Conventional Deadlift">Conventional Deadlift</option>
                   <option value="Barbell Overhead Press">Barbell Overhead Press</option>
                 </select>
               </div>
@@ -539,32 +545,32 @@
 
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
               <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Volume Load vs. Session RPE (sRPE)
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Module 2: Total Volume Load vs ACWR
               </h3>
               <div class="h-64 w-full">
                 <canvas id="chartVolumeRpe"></canvas>
               </div>
-              <p class="text-[11px] themed-text-muted italic">*Compares total external work done (kg) against internal fatigue.</p>
+              <p class="text-[11px] themed-text-muted italic">*Compares total external volume load (kg) against workload threshold.</p>
             </div>
 
             <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
               <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-                <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 3: Weekly Effective Sets / Muscle
+                <i data-lucide="scale" class="w-4 h-4"></i> Module 3: Body Weight Trend vs. Waist Line
+              </h3>
+              <div class="h-64 w-full">
+                <canvas id="chartBodyWeightWaist"></canvas>
+              </div>
+              <p class="text-[11px] themed-text-muted italic">*Weekly average body weight (kg) compared against waist circumference (cm).</p>
+            </div>
+
+            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
+              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i> Module 4: Weekly Effective Sets / Muscle
               </h3>
               <div class="h-64 w-full flex justify-center">
                 <canvas id="chartMuscleDistribution"></canvas>
               </div>
               <p class="text-[11px] themed-text-muted italic text-center">*Benchmark target: 10 - 20 sets per muscle group per week.</p>
-            </div>
-
-            <div class="themed-subcard p-4 rounded-2xl border space-y-3 w-full">
-              <h3 class="font-bold flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-                <i data-lucide="activity" class="w-4 h-4"></i> Module 4: ACWR Fatigue & Readiness Tracker
-              </h3>
-              <div class="h-64 w-full">
-                <canvas id="chartACWR"></canvas>
-              </div>
-              <p class="text-[11px] themed-text-muted italic">*Acute to Chronic Workload Ratio. Optimal sweet spot: 0.8 - 1.3.</p>
             </div>
           </div>
         </div>
@@ -710,76 +716,78 @@
     let wasOnline = navigator.onLine;
 
     let lastSelectedSession = "";
-    let lastBodyWeight = "";
+    let lastAvgBodyWeight = "";
+    let lastWaist = "";
     let activeRestTimer = null;
     let activeRestTimerEndAt = null;
     let adminFetchedUsers = [];
     let knownUserProjects = new Set();
+    let userBaselines = {};
 
     const exercisePresets = {
-  "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-  "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-  "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-  "Dumbbell Flyes": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Chest", type: "ISOLATION" },
-  "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-  "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Dumbbell Flyes": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Chest", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
 
-  "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-  "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 2, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-  "Leg Extentions - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
-  "Lying / Seated Leg Curl - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
-  "Incline DB Curls": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-  "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 2, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Leg Extentions - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
+      "Lying / Seated Leg Curl - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
+      "Incline DB Curls": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
 
-  "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-  "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-  "Barbell Overhead Press": { session: "Thu - Upper B", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-  "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-  "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-  "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+      "Barbell Overhead Press": { session: "Thu - Upper B", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
 
-  "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 2, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-  "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-  "Leg Extentions - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
-  "Lying / Seated Leg Curl - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
-  "Dumbbell Hammer Curl": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-  "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
-};
+      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 2, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+      "Leg Extentions - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
+      "Lying / Seated Leg Curl - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
+      "Dumbbell Hammer Curl": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+    };
 
-const sessionExerciseOrder = {
-  "Mon - Upper A": [
-    "Barbell Bench Press",
-    "Chest Supported Dumbbell Row",
-    "Bodyweight Pull-Ups",
-    "Dumbbell Flyes",
-    "Dumbbell Lateral Raises - A",
-    "Triceps Pressdowns (Cable)"
-  ],
-  "Tue - Lower A": [
-    "Barbell Squats",
-    "Romanian Deadlifts",
-    "Leg Extentions - A",
-    "Lying / Seated Leg Curl - A",
-    "Incline DB Curls",
-    "Standing Barbell Calf Raises - A"
-  ],
-  "Thu - Upper B": [
-    "Incline Dumbbell Press",
-    "Bent-over Barbell Row",
-    "Barbell Overhead Press",
-    "Face Pulls (Cable)",
-    "Dumbbell Lateral Raises - B",
-    "Cable Overhead Triceps Extension"
-  ],
-  "Fri - Lower B": [
-    "Conventional Deadlift",
-    "Dumbbell Bulgarian Split Squat",
-    "Leg Extentions - B",
-    "Lying / Seated Leg Curl - B",
-    "Dumbbell Hammer Curl",
-    "Standing Barbell Calf Raises - B"
-  ]
-};
+    const sessionExerciseOrder = {
+      "Mon - Upper A": [
+        "Barbell Bench Press",
+        "Chest Supported Dumbbell Row",
+        "Bodyweight Pull-Ups",
+        "Dumbbell Flyes",
+        "Dumbbell Lateral Raises - A",
+        "Triceps Pressdowns (Cable)"
+      ],
+      "Tue - Lower A": [
+        "Barbell Squats",
+        "Romanian Deadlifts",
+        "Leg Extentions - A",
+        "Lying / Seated Leg Curl - A",
+        "Incline DB Curls",
+        "Standing Barbell Calf Raises - A"
+      ],
+      "Thu - Upper B": [
+        "Incline Dumbbell Press",
+        "Bent-over Barbell Row",
+        "Barbell Overhead Press",
+        "Face Pulls (Cable)",
+        "Dumbbell Lateral Raises - B",
+        "Cable Overhead Triceps Extension"
+      ],
+      "Fri - Lower B": [
+        "Conventional Deadlift",
+        "Dumbbell Bulgarian Split Squat",
+        "Leg Extentions - B",
+        "Lying / Seated Leg Curl - B",
+        "Dumbbell Hammer Curl",
+        "Standing Barbell Calf Raises - B"
+      ]
+    };
 
     function getSessionExercises(sessionName) {
       return Array.isArray(sessionExerciseOrder[sessionName])
@@ -796,9 +804,10 @@ const sessionExerciseOrder = {
       "Triceps Pressdowns (Cable)": 7.5,
       "Barbell Squats": 20.0,
       "Romanian Deadlifts": 17.5,
-      "Leg Extentions": 10.0,
-      "Lying / Seated Leg Curl": 10.0,
-      "Standing Barbell Calf Raises": 12.5,
+      "Leg Extentions - A": 10.0,
+      "Lying / Seated Leg Curl - A": 10.0,
+      "Incline DB Curls": 7.5,
+      "Standing Barbell Calf Raises - A": 12.5,
       "Incline Dumbbell Press": 12.5,
       "Bent-over Barbell Row": 20.0,
       "Barbell Overhead Press": 12.5,
@@ -807,12 +816,12 @@ const sessionExerciseOrder = {
       "Cable Overhead Triceps Extension": 7.5,
       "Conventional Deadlift": 25.0,
       "Dumbbell Bulgarian Split Squat": 7.5,
+      "Leg Extentions - B": 10.0,
+      "Lying / Seated Leg Curl - B": 10.0,
       "Dumbbell Hammer Curl": 7.5,
       "Standing Barbell Calf Raises - B": 12.5
     };
 
-    // Baseline recommendation parameters restored from index v1.
-    // Push = Bench Press, Pull = Bent-over Barbell Row, Legs = Squat.
     const baselineLoadParameters = {
       "Barbell Bench Press": { anchor: "PUSH", ratio: 1.00, label: "Push anchor" },
       "Barbell Overhead Press": { anchor: "PUSH", ratio: 0.65, label: "65% of Bench Press" },
@@ -824,59 +833,73 @@ const sessionExerciseOrder = {
       "Romanian Deadlifts": { anchor: "LEGS", ratio: 0.85, label: "85% of Squat" },
       "Conventional Deadlift": { anchor: "LEGS", ratio: 1.15, label: "115% of Squat" },
       "Dumbbell Bulgarian Split Squat": { anchor: "LEGS", ratio: 0.40, label: "40% of Squat" },
-      "Standing Barbell Calf Raises": { anchor: "LEGS", ratio: 0.50, label: "50% of Squat" },
+      "Leg Extentions - A": { anchor: "LEGS", ratio: 0.40, label: "40% of Squat" },
+      "Leg Extentions - B": { anchor: "LEGS", ratio: 0.40, label: "40% of Squat" },
+      "Lying / Seated Leg Curl - A": { anchor: "LEGS", ratio: 0.40, label: "40% of Squat" },
+      "Lying / Seated Leg Curl - B": { anchor: "LEGS", ratio: 0.40, label: "40% of Squat" },
+      "Standing Barbell Calf Raises - A": { anchor: "LEGS", ratio: 0.50, label: "50% of Squat" },
       "Standing Barbell Calf Raises - B": { anchor: "LEGS", ratio: 0.50, label: "50% of Squat" },
       "Bent-over Barbell Row": { anchor: "PULL", ratio: 1.00, label: "Pull anchor" },
       "Chest Supported Dumbbell Row": { anchor: "PULL", ratio: 0.95, label: "95% of Barbell Row" },
       "Bodyweight Pull-Ups": { anchor: "PULL", ratio: 0.65, label: "65% of Barbell Row" },
       "Dumbbell Hammer Curl": { anchor: "PULL", ratio: 0.25, label: "25% of Barbell Row" },
+      "Incline DB Curls": { anchor: "PULL", ratio: 0.25, label: "25% of Barbell Row" },
       "Face Pulls (Cable)": { anchor: "PULL", ratio: 0.25, label: "25% of Barbell Row" }
     };
 
     function buildBaselineRecommendations(anchors) {
-  const anchorLoads = {
-    PUSH: Number(anchors["Barbell Bench Press"] || 0),
-    PULL: Number(anchors["Bent-over Barbell Row"] || 0),
-    LEGS: Number(anchors["Barbell Squats"] || 0)
-  };
-  const result = {};
-  Object.keys(exercisePresets).forEach(exercise => {
-    const param = baselineLoadParameters[exercise];
-    if (!param) return;
-    const anchorLoad = anchorLoads[param.anchor];
-    if (Number.isFinite(anchorLoad) && anchorLoad > 0) {
-      result[exercise] = Math.round(mround2_5(anchorLoad * param.ratio) * 10) / 10;
+      const anchorLoads = {
+        PUSH: Number(anchors["Barbell Bench Press"] || 0),
+        PULL: Number(anchors["Bent-over Barbell Row"] || 0),
+        LEGS: Number(anchors["Barbell Squats"] || 0)
+      };
+      const result = {};
+      Object.keys(exercisePresets).forEach(exercise => {
+        const param = baselineLoadParameters[exercise];
+        if (!param) return;
+        const anchorLoad = anchorLoads[param.anchor];
+        if (Number.isFinite(anchorLoad) && anchorLoad > 0) {
+          result[exercise] = Math.round(mround2_5(anchorLoad * param.ratio) * 10) / 10;
+        }
+      });
+      return result;
     }
-  });
-  return result;
-}
 
     const dayToSessionMap = { 1: "Mon - Upper A", 2: "Tue - Lower A", 4: "Thu - Upper B", 5: "Fri - Lower B" };
 
     function checkFormActivation() {
       const weekInput = document.getElementById("inputProject");
-      const bwInput = document.getElementById("inputBodyWeight");
+      const bwInput = document.getElementById("inputAvgBodyWeight");
+      const waistInput = document.getElementById("inputWaist");
       const weekVal = weekInput ? weekInput.value.trim() : "";
       
-      if (bwInput) {
+      if (bwInput && waistInput) {
         if (weekVal !== "") {
           bwInput.disabled = false;
+          waistInput.disabled = false;
           bwInput.classList.remove("opacity-50", "cursor-not-allowed");
+          waistInput.classList.remove("opacity-50", "cursor-not-allowed");
         } else {
           bwInput.disabled = true;
+          waistInput.disabled = true;
           bwInput.classList.add("opacity-50", "cursor-not-allowed");
+          waistInput.classList.add("opacity-50", "cursor-not-allowed");
           bwInput.value = "";
+          waistInput.value = "";
         }
       }
 
       const bwVal = bwInput ? bwInput.value.trim() : "";
+      const waistVal = waistInput ? waistInput.value.trim() : "";
       const form = document.getElementById("formWorkout");
       if (!form) return;
-      const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputBodyWeight), button[type='submit']");
-      const isEnabled = (weekVal !== "" && bwVal !== "");
+
+      const elements = form.querySelectorAll("select, input:not(#inputProject):not(#inputAvgBodyWeight):not(#inputWaist), button[type='submit']");
+      const isEnabled = (weekVal !== "" && bwVal !== "" && waistVal !== "");
       updateWorkoutVisibility();
+
       elements.forEach(el => {
-        if (el.id !== "inputProject" && el.id !== "inputBodyWeight") {
+        if (el.id !== "inputProject" && el.id !== "inputAvgBodyWeight" && el.id !== "inputWaist") {
           el.disabled = !isEnabled;
           if (!isEnabled) {
             el.classList.add("opacity-50", "cursor-not-allowed");
@@ -887,30 +910,30 @@ const sessionExerciseOrder = {
       });
     }
 
-
     function updateWorkoutVisibility() {
-          const weekVal = document.getElementById("inputProject")?.value.trim() || "";
-          const bwVal = document.getElementById("inputBodyWeight")?.value.trim() || "";
-          const weekSelected = weekVal !== "";
-          const unlocked = weekSelected && bwVal !== "";
-          const tableCard = document.getElementById("workoutTableBody")?.closest(".relative.themed-card");
-          const form = document.getElementById("formWorkout");
-          if (form) form.classList.toggle("opacity-60", !unlocked);
-          if (tableCard) tableCard.classList.toggle("hidden", !weekSelected);
-          let notice = document.getElementById("workoutUnlockNotice");
-          if (!notice && form?.parentElement) {
-            notice = document.createElement("div");
-            notice.id = "workoutUnlockNotice";
-            notice.className = "themed-subcard p-3 rounded-xl text-xs themed-text-muted border";
-            form.parentElement.insertBefore(notice, form);
-          }
-          if (notice) {
-            notice.textContent = !weekSelected
-              ? "Please select a Week Number to view the workout log."
-              : (!unlocked ? "Enter Body Weight to unlock workout entry." : "");
-            notice.classList.toggle("hidden", unlocked);
-          }
-        }
+      const weekVal = document.getElementById("inputProject")?.value.trim() || "";
+      const bwVal = document.getElementById("inputAvgBodyWeight")?.value.trim() || "";
+      const waistVal = document.getElementById("inputWaist")?.value.trim() || "";
+      const weekSelected = weekVal !== "";
+      const unlocked = weekSelected && bwVal !== "" && waistVal !== "";
+      const tableCard = document.getElementById("workoutTableBody")?.closest(".relative.themed-card");
+      const form = document.getElementById("formWorkout");
+      if (form) form.classList.toggle("opacity-60", !unlocked);
+      if (tableCard) tableCard.classList.toggle("hidden", !weekSelected);
+      let notice = document.getElementById("workoutUnlockNotice");
+      if (!notice && form?.parentElement) {
+        notice = document.createElement("div");
+        notice.id = "workoutUnlockNotice";
+        notice.className = "themed-subcard p-3 rounded-xl text-xs themed-text-muted border";
+        form.parentElement.insertBefore(notice, form);
+      }
+      if (notice) {
+        notice.textContent = !weekSelected
+          ? "Please select a Week Number to view the workout log."
+          : (!unlocked ? "Enter Avg. Body Weight and Waist measurement to unlock workout entry." : "");
+        notice.classList.toggle("hidden", unlocked);
+      }
+    }
 
     function toggleMobileDrawer(forceState) {
       const drawer = document.getElementById("mobileDrawer");
@@ -972,10 +995,6 @@ const sessionExerciseOrder = {
       widget.classList.remove("hidden");
       if (activeRestTimer) clearInterval(activeRestTimer);
 
-      // Use an absolute end timestamp instead of decrementing a counter.
-      // Mobile browsers may pause JavaScript while the screen is dimmed,
-      // locked, or the tab is backgrounded. Date.now() continues to reflect
-      // the real elapsed time, so the timer catches up correctly on resume.
       activeRestTimerEndAt = Date.now() + (Number(durationSeconds) * 1000);
 
       function updateDisplay() {
@@ -1068,12 +1087,9 @@ const sessionExerciseOrder = {
       return mround2_5(nextLoad);
     }
 
-function createOperationId() {
-  return "CG_" +
-    Date.now().toString(36) +
-    "_" +
-    crypto.randomUUID().replace(/-/g, "");
-}
+    function createOperationId() {
+      return "CG_" + Date.now().toString(36) + "_" + crypto.randomUUID().replace(/-/g, "");
+    }
     
     function showToast(message, type = "info", duration = 3000) {
       const container = document.getElementById("toastContainer");
@@ -1235,7 +1251,7 @@ function createOperationId() {
     function calculateSideWeight(exercise, totalLoad) {
       const exLower = exercise.toLowerCase();
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
-        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
+        const bw = parseFloat(document.getElementById("inputAvgBodyWeight")?.value) || 0;
         return roundToQuarter(bw + totalLoad);
       }
       
@@ -1369,9 +1385,6 @@ function createOperationId() {
         ? userBaselines
         : JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
 
-      // Dynamic baseline from the user's Baseline Load Assessment is the
-      // primary recommendation for a new exercise/week. Static benchmark
-      // values are only the final fallback when no user baseline exists.
       const dynamicBaseline = Number(savedBenchmarks[exerciseName]);
       const defaultLoad = Number.isFinite(dynamicBaseline) && dynamicBaseline > 0
         ? mround2_5(dynamicBaseline)
@@ -1409,8 +1422,10 @@ function createOperationId() {
       const sideDisplay = document.getElementById("sideLoadDisplay");
       const notice = document.getElementById("sideLoadFormulaNotice");
 
-      const bwVal = document.getElementById("inputBodyWeight").value;
-      if (bwVal) lastBodyWeight = bwVal;
+      const bwVal = document.getElementById("inputAvgBodyWeight").value;
+      if (bwVal) lastAvgBodyWeight = bwVal;
+      const waistVal = document.getElementById("inputWaist").value;
+      if (waistVal) lastWaist = waistVal;
 
       if (!exercise) {
         sideDisplay.innerText = "- kg / side";
@@ -1422,8 +1437,8 @@ function createOperationId() {
       const exLower = exercise.toLowerCase();
 
       if (exLower.includes("pull-up") || exLower.includes("pull up")) {
-        const bw = parseFloat(document.getElementById("inputBodyWeight")?.value) || 0;
-        notice.innerText = `*Pull-Up Formula: Bodyweight (${bw}kg) + Extra Load (${load}kg)`;
+        const bw = parseFloat(document.getElementById("inputAvgBodyWeight")?.value) || 0;
+        notice.innerText = `*Pull-Up Formula: Avg Weight (${bw}kg) + Extra Load (${load}kg)`;
         sideDisplay.innerText = `${sideWeight.toFixed(2)} kg Total Load`;
       } else if (exLower.includes("barbell")) {
         notice.innerText = "*Barbell Formula: (Total Load - 10kg) / 2";
@@ -1523,10 +1538,10 @@ function createOperationId() {
     }
 
     function first_set_assessment(exercise_type, trial_load, reps_performed, rpe_output) {
-  const estimated1RM = trial_load * (1 + (reps_performed / 30));
-  const week1AnchorBaseline = estimated1RM * 0.75;
-  return Math.round(mround2_5(week1AnchorBaseline) * 10) / 10;
-}
+      const estimated1RM = trial_load * (1 + (reps_performed / 30));
+      const week1AnchorBaseline = estimated1RM * 0.75;
+      return Math.round(mround2_5(week1AnchorBaseline) * 10) / 10;
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
@@ -1535,10 +1550,6 @@ function createOperationId() {
       setupEnterNavigation();
       checkFormActivation();
 
-      // Accept both comma and dot as decimal separators on numeric inputs.
-      // Text input is used for decimal fields because type=number rejects a
-      // comma in several browser/locale combinations. Existing calculations
-      // continue to use parseFloat(), so comma is normalized to dot here.
       document.querySelectorAll('input[data-decimal-input="true"]').forEach(input => {
         input.addEventListener('input', () => {
           if (input.value.includes(',')) {
@@ -1781,8 +1792,6 @@ function createOperationId() {
 
     function showAuthenticatedShell() {
       document.getElementById("authSection").classList.add("hidden");
-      // Let CSS control the desktop/mobile header layout.
-      // Desktop: navbar + header sign-out. Mobile: drawer/hamburger only.
       const desktop = window.innerWidth >= 768;
       document.getElementById("headerNavTabs").style.display = desktop ? "flex" : "none";
       document.getElementById("mobileMenuBtn").style.display = desktop ? "none" : "block";
@@ -1812,8 +1821,6 @@ function createOperationId() {
         document.getElementById("adminSection").classList.remove("hidden");
         document.getElementById("headerNavTabs").style.display = "none";
         document.getElementById("tabWorkout").parentElement.parentElement.classList.add("hidden");
-        // Admin also follows the responsive header rule: desktop keeps only
-        // header controls/sign-out; mobile keeps hamburger/drawer only.
         document.getElementById("mobileMenuBtn").style.display = window.innerWidth >= 768 ? "none" : "block";
         document.getElementById("signOutBtnHeader").style.display = window.innerWidth >= 768 ? "flex" : "none";
         const result = await apiRequest({ action: "getAdminData", username: currentUser }, { silentAuthError: true });
@@ -1831,8 +1838,6 @@ function createOperationId() {
         document.getElementById("adminSection").classList.add("hidden");
         document.getElementById("tabWorkout").parentElement.parentElement.classList.remove("hidden");
 
-        // Baseline is server-authoritative. Load it before workout/project data
-        // so the first exercise can immediately receive its dynamic recommendation.
         try {
           await loadUserBaselines();
         } catch (baselineErr) {
@@ -1851,8 +1856,6 @@ function createOperationId() {
       }
     }
 
-    // Backward-compatible auth failure handler retained from index v1.
-    // The v3 API layer remains the authoritative session manager.
     function handleAuthFailure(res) {
       if (!res || res.status !== "error") return false;
       const code = String(res.code || "").toUpperCase();
@@ -1873,7 +1876,7 @@ function createOperationId() {
       return false;
     }
 
-async function submitLogin(e) {
+    async function submitLogin(e) {
       e.preventDefault();
       const username = document.getElementById("loginUsername").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
@@ -1919,21 +1922,13 @@ async function submitLogin(e) {
       let benchBase = first_set_assessment("COMPOUND", loadBench, repsBench, rpeBench);
       let pullBase = first_set_assessment("COMPOUND", loadPull, repsPull, rpePull);
       let squatBase = first_set_assessment("COMPOUND", loadSquat, repsSquat, rpeSquat);
-      // Preserve v3's RPE-based assessment while restoring v1's anchor-based
-      // baseline recommendation model.
-      // Build the complete baseline dynamically from the user's actual
-      // RPE-adjusted anchor assessments.
-      let userBenchmarks = buildBaselineRecommendations(
-        {
-          "Barbell Bench Press": benchBase,
-          "Bent-over Barbell Row": pullBase,
-          "Barbell Squats": squatBase
-        },
-        
-      );
 
-      // Keep a diagnostic copy so the baseline can be audited/debugged
-      // without changing the server payload contract.
+      let userBenchmarks = buildBaselineRecommendations({
+        "Barbell Bench Press": benchBase,
+        "Bent-over Barbell Row": pullBase,
+        "Barbell Squats": squatBase
+      });
+
       userBenchmarks._anchors = {
         "Barbell Bench Press": benchBase,
         "Bent-over Barbell Row": pullBase,
@@ -2094,8 +2089,6 @@ async function submitLogin(e) {
 
       showSpinner(`Deleting ${project}...`);
       try {
-        // Remove the local week immediately. The server delete action is used
-        // when available; no getData call is made for an unselected/new week.
         localStorage.removeItem(`workout_data_${currentUser}_${project}`);
 
         const res = await apiRequest({
@@ -2105,8 +2098,6 @@ async function submitLogin(e) {
         }, { silentAuthError: true });
 
         if (res.status !== "success") {
-          // Do not fall back to saveData: an empty save could create a new
-          // Week sheet on servers that provision sheets during save.
           showModernAlert(res.message || "The server could not delete the selected week.", "Delete Week Failed", "alert-circle");
           return;
         }
@@ -2116,11 +2107,15 @@ async function submitLogin(e) {
           workoutRows = [];
           localStorage.removeItem("coregrip_current_project");
           input.value = "";
-          const bw = document.getElementById("inputBodyWeight");
-          if (bw) {
+          const bw = document.getElementById("inputAvgBodyWeight");
+          const waist = document.getElementById("inputWaist");
+          if (bw && waist) {
             bw.value = "";
+            waist.value = "";
             bw.disabled = true;
+            waist.disabled = true;
             bw.classList.add("opacity-50", "cursor-not-allowed");
+            waist.classList.add("opacity-50", "cursor-not-allowed");
           }
           renderWorkoutTable();
           updateWorkoutVisibility();
@@ -2138,553 +2133,175 @@ async function submitLogin(e) {
     }
 
     function loadUserProjectsAndData(projectsFromSession) {
-  showSpinner("Loading user workout data...");
-  const processProjects = (projects) => {
+      showSpinner("Loading user workout data...");
+      const processProjects = (projects) => {
+        const serverProjectSet = new Set();
+        if (Array.isArray(projects)) {
+          projects.forEach(p => {
+            const raw = typeof p === "string" || typeof p === "number" ? p : (p?.project || p?.name || p?.week);
+            const match = String(raw ?? "").match(/(?:Week\s*)?(\d+)/i);
+            if (match) serverProjectSet.add(`Week ${parseInt(match[1], 10)}`);
+          });
+        }
+
+        const prefix = `workout_data_${currentUser}_`;
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith(prefix)) {
+            const localWeekName = key.slice(prefix.length);
+            if (!serverProjectSet.has(localWeekName)) {
+              localStorage.removeItem(key);
+            }
+          }
+        }
+
+        refreshWeekNumberOptions(projects);
+
+        if (currentProject && isExistingUserProject(currentProject)) {
+          localStorage.setItem("coregrip_current_project", currentProject);
+          loadProjectDataFromCloud(currentProject);
+        } else {
+          currentProject = "";
+          localStorage.removeItem("coregrip_current_project");
+          workoutRows = [];
+          const weekInput = document.getElementById("inputProject");
+          if (weekInput) weekInput.value = "";
+          const bwInput = document.getElementById("inputAvgBodyWeight");
+          const waistInput = document.getElementById("inputWaist");
+          if (bwInput && waistInput) {
+            bwInput.value = "";
+            waistInput.value = "";
+            bwInput.disabled = true;
+            waistInput.disabled = true;
+            bwInput.classList.add("opacity-50", "cursor-not-allowed");
+            waistInput.classList.add("opacity-50", "cursor-not-allowed");
+          }
+          renderWorkoutTable();
+          updateWorkoutVisibility();
+        }
+      };
+
+      if (Array.isArray(projectsFromSession)) { 
+        processProjects(projectsFromSession); 
+        return; 
+      }
+
+      apiRequest({ action: "getUserProjects", username: currentUser }, { silentAuthError: true })
+        .then(res => {
+          if (res.status === "success") processProjects(res.projects || []);
+          else {
+            hideSpinner();
+            if (res.status === "AUTH_REQUIRED" || res.code === "AUTH_REQUIRED") clearAuthState();
+          }
+        })
+        .catch(err => {
+          console.error("Failed to load user projects from cloud, loading local fallback:", err);
+          let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
+          if (localData) { workoutRows = JSON.parse(localData); renderWorkoutTable(); }
+          hideSpinner();
+        });
+    }
+
+    function loadUserBaselines() {
+      if (!currentUser || !authToken) return Promise.resolve({});
+
+      return fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "getBaselines",
+          username: currentUser,
+          authToken: authToken
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (handleAuthFailure(res)) return {};
+        if (res.status !== "success") {
+          console.warn("Baseline server load failed:", res);
+          return {};
+        }
+
+        var baselines = res.baselines || {};
+        userBaselines = baselines;
+        localStorage.setItem(`workout_benchmarks_${currentUser}`, JSON.stringify(baselines));
+        return baselines;
+      })
+      .catch(err => {
+        console.error("Baseline load failed:", err);
+        try {
+          var local = JSON.parse(localStorage.getItem(`workout_benchmarks_${currentUser}`) || "{}");
+          userBaselines = local;
+          return local;
+        } catch (e) {
+          userBaselines = {};
+          return {};
+        }
+      });
+    }    
     
-    // 1. Buat set nama week resmi yang terdaftar di server
-    const serverProjectSet = new Set();
-    if (Array.isArray(projects)) {
-      projects.forEach(p => {
-        const raw = typeof p === "string" || typeof p === "number" ? p : (p?.project || p?.name || p?.week);
-        const match = String(raw ?? "").match(/(?:Week\s*)?(\d+)/i);
-        if (match) serverProjectSet.add(`Week ${parseInt(match[1], 10)}`);
+    function loadProjectDataFromCloud(proj) {
+      if (!currentUser || !authToken) return;
+
+      var localKey = `workout_data_${currentUser}_${proj}`;
+      var localRows = [];
+
+      var localRaw = localStorage.getItem(localKey);
+      if (localRaw) {
+        try {
+          var parsed = JSON.parse(localRaw);
+          if (Array.isArray(parsed)) localRows = parsed;
+        } catch (e) {
+          console.warn("Invalid local workout cache.", e);
+        }
+      }
+
+      var payload = {
+        action: "getData",
+        username: currentUser,
+        project: proj,
+        authToken: authToken
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        hideSpinner();
+        if (handleAuthFailure(res)) return;
+
+        if (res.status !== "success") {
+          workoutRows = localRows;
+          renderWorkoutTable();
+          return;
+        }
+
+        var serverRows = Array.isArray(res.rows) ? res.rows : [];
+
+        if (serverRows.length > 0) {
+          workoutRows = serverRows;
+          localStorage.setItem(localKey, JSON.stringify(workoutRows));
+        } else if (localRows.length > 0) {
+          workoutRows = localRows;
+          renderWorkoutTable();
+          syncDataToServer();
+          return;
+        } else {
+          workoutRows = [];
+          localStorage.setItem(localKey, "[]");
+        }
+
+        renderWorkoutTable();
+      })
+      .catch(err => {
+        console.error("Unable to load workout data:", err);
+        hideSpinner();
+        workoutRows = localRows;
+        renderWorkoutTable();
       });
     }
 
-    // 2. Bersihkan localStorage lokal yang sudah tidak terdaftar di server
-    const prefix = `workout_data_${currentUser}_`;
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) {
-        const localWeekName = key.slice(prefix.length);
-        if (!serverProjectSet.has(localWeekName)) {
-          localStorage.removeItem(key);
-        }
-      }
-    }
-
-    // 3. Perbarui opsi dropdown week
-    refreshWeekNumberOptions(projects);
-
-    if (currentProject && isExistingUserProject(currentProject)) {
-      localStorage.setItem("coregrip_current_project", currentProject);
-      loadProjectDataFromCloud(currentProject);
-    } else {
-      currentProject = "";
-      localStorage.removeItem("coregrip_current_project");
-      workoutRows = [];
-      const weekInput = document.getElementById("inputProject");
-      if (weekInput) weekInput.value = "";
-      const bwInput = document.getElementById("inputBodyWeight");
-      if (bwInput) {
-        bwInput.value = "";
-        bwInput.disabled = true;
-        bwInput.classList.add("opacity-50", "cursor-not-allowed");
-      }
-      renderWorkoutTable();
-      updateWorkoutVisibility();
-    }
-  };
-
-  if (Array.isArray(projectsFromSession)) { 
-    processProjects(projectsFromSession); 
-    return; 
-  }
-
-  apiRequest({ action: "getUserProjects", username: currentUser }, { silentAuthError: true })
-    .then(res => {
-      if (res.status === "success") processProjects(res.projects || []);
-      else {
-        hideSpinner();
-        if (res.status === "AUTH_REQUIRED" || res.code === "AUTH_REQUIRED") clearAuthState();
-      }
-    })
-    .catch(err => {
-      console.error("Failed to load user projects from cloud, loading local fallback:", err);
-      let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
-      if (localData) { workoutRows = JSON.parse(localData); renderWorkoutTable(); }
-      hideSpinner();
-    });
-}
-
-    // Backward-compatible blank-state initializer retained from index v1.
-    // v3 does not call this automatically because its secure session loader
-    // preserves the active Week/project context.
-    function initializeBlankWorkoutState() {
-      currentProject = "";
-      workoutRows = [];
-      const weekInput = document.getElementById("inputProject");
-      const bwInput = document.getElementById("inputBodyWeight");
-      if (weekInput) weekInput.value = "";
-      if (bwInput) { bwInput.value = ""; bwInput.disabled = true; }
-      const tableBody = document.getElementById("workoutTableBody");
-      if (tableBody) tableBody.innerHTML = "";
-      checkFormActivation();
-      updateWorkoutVisibility();
-      loadUserBaselines();
-    }
-
-function loadUserBaselines() {
-
-  if (
-    !currentUser ||
-    !authToken
-  ) {
-    return Promise.resolve({});
-  }
-
-
-  return fetch(
-    API_URL,
-    {
-
-      method:
-        "POST",
-
-      body:
-        JSON.stringify({
-
-          action:
-            "getBaselines",
-
-          username:
-            currentUser,
-
-          authToken:
-            authToken
-
-        })
-
-    }
-  )
-
-  .then(
-    function (res) {
-
-      return res.json();
-
-    }
-  )
-
-  .then(
-    function (res) {
-
-      if (
-        handleAuthFailure(res)
-      ) {
-
-        return {};
-
-      }
-
-
-      if (
-        res.status !==
-        "success"
-      ) {
-
-        console.warn(
-          "Baseline server load failed:",
-          res
-        );
-
-        return {};
-
-      }
-
-
-      var baselines =
-        res.baselines || {};
-
-
-      /*
-       * Server is authoritative.
-       */
-
-      userBaselines =
-        baselines;
-
-
-      localStorage.setItem(
-
-        `workout_benchmarks_${currentUser}`,
-
-        JSON.stringify(
-          baselines
-        )
-
-      );
-
-
-      return baselines;
-
-    }
-  )
-
-  .catch(
-    function (err) {
-
-      console.error(
-        "Baseline load failed:",
-        err
-      );
-
-
-      /*
-       * Offline fallback.
-       */
-
-      try {
-
-        var local =
-          JSON.parse(
-
-            localStorage.getItem(
-              `workout_benchmarks_${currentUser}`
-            ) || "{}"
-
-          );
-
-
-        userBaselines =
-          local;
-
-
-        return local;
-
-      } catch (e) {
-
-        userBaselines =
-          {};
-
-        return {};
-
-      }
-
-    }
-  );
-
-}    
-    
-    function loadProjectDataFromCloud(
-  proj
-) {
-
-  if (
-    !currentUser ||
-    !authToken
-  ) {
-    return;
-  }
-
-
-  var localKey =
-    `workout_data_${currentUser}_${proj}`;
-
-
-  var localRows = [];
-
-
-  /*
-   * Read local cache first.
-   */
-
-  var localRaw =
-    localStorage.getItem(
-      localKey
-    );
-
-
-  if (localRaw) {
-
-    try {
-
-      var parsed =
-        JSON.parse(
-          localRaw
-        );
-
-
-      if (
-        Array.isArray(parsed)
-      ) {
-
-        localRows =
-          parsed;
-
-      }
-
-    } catch (e) {
-
-      console.warn(
-        "Invalid local workout cache.",
-        e
-      );
-
-    }
-
-  }
-
-
-  var payload = {
-
-    action:
-      "getData",
-
-    username:
-      currentUser,
-
-    project:
-      proj,
-
-    authToken:
-      authToken
-
-  };
-
-
-  fetch(
-    API_URL,
-    {
-
-      method:
-        "POST",
-
-      body:
-        JSON.stringify(
-          payload
-        )
-
-    }
-  )
-
-  .then(
-    function (res) {
-
-      return res.json();
-
-    }
-  )
-
-  .then(
-    function (res) {
-
-      hideSpinner();
-
-
-      if (
-        handleAuthFailure(res)
-      ) {
-
-        return;
-
-      }
-
-
-      if (
-        res.status !==
-        "success"
-      ) {
-
-        /*
-         * Server failed.
-         * Keep local.
-         */
-
-        workoutRows =
-          localRows;
-
-        renderWorkoutTable();
-
-        return;
-
-      }
-
-
-      var serverRows =
-        Array.isArray(
-          res.rows
-        )
-          ? res.rows
-          : [];
-
-
-      /*
-       * IMPORTANT:
-       *
-       * Empty server + non-empty local
-       * does NOT mean local data should
-       * be deleted.
-       */
-
-      if (
-        serverRows.length > 0
-      ) {
-
-        /*
-         * Server has authoritative data.
-         */
-
-        workoutRows =
-          serverRows;
-
-
-        localStorage.setItem(
-
-          localKey,
-
-          JSON.stringify(
-            workoutRows
-          )
-
-        );
-
-
-      } else if (
-        localRows.length > 0
-      ) {
-
-        /*
-         * Server empty but local has data.
-         *
-         * Keep local data and synchronize
-         * it back to server.
-         */
-
-        workoutRows =
-          localRows;
-
-
-        renderWorkoutTable();
-
-
-        syncDataToServer();
-
-
-        return;
-
-
-      } else {
-
-        workoutRows =
-          [];
-
-        localStorage.setItem(
-          localKey,
-          "[]"
-        );
-
-      }
-
-
-      renderWorkoutTable();
-
-
-      /*
-       * Update project list if available.
-       */
-
-      if (
-        Array.isArray(
-          res.projects
-        )
-      ) {
-
-        projects =
-          res.projects;
-
-      }
-
-    }
-  )
-
-  .catch(
-    function (err) {
-
-      console.error(
-        "Unable to load workout data:",
-        err
-      );
-
-
-      hideSpinner();
-
-
-      /*
-       * Network failure:
-       * LOCAL remains source of truth
-       * until cloud is reachable.
-       */
-
-      workoutRows =
-        localRows;
-
-
-      renderWorkoutTable();
-
-    }
-  );
-
-}
-
-function loadLocalWorkoutData(
-  proj
-) {
-
-  var key =
-    `workout_data_${currentUser}_${proj}`;
-
-
-  var raw =
-    localStorage.getItem(
-      key
-    );
-
-
-  if (!raw) {
-
-    workoutRows =
-      [];
-
-    renderWorkoutTable();
-
-    return;
-
-  }
-
-
-  try {
-
-    var rows =
-      JSON.parse(
-        raw
-      );
-
-
-    workoutRows =
-      Array.isArray(rows)
-        ? rows
-        : [];
-
-
-  } catch (e) {
-
-    console.error(
-      "Invalid local workout data:",
-      e
-    );
-
-
-    workoutRows =
-      [];
-
-  }
-
-
-  renderWorkoutTable();
-
-}
-    
     function renderWorkoutTable() {
       const tbody = document.getElementById("workoutTableBody");
       if (!tbody) return;
@@ -2693,6 +2310,19 @@ function loadLocalWorkoutData(
       if (workoutRows.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center themed-text-muted">No workout records found for this program. Log your first exercise above!</td></tr>`;
         return;
+      }
+
+      if (workoutRows.length > 0) {
+        const firstRow = workoutRows[0];
+        if (firstRow.avg_body_weight > 0 && document.getElementById("inputAvgBodyWeight")) {
+          document.getElementById("inputAvgBodyWeight").value = firstRow.avg_body_weight;
+          lastAvgBodyWeight = firstRow.avg_body_weight;
+        }
+        if (firstRow.waist > 0 && document.getElementById("inputWaist")) {
+          document.getElementById("inputWaist").value = firstRow.waist;
+          lastWaist = firstRow.waist;
+        }
+        checkFormActivation();
       }
 
       workoutRows.forEach((r, idx) => {
@@ -2777,6 +2407,8 @@ function loadLocalWorkoutData(
       document.getElementById("inputSet3").value = r.set3_reps;
       document.getElementById("inputSet4").value = r.set4_reps;
       document.getElementById("inputCatatan").value = r.catatan || "";
+      if (r.avg_body_weight) document.getElementById("inputAvgBodyWeight").value = r.avg_body_weight;
+      if (r.waist) document.getElementById("inputWaist").value = r.waist;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       showToast("Loaded record for editing.", "info", 2000);
@@ -2817,6 +2449,8 @@ function loadLocalWorkoutData(
       const exercise = document.getElementById("inputExercise").value;
       const targetReps = document.getElementById("inputTargetReps").value;
       const workingLoad = parseFloat(document.getElementById("inputWorkingLoad").value) || 0;
+      const avgBodyWeight = parseFloat(document.getElementById("inputAvgBodyWeight").value) || 0;
+      const waist = parseFloat(document.getElementById("inputWaist").value) || 0;
       
       const set1 = parseInt(document.getElementById("inputSet1").value, 10) || 0;
       const set2 = parseInt(document.getElementById("inputSet2").value, 10) || 0;
@@ -2839,6 +2473,8 @@ function loadLocalWorkoutData(
         set4_reps: set4,
         next_load: nextLoad,
         catatan: catatan,
+        avg_body_weight: avgBodyWeight,
+        waist: waist,
         updated_at: Date.now()
       };
 
@@ -2855,7 +2491,6 @@ function loadLocalWorkoutData(
       renderWorkoutTable();
       syncDataToServer();
 
-      // Auto-advance applies only to a newly saved exercise.
       if (!wasEditing) {
         advanceToNextExercise(daySession, exercise);
       } else {
@@ -2864,39 +2499,39 @@ function loadLocalWorkoutData(
     }
 
     function advanceToNextExercise(sessionName, completedExercise) {
-          const sessionExercises = getSessionExercises(sessionName);
-          const completedIndex = sessionExercises.indexOf(completedExercise);
-          if (completedIndex < 0) { resetForm(); return; }
-          const logged = new Set(workoutRows.filter(r => r.day_session === sessionName).map(r => r.exercise));
-          const next = sessionExercises.slice(completedIndex + 1).find(ex => !logged.has(ex));
-    
-          if (next) {
-            resetForm();
-            document.getElementById("inputDaySession").value = sessionName;
-            onSessionChange(sessionName);
-            document.getElementById("inputExercise").value = next;
-            onExerciseSelect(next);
-            showToast(`Saved. Next exercise: ${next}`, "success", 3000);
-            document.getElementById("inputWorkingLoad")?.focus();
-          } else if (sessionExercises.every(ex => logged.has(ex))) {
-            resetForm();
-            showToast("Session completed! All exercises in this session are logged.", "success", 4500);
-            triggerPushNotification("CoreGrip — Session Completed", `All exercises in ${sessionName} have been logged.`);
-          } else {
-            resetForm();
-          }
-        }
+      const sessionExercises = getSessionExercises(sessionName);
+      const completedIndex = sessionExercises.indexOf(completedExercise);
+      if (completedIndex < 0) { resetForm(); return; }
+      const logged = new Set(workoutRows.filter(r => r.day_session === sessionName).map(r => r.exercise));
+      const next = sessionExercises.slice(completedIndex + 1).find(ex => !logged.has(ex));
+
+      if (next) {
+        resetForm();
+        document.getElementById("inputDaySession").value = sessionName;
+        onSessionChange(sessionName);
+        document.getElementById("inputExercise").value = next;
+        onExerciseSelect(next);
+        showToast(`Saved. Next exercise: ${next}`, "success", 3000);
+        document.getElementById("inputWorkingLoad")?.focus();
+      } else if (sessionExercises.every(ex => logged.has(ex))) {
+        resetForm();
+        showToast("Session completed! All exercises in this session are logged.", "success", 4500);
+        triggerPushNotification("CoreGrip — Session Completed", `All exercises in ${sessionName} have been logged.`);
+      } else {
+        resetForm();
+      }
+    }
 
     function resetForm(options = {}) {
-      // Week Number and Body Weight are session-level context, not
-      // exercise-level fields. Preserve them when moving from one exercise
-      // to the next so the user enters them only once per workout week.
       const preserveContext = options.preserveContext !== false;
       const weekValue = preserveContext
         ? (document.getElementById("inputProject")?.value || currentProject?.replace(/^Week\s*/i, "") || "")
         : "";
-      const bodyWeightValue = preserveContext
-        ? (document.getElementById("inputBodyWeight")?.value || lastBodyWeight || "")
+      const avgBodyWeightValue = preserveContext
+        ? (document.getElementById("inputAvgBodyWeight")?.value || lastAvgBodyWeight || "")
+        : "";
+      const waistValue = preserveContext
+        ? (document.getElementById("inputWaist")?.value || lastWaist || "")
         : "";
 
       document.getElementById("formWorkout").reset();
@@ -2918,14 +2553,20 @@ function loadLocalWorkoutData(
 
       if (preserveContext) {
         const weekInput = document.getElementById("inputProject");
-        const bwInput = document.getElementById("inputBodyWeight");
+        const bwInput = document.getElementById("inputAvgBodyWeight");
+        const waistInput = document.getElementById("inputWaist");
         if (weekInput) weekInput.value = weekValue;
-        if (bwInput) {
-          bwInput.value = bodyWeightValue;
-          lastBodyWeight = bodyWeightValue;
+        if (bwInput && waistInput) {
+          bwInput.value = avgBodyWeightValue;
+          waistInput.value = waistValue;
+          lastAvgBodyWeight = avgBodyWeightValue;
+          lastWaist = waistValue;
           bwInput.disabled = !weekValue;
+          waistInput.disabled = !weekValue;
           bwInput.classList.toggle("opacity-50", !weekValue);
+          waistInput.classList.toggle("opacity-50", !weekValue);
           bwInput.classList.toggle("cursor-not-allowed", !weekValue);
+          waistInput.classList.toggle("cursor-not-allowed", !weekValue);
         }
         if (weekValue) {
           currentProject = `Week ${weekValue.replace(/^Week\s*/i, "")}`;
@@ -2938,14 +2579,6 @@ function loadLocalWorkoutData(
       checkFormActivation();
     }
 
-    /* =========================================================
-     * COREGRIP v3.1 OPTIMIZED — DURABLE SYNC ENGINE
-     *
-     * localStorage remains the compatibility/cache layer.
-     * IndexedDB is the durable offline queue.
-     * Only one save request is allowed at a time.
-     * Every snapshot gets a monotonically increasing revision.
-     * ========================================================= */
     const CG_SYNC_DB = "CoreGripSyncDB";
     const CG_SYNC_DB_VERSION = 1;
     let cgDbPromise = null;
@@ -3138,13 +2771,11 @@ function loadLocalWorkoutData(
       const project = currentProject;
       const rows = Array.isArray(workoutRows) ? workoutRows : [];
 
-      // Keep the existing localStorage compatibility/cache behavior.
       localStorage.setItem(
         `workout_data_${currentUser}_${project}`,
         JSON.stringify(rows)
       );
 
-      // Serialize queue writes so rapid edits cannot generate duplicate revisions.
       cgQueueWriteChain = cgQueueWriteChain
         .then(() => cgQueueSnapshot(project, rows))
         .then(() => {
@@ -3170,7 +2801,6 @@ function loadLocalWorkoutData(
       updateOnlineStatus();
     });
 
-    // Inspect the durable queue once after the app has loaded.
     cgRefreshQueueCount();
 
     function changeProjectFreetext() {
@@ -3182,7 +2812,6 @@ function loadLocalWorkoutData(
         if (isExistingUserProject(currentProject)) {
           loadProjectDataFromCloud(currentProject);
         } else {
-          // New/uncreated week: do not call getData and do not create a server sheet.
           workoutRows = [];
           renderWorkoutTable();
           updateWorkoutVisibility();
@@ -3232,28 +2861,28 @@ function loadLocalWorkoutData(
     function renderAnalyticsDashboard() {
       renderE1RMChart();
       renderVolumeRpeChart();
+      renderBodyWeightVsWaistChart();
       renderMuscleDistributionChart();
-      renderACWRChart();
     }
 
     let chartE1RMInstance = null;
     let chartVolumeRpeInstance = null;
+    let chartBodyWeightWaistInstance = null;
     let chartMuscleDistributionInstance = null;
-    let chartACWRInstance = null;
 
     function getHistoricalWeekRows() {
-          const result = [];
-          for (let i = 1; i <= 52; i++) {
-            const key = `workout_data_${currentUser}_Week ${i}`;
-            const raw = localStorage.getItem(key);
-            if (!raw) continue;
-            try {
-              const rows = JSON.parse(raw);
-              if (Array.isArray(rows) && rows.length) result.push({ week: i, rows });
-            } catch (e) {}
-          }
-          return result;
-        }
+      const result = [];
+      for (let i = 1; i <= 52; i++) {
+        const key = `workout_data_${currentUser}_Week ${i}`;
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        try {
+          const rows = JSON.parse(raw);
+          if (Array.isArray(rows) && rows.length) result.push({ week: i, rows });
+        } catch (e) {}
+      }
+      return result;
+    }
 
     function renderE1RMChart() {
       const ctx = document.getElementById('chartE1RM').getContext('2d');
@@ -3286,6 +2915,68 @@ function loadLocalWorkoutData(
         type: 'bar',
         data: { labels: points.map(p => `Week ${p.week}`), datasets: [{ label: 'Total Volume Load (kg)', data: points.map(p => p.value), backgroundColor: '#3b82f6', borderRadius: 8 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: points.length === 0, text: 'No historical data available yet.' } } }
+      });
+    }
+
+    function renderBodyWeightVsWaistChart() {
+      const ctx = document.getElementById('chartBodyWeightWaist')?.getContext('2d');
+      if (!ctx) return;
+
+      const weeklyData = getHistoricalWeekRows().map(({ week, rows }) => {
+        const firstRow = rows.find(r => Number(r.avg_body_weight) > 0 || Number(r.waist) > 0) || rows[0] || {};
+        return {
+          week: `Week ${week}`,
+          avgWeight: Number(firstRow.avg_body_weight) || 0,
+          waist: Number(firstRow.waist) || 0
+        };
+      }).filter(p => p.avgWeight > 0 || p.waist > 0);
+
+      if (chartBodyWeightWaistInstance) {
+        chartBodyWeightWaistInstance.destroy();
+      }
+
+      chartBodyWeightWaistInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: weeklyData.map(p => p.week),
+          datasets: [
+            {
+              label: 'Avg Weight (kg)',
+              data: weeklyData.map(p => p.avgWeight),
+              borderColor: '#10b981',
+              backgroundColor: '#10b981',
+              yAxisID: 'yWeight',
+              borderWidth: 2,
+              tension: 0.1
+            },
+            {
+              label: 'Waist (cm)',
+              data: weeklyData.map(p => p.waist),
+              borderColor: '#f97316',
+              backgroundColor: '#f97316',
+              yAxisID: 'yWaist',
+              borderWidth: 2,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            yWeight: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'Avg Weight (kg)' }
+            },
+            yWaist: {
+              type: 'linear',
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: 'Waist (cm)' }
+            }
+          }
+        }
       });
     }
 
@@ -3322,29 +3013,6 @@ function loadLocalWorkoutData(
           maintainAspectRatio: false,
           plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
         }
-      });
-    }
-
-    function renderACWRChart() {
-      const ctx = document.getElementById('chartACWR').getContext('2d');
-      if (chartACWRInstance) chartACWRInstance.destroy();
-      const weekly = getHistoricalWeekRows().map(({ week, rows }) => ({
-        week,
-        volume: rows.reduce((sum, r) => sum + (Number(r.working_load) || 0) * ([r.set1_reps, r.set2_reps, r.set3_reps, r.set4_reps].reduce((a, v) => a + (Number(v) || 0), 0)), 0)
-      }));
-      const points = [];
-      weekly.forEach((item, idx) => {
-        if (idx < 4) return;
-        const prior = weekly.slice(idx - 4, idx).map(x => x.volume).filter(v => v > 0);
-        if (item.volume > 0 && prior.length === 4) {
-          const chronic = prior.reduce((a, b) => a + b, 0) / 4;
-          if (chronic > 0) points.push({ week: item.week, value: Math.round((item.volume / chronic) * 100) / 100 });
-        }
-      });
-      chartACWRInstance = new Chart(ctx, {
-        type: 'line',
-        data: { labels: points.map(p => `Week ${p.week}`), datasets: [{ label: 'ACWR Ratio', data: points.map(p => p.value), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: points.length === 0, text: 'No sufficient historical data for ACWR.' } }, scales: { y: { min: 0.5, max: 1.8 } } }
       });
     }
 
@@ -3499,7 +3167,6 @@ function loadLocalWorkoutData(
         </div>
       `;
 
-      // Prefer server-provided baseline data. Admin cannot read another user's localStorage.
       const serverUser = adminFetchedUsers.find(u =>
         String(u.user || "").toLowerCase() === String(username || "").toLowerCase()
       );
