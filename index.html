@@ -717,65 +717,69 @@
     let knownUserProjects = new Set();
 
     const exercisePresets = {
-      "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Dumbbell Flyes": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Chest", type: "ISOLATION" },
-      "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+  "Barbell Bench Press": { session: "Mon - Upper A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+  "Chest Supported Dumbbell Row": { session: "Mon - Upper A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+  "Bodyweight Pull-Ups": { session: "Mon - Upper A", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+  "Dumbbell Flyes": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Chest", type: "ISOLATION" },
+  "Dumbbell Lateral Raises - A": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+  "Triceps Pressdowns (Cable)": { session: "Mon - Upper A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
 
-      "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
-      "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Leg Extentions": { session: "", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
-      "Lying / Seated Leg Curl": { session: "", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
-      "Standing Barbell Calf Raises": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
+  "Barbell Squats": { session: "Tue - Lower A", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Quads", type: "COMPOUND" },
+  "Romanian Deadlifts": { session: "Tue - Lower A", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 2, isFirst: false, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+  "Leg Extentions - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
+  "Lying / Seated Leg Curl - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
+  "Incline DB Curls": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+  "Standing Barbell Calf Raises - A": { session: "Tue - Lower A", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" },
 
-      "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 3, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
-      "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
-      "Barbell Overhead Press": { session: "Thu - Upper B", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
-      "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
-      "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+  "Incline Dumbbell Press": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: true, muscleGroup: "Chest", type: "COMPOUND" },
+  "Bent-over Barbell Row": { session: "Thu - Upper B", reps: "8-10", rest: "2 min", restSeconds: 120, sets: 4, isFirst: false, muscleGroup: "Back", type: "COMPOUND" },
+  "Barbell Overhead Press": { session: "Thu - Upper B", reps: "6-8", rest: "2 min", restSeconds: 120, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "COMPOUND" },
+  "Face Pulls (Cable)": { session: "Thu - Upper B", reps: "12-15", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+  "Dumbbell Lateral Raises - B": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Deltoids", type: "ISOLATION" },
+  "Cable Overhead Triceps Extension": { session: "Thu - Upper B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
 
-      "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 3, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
-      "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
-      "Dumbbell Hammer Curl": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
-      "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
-    };
+  "Conventional Deadlift": { session: "Fri - Lower B", reps: "6-8", rest: "3 min", restSeconds: 180, sets: 2, isFirst: true, muscleGroup: "Posterior Chain", type: "COMPOUND" },
+  "Dumbbell Bulgarian Split Squat": { session: "Fri - Lower B", reps: "8-10", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "COMPOUND" },
+  "Leg Extentions - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Quads", type: "ISOLATION" },
+  "Lying / Seated Leg Curl - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 3, isFirst: false, muscleGroup: "Posterior Chain", type: "ISOLATION" },
+  "Dumbbell Hammer Curl": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 2, isFirst: false, muscleGroup: "Arms", type: "ISOLATION" },
+  "Standing Barbell Calf Raises - B": { session: "Fri - Lower B", reps: "10-12", rest: "1.5 min", restSeconds: 90, sets: 4, isFirst: false, muscleGroup: "Calves", type: "ISOLATION" }
+};
 
-    const sessionExerciseOrder = {
-      "Mon - Upper A": [
-        "Barbell Bench Press",
-        "Chest Supported Dumbbell Row",
-        "Bodyweight Pull-Ups",
-        "Dumbbell Flyes",
-        "Dumbbell Lateral Raises - A",
-        "Triceps Pressdowns (Cable)"
-      ],
-      "Tue - Lower A": [
-        "Barbell Squats",
-        "Romanian Deadlifts",
-        "Leg Extentions",
-        "Lying / Seated Leg Curl",
-        "Standing Barbell Calf Raises"
-      ],
-      "Thu - Upper B": [
-        "Incline Dumbbell Press",
-        "Bent-over Barbell Row",
-        "Barbell Overhead Press",
-        "Face Pulls (Cable)",
-        "Dumbbell Lateral Raises - B",
-        "Cable Overhead Triceps Extension"
-      ],
-      "Fri - Lower B": [
-        "Conventional Deadlift",
-        "Dumbbell Bulgarian Split Squat",
-        "Leg Extentions",
-        "Lying / Seated Leg Curl",
-        "Dumbbell Hammer Curl",
-        "Standing Barbell Calf Raises - B"
-      ]
-    };
+const sessionExerciseOrder = {
+  "Mon - Upper A": [
+    "Barbell Bench Press",
+    "Chest Supported Dumbbell Row",
+    "Bodyweight Pull-Ups",
+    "Dumbbell Flyes",
+    "Dumbbell Lateral Raises - A",
+    "Triceps Pressdowns (Cable)"
+  ],
+  "Tue - Lower A": [
+    "Barbell Squats",
+    "Romanian Deadlifts",
+    "Leg Extentions - A",
+    "Lying / Seated Leg Curl - A",
+    "Incline DB Curls",
+    "Standing Barbell Calf Raises - A"
+  ],
+  "Thu - Upper B": [
+    "Incline Dumbbell Press",
+    "Bent-over Barbell Row",
+    "Barbell Overhead Press",
+    "Face Pulls (Cable)",
+    "Dumbbell Lateral Raises - B",
+    "Cable Overhead Triceps Extension"
+  ],
+  "Fri - Lower B": [
+    "Conventional Deadlift",
+    "Dumbbell Bulgarian Split Squat",
+    "Leg Extentions - B",
+    "Lying / Seated Leg Curl - B",
+    "Dumbbell Hammer Curl",
+    "Standing Barbell Calf Raises - B"
+  ]
+};
 
     function getSessionExercises(sessionName) {
       return Array.isArray(sessionExerciseOrder[sessionName])
