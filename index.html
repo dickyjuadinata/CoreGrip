@@ -1369,9 +1369,10 @@
           if (i <= totalSets) {
             container.classList.remove("hidden");
             input.disabled = false;
+            input.value = "";
           } else {
             container.classList.add("hidden");
-            input.value = 0;
+            input.value = "";
             input.disabled = true;
           }
         }
@@ -2449,10 +2450,10 @@
       onExerciseSelect(r.exercise);
 
       document.getElementById("inputWorkingLoad").value = r.working_load;
-      document.getElementById("inputSet1").value = r.set1_reps;
-      document.getElementById("inputSet2").value = r.set2_reps;
-      document.getElementById("inputSet3").value = r.set3_reps;
-      document.getElementById("inputSet4").value = r.set4_reps;
+      document.getElementById("inputSet1").value = r.set1_reps || "";
+      document.getElementById("inputSet2").value = r.set2_reps || "";
+      document.getElementById("inputSet3").value = r.set3_reps || "";
+      document.getElementById("inputSet4").value = r.set4_reps || "";
       document.getElementById("inputCatatan").value = r.catatan || "";
       if (r.avg_body_weight) document.getElementById("inputAvgBodyWeight").value = r.avg_body_weight;
       if (r.waist) document.getElementById("inputWaist").value = r.waist;
@@ -2582,6 +2583,10 @@
         : "";
 
       document.getElementById("formWorkout").reset();
+      for (let i = 1; i <= 4; i++) {
+        const input = document.getElementById(`inputSet${i}`);
+        if (input) input.value = "";
+      }
       document.getElementById("inputExercise").innerHTML = '<option value="">-- Select Session First --</option>';
       document.getElementById("inputTargetReps").value = "";
       document.getElementById("inputRestTime").value = "";
