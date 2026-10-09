@@ -1355,11 +1355,10 @@
         document.getElementById("inputTargetReps").value = preset.reps;
         document.getElementById("inputRestTime").value = preset.rest;
 
-        const repLabel = preset.reps ? ` (${preset.reps})` : "";
         for (let i = 1; i <= 4; i++) {
           const lbl = document.getElementById(`labelSet${i}`);
           const inp = document.getElementById(`inputSet${i}`);
-          if (lbl) lbl.innerText = `Set ${i}${repLabel}`;
+          if (lbl) lbl.innerText = `Set ${i}`;
           if (inp) inp.placeholder = preset.reps || "0";
         }
 
