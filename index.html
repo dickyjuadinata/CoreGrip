@@ -2134,44 +2134,74 @@ async function submitLogin(e) {
     }
 
     function loadUserProjectsAndData(projectsFromSession) {
-      showSpinner("Loading user workout data...");
-      const processProjects = (projects) => {
-        refreshWeekNumberOptions(projects);
-        if (currentProject && isExistingUserProject(currentProject)) {
-          localStorage.setItem("coregrip_current_project", currentProject);
-          loadProjectDataFromCloud(currentProject);
-        } else {
-          currentProject = "";
-          localStorage.removeItem("coregrip_current_project");
-          workoutRows = [];
-          const weekInput = document.getElementById("inputProject");
-          if (weekInput) weekInput.value = "";
-          const bwInput = document.getElementById("inputBodyWeight");
-          if (bwInput) {
-            bwInput.value = "";
-            bwInput.disabled = true;
-            bwInput.classList.add("opacity-50", "cursor-not-allowed");
-          }
-          renderWorkoutTable();
-          updateWorkoutVisibility();
-        }
-      };
-      if (Array.isArray(projectsFromSession)) { processProjects(projectsFromSession); return; }
-      apiRequest({ action: "getUserProjects", username: currentUser }, { silentAuthError: true })
-        .then(res => {
-          if (res.status === "success") processProjects(res.projects || []);
-          else {
-            hideSpinner();
-            if (res.status === "AUTH_REQUIRED" || res.code === "AUTH_REQUIRED") clearAuthState();
-          }
-        })
-        .catch(err => {
-          console.error("Failed to load user projects from cloud, loading local fallback:", err);
-          let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
-          if (localData) { workoutRows = JSON.parse(localData); renderWorkoutTable(); }
-          hideSpinner();
-        });
+  showSpinner("Loading user workout data...");
+  const processProjects = (projects) => {
+    
+    // 1. Buat set nama week resmi yang terdaftar di server
+    const serverProjectSet = new Set();
+    if (Array.isArray(projects)) {
+      projects.forEach(p => {
+        const raw = typeof p === "string" || typeof p === "number" ? p : (p?.project || p?.name || p?.week);
+        const match = String(raw ?? "").match(/(?:Week\s*)?(\d+)/i);
+        if (match) serverProjectSet.add(`Week ${parseInt(match[1], 10)}`);
+      });
     }
+
+    // 2. Bersihkan localStorage lokal yang sudah tidak terdaftar di server
+    const prefix = `workout_data_${currentUser}_`;
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(prefix)) {
+        const localWeekName = key.slice(prefix.length);
+        if (!serverProjectSet.has(localWeekName)) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+
+    // 3. Perbarui opsi dropdown week
+    refreshWeekNumberOptions(projects);
+
+    if (currentProject && isExistingUserProject(currentProject)) {
+      localStorage.setItem("coregrip_current_project", currentProject);
+      loadProjectDataFromCloud(currentProject);
+    } else {
+      currentProject = "";
+      localStorage.removeItem("coregrip_current_project");
+      workoutRows = [];
+      const weekInput = document.getElementById("inputProject");
+      if (weekInput) weekInput.value = "";
+      const bwInput = document.getElementById("inputBodyWeight");
+      if (bwInput) {
+        bwInput.value = "";
+        bwInput.disabled = true;
+        bwInput.classList.add("opacity-50", "cursor-not-allowed");
+      }
+      renderWorkoutTable();
+      updateWorkoutVisibility();
+    }
+  };
+
+  if (Array.isArray(projectsFromSession)) { 
+    processProjects(projectsFromSession); 
+    return; 
+  }
+
+  apiRequest({ action: "getUserProjects", username: currentUser }, { silentAuthError: true })
+    .then(res => {
+      if (res.status === "success") processProjects(res.projects || []);
+      else {
+        hideSpinner();
+        if (res.status === "AUTH_REQUIRED" || res.code === "AUTH_REQUIRED") clearAuthState();
+      }
+    })
+    .catch(err => {
+      console.error("Failed to load user projects from cloud, loading local fallback:", err);
+      let localData = localStorage.getItem(`workout_data_${currentUser}_${currentProject}`);
+      if (localData) { workoutRows = JSON.parse(localData); renderWorkoutTable(); }
+      hideSpinner();
+    });
+}
 
     // Backward-compatible blank-state initializer retained from index v1.
     // v3 does not call this automatically because its secure session loader
